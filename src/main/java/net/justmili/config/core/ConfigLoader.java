@@ -1,6 +1,7 @@
 package net.justmili.config.core;
 
 import net.justmili.config.ConfigLib;
+import net.justmili.config.create.ConfigEntry;
 import net.justmili.config.data.FileType;
 
 import java.io.*;

@@ -1,7 +1,6 @@
-package net.justmili.config.builder;
+package net.justmili.config.create;
 
 import net.justmili.config.data.FileType;
-import net.justmili.config.core.ConfigEntry;
 import net.justmili.config.core.ConfigLoader;
 
 public class MConfigBuilder {

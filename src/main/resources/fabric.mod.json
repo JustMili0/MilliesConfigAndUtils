@@ -9,9 +9,9 @@
     "${mod_authors}"
   ],
   "contact": {
-    "sources": "https://modrinth.com/project/millies-config-lib",
-    "issues": "",
-    "homepage": ""
+    "sources": "https://github.com/JustMili0/MilliesConfigLib",
+    "issues": "https://github.com/JustMili0/MilliesConfigLib/issues",
+    "homepage": "https://modrinth.com/mod/millies-config-lib"
   },
   "license": "${mod_license}",
   "environment": "*",
@@ -27,6 +27,9 @@
   },
   "custom": {
     "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/DPEw9DU2vT"
+      },
       "badges": [
         "library"
       ]

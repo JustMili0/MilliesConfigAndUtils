@@ -1,4 +1,6 @@
-package net.justmili.config.core;
+package net.justmili.config.create;
+
+import net.justmili.config.core.ConfigLoader;
 
 @SuppressWarnings("unchecked")
 public class ConfigEntry<T> {
@@ -61,7 +63,7 @@ public class ConfigEntry<T> {
             && ((Comparable<T>) val).compareTo(max) <= 0;
     }
 
-    void load(String raw) {
+    public void load(String raw) {
         if (raw == null || raw.isBlank()) return;
         try {
             T parsed = parse(raw.trim());
@@ -71,7 +73,7 @@ public class ConfigEntry<T> {
         }
     }
 
-    String serialize() {
+    public String serialize() {
         return String.valueOf(value);
     }
 

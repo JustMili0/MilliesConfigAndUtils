@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class ConfigLib {
     public static final String MODID = "milliesconfiglib";
-    public static final Logger LOGGER = LoggerFactory.getLogger(ConfigLib.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger("Millie's Config Lib");
 
     public static void init() {
         // Common

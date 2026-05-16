@@ -1,8 +1,8 @@
 package net.justmili.config.config;
 
 import net.justmili.config.ConfigLib;
-import net.justmili.config.builder.MConfigBuilder;
-import net.justmili.config.core.ConfigEntry;
+import net.justmili.config.create.MConfigBuilder;
+import net.justmili.config.create.ConfigEntry;
 import net.justmili.config.data.FileType;
 
 public class Config {
