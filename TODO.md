@@ -1,5 +1,5 @@
-# TODO
-- Add JSON, JSON5 and YAML/YML support
+# TODO - 1.0
+- Add JSON and JSON5 support
 
 - Add categories/hierarchy
 
@@ -9,9 +9,12 @@
 - Add support for lists
   - bringing total support to ints, doubles, longs, floats, strings, booleans and lists
 
-- Add some form of support for GUI config readers or make my own
-
 - Write documentation
+
+# TODO - 1.1
+- Add YAML/YML support
+
+- Add some form of support for GUI config readers or make my own
 
 # Plans how to make it look
 *Comments add additional spacing
