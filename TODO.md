@@ -1,0 +1,8 @@
+- Figure out why mod fails to load when given a modmenu badge
+- Add a "big comment" for builder
+- Add JSON support
+  - JSON doesn't natively have comments, so we can write these via `"c": "a comment"`
+- Make everything non-loader-specific
+- Make stubs for Forge and NeoForge
+- Add some form of support for GUI config readers or make my own
+- Write documentation

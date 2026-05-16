@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "icon": "icon.png",
+  "authors": [
+    "${mod_authors}"
+  ],
+  "contact": {
+    "sources": "https://modrinth.com/project/millies-config-lib",
+    "issues": "",
+    "homepage": ""
+  },
+  "license": "${mod_license}",
+  "environment": "*",
+  "accessWidener": "${mod_id}.accesswidener",
+  "entrypoints": {
+    "main": [
+      "net.justmili.config.loaders.Fabric"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "${minecraft_version_constraint}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
+  }
+}
