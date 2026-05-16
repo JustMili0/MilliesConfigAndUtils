@@ -7,11 +7,17 @@ import net.justmili.config.data.FileType;
 
 public class Config {
     public static ConfigEntry<Integer> someInt;
+    public static ConfigEntry<Double> someDouble, someDouble2;
+    public static ConfigEntry<String> someString, someOtherString;
 
     public static void register() {
-        MConfigBuilder builder = new MConfigBuilder(ConfigLib.MODID, "example-config", FileType.PROPERTIES, true);
+        MConfigBuilder builder = new MConfigBuilder(ConfigLib.MODID, "example-config", FileType.JSON5, true);
 
-        someInt = builder.comment("a comment").define("someInt", 1, 0, 5);
+        someInt = builder.comment("a comment 1").define("someInt", 5, 0, 10);
+        someDouble = builder.comment("a comment 2\na comment continuation (because of a second .comment() or \\n )").define("someDouble", 6.0, 0.0, 12.0);
+        someOtherString = builder.comment(null).define("someOtherString", "Wawawa");
+        someString = builder.comment("a comment 3").define("someString", "Hello world");
+        someDouble2 = builder.comment("a comment 4").define("someDouble2", 8.0, 0.0, 16.0);
 
         builder.build();
     }

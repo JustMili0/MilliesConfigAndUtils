@@ -1,81 +1,71 @@
 package net.justmili.config.core;
 
 import net.justmili.config.ConfigLib;
+import net.justmili.config.core.json.JsonWriter;
+import net.justmili.config.core.json.Json5Writer;
+import net.justmili.config.core.props.PropertiesWriter;
 import net.justmili.config.create.ConfigEntry;
 import net.justmili.config.data.FileType;
 
-import java.io.*;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class ConfigLoader {
-    private record EntryInstance(ConfigEntry<?> entry, String comment) { }
 
     private final Path path;
-    private final List<EntryInstance> entries = new ArrayList<>();
-    private final Properties properties = new Properties();
+    private final FormatWriter writer;
+    private final List<FormatWriter.EntryInstance> entries = new ArrayList<>();
 
-    public ConfigLoader(String modId, String name, FileType configFileType, boolean createSubDirectory) {
+    public ConfigLoader(String modId, String name, FileType fileType, boolean createSubDirectory) {
         Path configDirectory = Path.of("config");
+        this.writer = resolveWriter(fileType);
 
+        String extension = extension(fileType);
         String fileName = (name == null || name.isBlank())
             ? modId : (createSubDirectory ? name : modId+"-"+name);
 
-        path = createSubDirectory ? configDirectory.resolve(modId).resolve(fileName+".properties")
-            : configDirectory.resolve(fileName+".properties");
+        path = createSubDirectory
+            ? configDirectory.resolve(modId).resolve(fileName+extension)
+            : configDirectory.resolve(fileName+extension);
     }
 
     public void register(ConfigEntry<?> entry, String comment) {
-        entries.add(new EntryInstance(entry, comment));
+        entries.add(new FormatWriter.EntryInstance(entry, comment));
     }
 
     public void loadOrCreate() {
         File file = path.toFile();
         if (!file.exists()) {
-            ConfigLib.LOGGER.error("No config found. Creating new config");
-            save();
+            ConfigLib.LOGGER.info("No config found, creating defaults.");
+            writer.write(path, entries);
             return;
         }
-
-        try (FileInputStream input = new FileInputStream(file)) {
-            properties.load(input);
-        } catch (IOException e) {
-            ConfigLib.LOGGER.error("Failed to load config: {}", e.getMessage());
-            return;
-        }
-
-        for (EntryInstance instance : entries) {
-            instance.entry.load(properties.getProperty(instance.entry.key()));
-        }
-
+        writer.load(path, entries);
         ConfigLib.LOGGER.info("Config loaded from {}", path.getFileName());
     }
 
     public void save() {
-        File file = path.toFile();
-        file.getParentFile().mkdirs();
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("# "+path.getFileName()+"\n\n");
-
-            for (EntryInstance instance : entries) {
-                if (instance.comment != null) writer.write("# "+instance.comment+"\n");
-
-                writer.write(hint(instance.entry)+"\n");
-                writer.write(instance.entry.key()+"="+instance.entry.serialize()+"\n\n");
-            }
-        } catch (IOException e) {
-            ConfigLib.LOGGER.error("Failed to save config: {}", e.getMessage());
-        }
+        writer.write(path, entries);
     }
 
-    private String hint(ConfigEntry<?> entry) {
-        Object key = entry.defaultValue();
+    private static FormatWriter resolveWriter(FileType fileType) {
+        return switch (fileType) {
+            case JSON -> new JsonWriter();
+            case JSON5 -> new Json5Writer();
+            case YAML, YML -> throw new UnsupportedOperationException("YAML/YML support is not yet implemented.");
+            default -> new PropertiesWriter();
+        };
+    }
 
-        if (entry.hasRange()) return "# Allowed range: "+entry.min()+"-"+entry.max()+" - Default: "+key; // int, double, long, float
-        if (key instanceof Boolean) return "# Allowed values: true, false - Default: "+key; // Boolean
-        return "# Default: "+key; // String
+    private static String extension(FileType fileType) {
+        return switch (fileType) {
+            case JSON -> ".json";
+            case JSON5 -> ".json5";
+            case YAML -> ".yaml";
+            case YML -> ".yml";
+            default -> ".properties";
+        };
     }
 }

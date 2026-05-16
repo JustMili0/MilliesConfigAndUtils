@@ -1,6 +1,4 @@
 # TODO - 1.0
-- Add JSON and JSON5 support
-
 - Add categories/hierarchy
 
 - Make it so when a new config key is added to or moved in a mod config and there already is an existing config, it'll just add it or move it where it should be.

@@ -8,7 +8,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.List;
 
-public class JsonWriter implements FormatWriter {
+public class Json5Writer implements FormatWriter {
 
     @Override
     public void write(Path path, List<EntryInstance> entries) {
@@ -23,7 +23,12 @@ public class JsonWriter implements FormatWriter {
                 ConfigEntry<?> entry = instance.entry();
                 boolean last = i == entries.size()-1;
 
-                writer.write("  \"h"+i+"\": \""+hint(entry, CommentStyle.NONE)+"\",\n");
+                if (instance.comment() != null) {
+                    for (String line : instance.comment().split("\n"))
+                        writer.write("  // "+line+"\n");
+                }
+
+                writer.write("  // "+hint(entry, CommentStyle.NONE)+"\n"); // hint as comment, no prefix from hint itself
                 writer.write("  \""+entry.key()+"\": "+SharedJson.jsonValue(entry)+(last ? "\n" : ",\n"));
 
                 if (!last) writer.write("\n");
@@ -41,11 +46,16 @@ public class JsonWriter implements FormatWriter {
         try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
             StringBuilder stringBuilder = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) stringBuilder.append(line).append("\n");
+            while ((line = reader.readLine()) != null) {
+                String stripped = line.contains("//") ? line.substring(0, line.indexOf("//")) : line;
+                stringBuilder.append(stripped).append("\n");
+            }
 
             String json = stringBuilder.toString();
+
             for (EntryInstance instance : entries) {
                 String value = SharedJson.extractValue(json, instance.entry().key());
+
                 if (value != null) instance.entry().load(value);
             }
         } catch (IOException e) {
