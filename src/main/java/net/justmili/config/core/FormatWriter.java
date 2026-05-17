@@ -1,16 +1,16 @@
 package net.justmili.config.core;
 
+import net.justmili.config.core.items.CategoryItem;
 import net.justmili.config.create.ConfigEntry;
 
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Map;
 
 public interface FormatWriter {
-    record EntryInstance(ConfigEntry<?> entry, String comment) { }
     enum CommentStyle { TAG, SLASH, NONE }
 
-    void write(Path path, List<EntryInstance> entries);
-    void load(Path path, List<EntryInstance> entries);
+    void write(Path path, CategoryItem root);
+    void load(Path path, Map<String, ConfigEntry<?>> entries);
 
     default String hint(ConfigEntry<?> entry, CommentStyle commentStyle) {
         String prefix = switch (commentStyle) {

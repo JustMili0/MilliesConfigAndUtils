@@ -1,9 +1,10 @@
 package net.justmili.config.create;
 
 import net.justmili.config.core.ConfigLoader;
+import net.justmili.config.core.items.ConfigItem;
 
 @SuppressWarnings("unchecked")
-public class ConfigEntry<T> {
+public class ConfigEntry<T> implements ConfigItem {
     private final String key;
     private final T defaultValue;
     private T value;

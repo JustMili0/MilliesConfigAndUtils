@@ -1,22 +1,24 @@
 package net.justmili.config.core;
 
 import net.justmili.config.ConfigLib;
-import net.justmili.config.core.json.JsonWriter;
+import net.justmili.config.core.items.CategoryItem;
 import net.justmili.config.core.json.Json5Writer;
+import net.justmili.config.core.json.JsonWriter;
 import net.justmili.config.core.props.PropertiesWriter;
 import net.justmili.config.create.ConfigEntry;
 import net.justmili.config.data.FileType;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigLoader {
 
     private final Path path;
     private final FormatWriter writer;
-    private final List<FormatWriter.EntryInstance> entries = new ArrayList<>();
+    private final Map<String, ConfigEntry<?>> entries = new HashMap<>();
+    private CategoryItem root;
 
     public ConfigLoader(String modId, String name, FileType fileType, boolean createSubDirectory) {
         Path configDirectory = Path.of("config");
@@ -31,15 +33,16 @@ public class ConfigLoader {
             : configDirectory.resolve(fileName+extension);
     }
 
-    public void register(ConfigEntry<?> entry, String comment) {
-        entries.add(new FormatWriter.EntryInstance(entry, comment));
+    public void register(ConfigEntry<?> entry) {
+        entries.put(entry.key(), entry);
     }
 
-    public void loadOrCreate() {
+    public void loadOrCreate(CategoryItem root) {
+        this.root = root;
         File file = path.toFile();
         if (!file.exists()) {
             ConfigLib.LOGGER.info("No config found, creating defaults.");
-            writer.write(path, entries);
+            writer.write(path, root);
             return;
         }
         writer.load(path, entries);
@@ -47,7 +50,7 @@ public class ConfigLoader {
     }
 
     public void save() {
-        writer.write(path, entries);
+        writer.write(path, root);
     }
 
     private static FormatWriter resolveWriter(FileType fileType) {
