@@ -1,6 +1,6 @@
-# TODO - 1.0
-- Write documentation
-- Put the mod on Modrinth
+# ADDITIONAL
+- Port to NeoForge and older versions on other branches
+*Note: keep TODO and README on the latest main branch you're working on
 
 # TODO - 1.1
 - Add YAML/YML support

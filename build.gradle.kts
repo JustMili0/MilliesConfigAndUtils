@@ -3,7 +3,7 @@ plugins {
 }
 
 base {
-    archivesName.set("${rootProject.property("archives_base_name")}-${rootProject.property("mod_version")}+mc${libs.versions.minecraft.get()}")
+    archivesName.set("${rootProject.property("archives_base_name")}-${rootProject.property("mod_version")}+mc${libs.versions.minecraft.get()}-Fabric")
 }
 
 loom {
