@@ -9,4 +9,4 @@ pluginManagement {
 	}
 }
 
-rootProject.name = "Millie's Config Lib"
+rootProject.name = "Millie's Config & Utils"

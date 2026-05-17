@@ -1,4 +1,4 @@
-# Millie's Config Lib
+# Millie's Config & Utils
 Easy to use :D
 
 <hr>

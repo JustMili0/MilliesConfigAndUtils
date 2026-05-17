@@ -2,6 +2,7 @@
 
 .gradle/
 build/
+!src/main/java/net/justmili/libs/config/build
 out/
 classes/
 
