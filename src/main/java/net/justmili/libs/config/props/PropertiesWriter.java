@@ -1,11 +1,11 @@
-package net.justmili.config.core.props;
+package net.justmili.libs.config.props;
 
-import net.justmili.config.ConfigLib;
-import net.justmili.config.core.FormatWriter;
-import net.justmili.config.core.items.CategoryItem;
-import net.justmili.config.core.items.CommentItem;
-import net.justmili.config.core.items.ConfigItem;
-import net.justmili.config.create.ConfigEntry;
+import net.justmili.libs.ConfigLib;
+import net.justmili.libs.config.FormatWriter;
+import net.justmili.libs.config.items.CategoryItem;
+import net.justmili.libs.config.items.CommentItem;
+import net.justmili.libs.config.items.ConfigItem;
+import net.justmili.libs.config.build.ConfigEntry;
 
 import java.io.*;
 import java.nio.file.Path;

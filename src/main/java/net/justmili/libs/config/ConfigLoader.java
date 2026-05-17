@@ -1,12 +1,11 @@
-package net.justmili.config.core;
+package net.justmili.libs.config;
 
-import net.justmili.config.ConfigLib;
-import net.justmili.config.core.items.CategoryItem;
-import net.justmili.config.core.json.Json5Writer;
-import net.justmili.config.core.json.JsonWriter;
-import net.justmili.config.core.props.PropertiesWriter;
-import net.justmili.config.create.ConfigEntry;
-import net.justmili.config.data.FileType;
+import net.justmili.libs.ConfigLib;
+import net.justmili.libs.config.items.CategoryItem;
+import net.justmili.libs.config.json.Json5Writer;
+import net.justmili.libs.config.json.JsonWriter;
+import net.justmili.libs.config.props.PropertiesWriter;
+import net.justmili.libs.config.build.ConfigEntry;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConfigLoader {
-
     private final Path path;
     private final FormatWriter writer;
     private final Map<String, ConfigEntry<?>> entries = new HashMap<>();
@@ -46,7 +44,6 @@ public class ConfigLoader {
             return;
         }
         writer.load(path, entries);
-        ConfigLib.LOGGER.info("Config loaded from {}", path.getFileName());
     }
 
     public void save() {

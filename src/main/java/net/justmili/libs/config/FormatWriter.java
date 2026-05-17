@@ -1,7 +1,7 @@
-package net.justmili.config.core;
+package net.justmili.libs.config;
 
-import net.justmili.config.core.items.CategoryItem;
-import net.justmili.config.create.ConfigEntry;
+import net.justmili.libs.config.items.CategoryItem;
+import net.justmili.libs.config.build.ConfigEntry;
 
 import java.nio.file.Path;
 import java.util.Map;

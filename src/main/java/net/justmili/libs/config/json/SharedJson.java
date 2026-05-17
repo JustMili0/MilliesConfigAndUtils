@@ -1,8 +1,8 @@
-package net.justmili.config.core.json;
+package net.justmili.libs.config.json;
 
-import net.justmili.config.core.items.CommentItem;
-import net.justmili.config.core.items.ConfigItem;
-import net.justmili.config.create.ConfigEntry;
+import net.justmili.libs.config.items.CommentItem;
+import net.justmili.libs.config.items.ConfigItem;
+import net.justmili.libs.config.build.ConfigEntry;
 
 import java.util.List;
 

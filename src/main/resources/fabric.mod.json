@@ -9,16 +9,16 @@
     "${mod_authors}"
   ],
   "contact": {
-    "sources": "https://github.com/JustMili0/MilliesConfigLib",
-    "issues": "https://github.com/JustMili0/MilliesConfigLib/issues",
-    "homepage": "https://modrinth.com/mod/millies-config-lib"
+    "sources": "https://github.com/JustMili0/MilliesConfigAndUtils",
+    "issues": "https://github.com/JustMili0/MilliesConfigAndUtils/issues",
+    "homepage": "https://modrinth.com/mod/millies-config-n-utils"
   },
   "license": "${mod_license}",
   "environment": "*",
   "accessWidener": "${mod_id}.accesswidener",
   "entrypoints": {
     "main": [
-      "net.justmili.config.loaders.Fabric"
+      "net.justmili.libs.ConfigLib"
     ]
   },
   "depends": {

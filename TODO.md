@@ -1,12 +1,14 @@
 # TODO - 1.0
-- Add categories/hierarchy
+- Fix utils taken out of 1.20.1 projects
+
+- Add support for lists
+    - bringing total support to ints, doubles, longs, floats, strings, booleans and lists
 
 - Make it so when a new config key is added to or moved in a mod config and there already is an existing config, it'll just add it or move it where it should be.
   - Can not change values of already existing keys that are different from default (aka changed by user)
 
-- Add support for lists
-  - bringing total support to ints, doubles, longs, floats, strings, booleans and lists
-
+- Make Lumynity Studios Maven
+- Put the mod on the maven
 - Write documentation
 
 # TODO - 1.1

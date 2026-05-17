@@ -1,4 +1,4 @@
-package net.justmili.config.core.items;
+package net.justmili.libs.config.items;
 
 public final class CommentItem implements ConfigItem {
     private final String comment;
