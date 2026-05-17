@@ -18,7 +18,7 @@ public class ExampleConfig {
         for (FileType fileType : new FileType[]{FileType.PROPERTIES, FileType.JSON, FileType.JSON5}) {
             MConfigBuilder builder = new MConfigBuilder(Library.MODID, "example-config", fileType, true);
 
-            someInt = builder.comment("a comment 1").define("someInt", 5, 0, 10);
+            someInt = builder.comment("a comment 1").define("someInt", 10, 0, 1000);
             someBool = builder.comment("a comment 2\na comment continuation (because of a second .comment() or \\n )")
                 .define("someBool", true);
             someStringList = builder.comment("a string list").defineList("someStringList", List.of("item1", "item2", "item3"), String.class);

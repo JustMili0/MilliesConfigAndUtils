@@ -39,12 +39,12 @@ public class JsonWriter implements FormatWriter {
                 // JSON doesn't support comments, skip silently
 
             } else if (item instanceof ListConfigEntry listEntry) {
-                writer.write(indent+"\"h"+hintCounter[0]+++"\": \""+hintList(listEntry, CommentStyle.NONE)+"\",\n");
+                writer.write(indent+"\"_h"+hintCounter[0]+++"\": \""+hintList(listEntry, CommentStyle.NONE)+"\",\n");
                 writer.write(indent+"\""+listEntry.key()+"\": "+listEntry.serializeJson(indent)+(last ? "\n" : ",\n"));
                 if (!last) writer.write("\n");
 
             } else if (item instanceof ConfigEntry<?> entry) {
-                writer.write(indent+"\"h"+hintCounter[0]+++"\": \""+hint(entry, CommentStyle.NONE)+"\",\n");
+                writer.write(indent+"\"_h"+hintCounter[0]+++"\": \""+hint(entry, CommentStyle.NONE)+"\",\n");
                 writer.write(indent+"\""+entry.key()+"\": "+SharedJson.jsonValue(entry)+(last ? "\n" : ",\n"));
                 if (!last) writer.write("\n");
 
