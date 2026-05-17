@@ -16,8 +16,8 @@ The guide to how to implement and use this config lib is [here]() (I haven't wri
 Very long
 
 ### Planned version-loader support?
-- 26.2.x - Fabric/Quilt
-- 26.1.x - Fabric/Quilt, NeoForge
+- 26.2.x - Fabric
+- 26.1.x - Fabric, NeoForge
 - 1.21.11 - Fabric/Quilt, NeoForge
 - ...idk...
 - 1.21.1 - Fabric/Quilt, NeoForge
