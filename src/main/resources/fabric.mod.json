@@ -18,7 +18,7 @@
   "accessWidener": "${mod_id}.accesswidener",
   "entrypoints": {
     "main": [
-      "net.justmili.libs.ConfigLib"
+      "net.justmili.libs.Library"
     ]
   },
   "depends": {

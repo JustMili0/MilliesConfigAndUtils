@@ -1,6 +1,6 @@
 package net.justmili.libs.config.props;
 
-import net.justmili.libs.ConfigLib;
+import net.justmili.libs.Library;
 import net.justmili.libs.config.FormatWriter;
 import net.justmili.libs.config.build.ConfigEntry;
 import net.justmili.libs.config.build.ListConfigEntry;
@@ -25,7 +25,7 @@ public class PropertiesWriter implements FormatWriter {
             writer.write("# "+path.getFileName()+"\n\n");
             writeItems(writer, root.children(), false);
         } catch (IOException e) {
-            ConfigLib.LOGGER.error("Failed to write config: {}", e.getMessage());
+            Library.LOGGER.error("Failed to write config: {}", e.getMessage());
         }
     }
 
@@ -33,7 +33,7 @@ public class PropertiesWriter implements FormatWriter {
         for (ConfigItem item : items) {
             if (item instanceof CategoryItem categoryItem) {
                 if (!warnedAboutCategories) {
-                    ConfigLib.LOGGER.warn("Categories are not supported in .properties format, flattening.");
+                    Library.LOGGER.warn("Categories are not supported in .properties format, flattening.");
                     warnedAboutCategories = true;
                 }
                 writeItems(writer, categoryItem.children(), warnedAboutCategories);
@@ -58,7 +58,7 @@ public class PropertiesWriter implements FormatWriter {
         try (FileInputStream inputStream = new FileInputStream(path.toFile())) {
             properties.load(inputStream);
         } catch (IOException e) {
-            ConfigLib.LOGGER.error("Failed to load config: {}", e.getMessage());
+            Library.LOGGER.error("Failed to load config: {}", e.getMessage());
             return;
         }
         for (ConfigEntry<?> entry : entries.values()) entry.load(properties.getProperty(entry.key()));

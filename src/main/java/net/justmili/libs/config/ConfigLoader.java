@@ -1,6 +1,6 @@
 package net.justmili.libs.config;
 
-import net.justmili.libs.ConfigLib;
+import net.justmili.libs.Library;
 import net.justmili.libs.config.build.ConfigEntry;
 import net.justmili.libs.config.build.ListConfigEntry;
 import net.justmili.libs.config.items.CategoryItem;
@@ -45,7 +45,7 @@ public class ConfigLoader {
         this.root = root;
         File file = path.toFile();
         if (!file.exists()) {
-            ConfigLib.LOGGER.info("No config found, creating defaults.");
+            Library.LOGGER.info("No config found, creating defaults.");
             writer.write(path, root);
             return;
         }

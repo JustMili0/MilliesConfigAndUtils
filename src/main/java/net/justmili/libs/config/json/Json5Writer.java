@@ -1,6 +1,6 @@
 package net.justmili.libs.config.json;
 
-import net.justmili.libs.ConfigLib;
+import net.justmili.libs.Library;
 import net.justmili.libs.config.FormatWriter;
 import net.justmili.libs.config.build.ConfigEntry;
 import net.justmili.libs.config.build.ListConfigEntry;
@@ -25,7 +25,7 @@ public class Json5Writer implements FormatWriter {
             writeItems(writer, root.children(), "  ");
             writer.write("}\n");
         } catch (IOException e) {
-            ConfigLib.LOGGER.error("Failed to write config: {}", e.getMessage());
+            Library.LOGGER.error("Failed to write config: {}", e.getMessage());
         }
     }
 
@@ -82,7 +82,7 @@ public class Json5Writer implements FormatWriter {
                 if (value != null) listEntry.load(value);
             }
         } catch (IOException e) {
-            ConfigLib.LOGGER.error("Failed to load config: {}", e.getMessage());
+            Library.LOGGER.error("Failed to load config: {}", e.getMessage());
         }
     }
 }
