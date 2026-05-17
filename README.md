@@ -6,6 +6,8 @@ Easy to use :D
 ## Why?
 I really needed a config lib and utils for the stuff I often make.<br>
 
+<hr>
+
 ## Documentation
 **Config Library - Example Config**<br>
 A lot of design inspiration came from [SuperMartijn642's Config Lib](https://modrinth.com/mod/supermartijn642s-config-lib)
@@ -84,7 +86,7 @@ public class ExampleConfig {
         someStringList = builder.comment("List entry comment - A string list")
             .defineList("someStringList", List.of("minecraft:grass_block", "minecraft:dirt", "minecraft:stone"), String.class);
         builder.closeCat();
-        
+
         someDoubleList = builder.comment("List entry comment - A double list")
             .defineList("someDoubleList", List.of(4.2, 6.9, 6.7), Double.class);
 
