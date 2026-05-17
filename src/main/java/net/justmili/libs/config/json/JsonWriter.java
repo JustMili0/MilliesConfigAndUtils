@@ -2,10 +2,11 @@ package net.justmili.libs.config.json;
 
 import net.justmili.libs.ConfigLib;
 import net.justmili.libs.config.FormatWriter;
+import net.justmili.libs.config.build.ConfigEntry;
+import net.justmili.libs.config.build.ListConfigEntry;
 import net.justmili.libs.config.items.CategoryItem;
 import net.justmili.libs.config.items.CommentItem;
 import net.justmili.libs.config.items.ConfigItem;
-import net.justmili.libs.config.build.ConfigEntry;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -35,24 +36,29 @@ public class JsonWriter implements FormatWriter {
             boolean last = i == lastReal;
 
             if (item instanceof CommentItem) {
-                // JSON doesn't support comments, skip it
+                // JSON doesn't support comments, skip silently
+
+            } else if (item instanceof ListConfigEntry listEntry) {
+                writer.write(indent+"\"h"+hintCounter[0]+++"\": \""+hintList(listEntry, CommentStyle.NONE)+"\",\n");
+                writer.write(indent+"\""+listEntry.key()+"\": "+listEntry.serializeJson(indent)+(last ? "\n" : ",\n"));
+                if (!last) writer.write("\n");
+
             } else if (item instanceof ConfigEntry<?> entry) {
                 writer.write(indent+"\"h"+hintCounter[0]+++"\": \""+hint(entry, CommentStyle.NONE)+"\",\n");
                 writer.write(indent+"\""+entry.key()+"\": "+SharedJson.jsonValue(entry)+(last ? "\n" : ",\n"));
-
                 if (!last) writer.write("\n");
+
             } else if (item instanceof CategoryItem category) {
                 writer.write(indent+"\""+category.name()+"\": {\n");
                 writeItems(writer, category.children(), indent+"  ", hintCounter);
                 writer.write(indent+"}"+(last ? "\n" : ",\n"));
-
                 if (!last) writer.write("\n");
             }
         }
     }
 
     @Override
-    public void load(Path path, Map<String, ConfigEntry<?>> entries) {
+    public void load(Path path, Map<String, ConfigEntry<?>> entries, Map<String, ListConfigEntry> listEntries) {
         try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
             StringBuilder stringBuilder = new StringBuilder();
             String line;
@@ -62,6 +68,10 @@ public class JsonWriter implements FormatWriter {
             for (ConfigEntry<?> entry : entries.values()) {
                 String value = SharedJson.extractValue(json, entry.key());
                 if (value != null) entry.load(value);
+            }
+            for (ListConfigEntry listEntry : listEntries.values()) {
+                String value = SharedJson.extractList(json, listEntry.key());
+                if (value != null) listEntry.load(value);
             }
         } catch (IOException e) {
             ConfigLib.LOGGER.error("Failed to load config: {}", e.getMessage());

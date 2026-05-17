@@ -7,13 +7,17 @@ loom {
 }
 
 repositories {
+    maven("https://maven.parchmentmc.org") // Mappings
     maven("https://maven.terraformersmc.com/") // Mod Menu
     maven("https://api.modrinth.com/maven")
 }
 
 dependencies {
     minecraft(libs.minecraft.get())
-    mappings(loom.officialMojangMappings())
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
+    })
 
     modImplementation(libs.fabric.loader.get())
     modImplementation(libs.fabric.api.get())

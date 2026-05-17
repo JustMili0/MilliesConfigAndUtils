@@ -2,10 +2,11 @@ package net.justmili.libs.config.props;
 
 import net.justmili.libs.ConfigLib;
 import net.justmili.libs.config.FormatWriter;
+import net.justmili.libs.config.build.ConfigEntry;
+import net.justmili.libs.config.build.ListConfigEntry;
 import net.justmili.libs.config.items.CategoryItem;
 import net.justmili.libs.config.items.CommentItem;
 import net.justmili.libs.config.items.ConfigItem;
-import net.justmili.libs.config.build.ConfigEntry;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -40,6 +41,10 @@ public class PropertiesWriter implements FormatWriter {
             } else if (item instanceof CommentItem commentItem) {
                 for (String line : commentItem.comment().split("\n")) writer.write("# "+line+"\n");
 
+            } else if (item instanceof ListConfigEntry listEntry) {
+                writer.write(hintList(listEntry, CommentStyle.TAG)+"\n");
+                writer.write(listEntry.key()+"="+listEntry.serialize()+"\n\n");
+
             } else if (item instanceof ConfigEntry<?> entry) {
                 writer.write(hint(entry, CommentStyle.TAG)+"\n");
                 writer.write(entry.key()+"="+entry.serialize()+"\n\n");
@@ -48,7 +53,7 @@ public class PropertiesWriter implements FormatWriter {
     }
 
     @Override
-    public void load(Path path, Map<String, ConfigEntry<?>> entries) {
+    public void load(Path path, Map<String, ConfigEntry<?>> entries, Map<String, ListConfigEntry> listEntries) {
         Properties properties = new Properties();
         try (FileInputStream inputStream = new FileInputStream(path.toFile())) {
             properties.load(inputStream);
@@ -56,8 +61,7 @@ public class PropertiesWriter implements FormatWriter {
             ConfigLib.LOGGER.error("Failed to load config: {}", e.getMessage());
             return;
         }
-        for (ConfigEntry<?> entry : entries.values()) {
-            entry.load(properties.getProperty(entry.key()));
-        }
+        for (ConfigEntry<?> entry : entries.values()) entry.load(properties.getProperty(entry.key()));
+        for (ListConfigEntry listEntry : listEntries.values()) listEntry.load(properties.getProperty(listEntry.key()));
     }
 }

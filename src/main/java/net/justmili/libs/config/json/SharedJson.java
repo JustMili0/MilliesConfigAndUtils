@@ -1,8 +1,8 @@
 package net.justmili.libs.config.json;
 
+import net.justmili.libs.config.build.ConfigEntry;
 import net.justmili.libs.config.items.CommentItem;
 import net.justmili.libs.config.items.ConfigItem;
-import net.justmili.libs.config.build.ConfigEntry;
 
 import java.util.List;
 
@@ -27,6 +27,36 @@ public class SharedJson {
         while (end < json.length() && json.charAt(end) != ',' && json.charAt(end) != '\n' && json.charAt(end) != '}') end++;
 
         return json.substring(start, end).trim();
+    }
+
+    public static String extractList(String json, String key) {
+        String search = "\""+key+"\"";
+
+        int index = json.indexOf(search);
+        if (index == -1) return null;
+
+        int colon = json.indexOf(':', index+search.length());
+        if (colon == -1) return null;
+
+        int start = colon+1;
+        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\n')) start++;
+
+        if (start >= json.length() || json.charAt(start) != '[') return null;
+
+        int end = json.indexOf(']', start);
+        if (end == -1) return null;
+
+        String arrayContents = json.substring(start+1, end);
+        StringBuilder result = new StringBuilder();
+        for (String element : arrayContents.split(",")) {
+            String trimmed = element.trim().replaceAll("^\"|\"$", ""); // strip quotes from strings
+            if (!trimmed.isBlank()) {
+                if (result.length() > 0) result.append(",");
+                result.append(trimmed);
+            }
+        }
+
+        return result.toString();
     }
 
     public static String jsonValue(ConfigEntry<?> entry) {

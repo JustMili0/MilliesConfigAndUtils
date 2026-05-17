@@ -2,10 +2,11 @@ package net.justmili.libs.config.json;
 
 import net.justmili.libs.ConfigLib;
 import net.justmili.libs.config.FormatWriter;
+import net.justmili.libs.config.build.ConfigEntry;
+import net.justmili.libs.config.build.ListConfigEntry;
 import net.justmili.libs.config.items.CategoryItem;
 import net.justmili.libs.config.items.CommentItem;
 import net.justmili.libs.config.items.ConfigItem;
-import net.justmili.libs.config.build.ConfigEntry;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -37,11 +38,16 @@ public class Json5Writer implements FormatWriter {
             if (item instanceof CommentItem commentItem) {
                 for (String line : commentItem.comment().split("\n")) writer.write(indent+"// "+line+"\n");
 
+            } else if (item instanceof ListConfigEntry listEntry) {
+                writer.write(indent+"// "+hintList(listEntry, CommentStyle.NONE)+"\n");
+                writer.write(indent+"\""+listEntry.key()+"\": "+listEntry.serializeJson(indent)+(last ? "\n" : ",\n"));
+                if (!last) writer.write("\n");
+
             } else if (item instanceof ConfigEntry<?> entry) {
                 writer.write(indent+"// "+hint(entry, CommentStyle.NONE)+"\n");
                 writer.write(indent+"\""+entry.key()+"\": "+SharedJson.jsonValue(entry)+(last ? "\n" : ",\n"));
-
                 if (!last) writer.write("\n");
+
             } else if (item instanceof CategoryItem category) {
                 if (category.comment() != null) {
                     for (String line : category.comment().split("\n")) writer.write(indent+"// "+line+"\n");
@@ -57,7 +63,7 @@ public class Json5Writer implements FormatWriter {
     }
 
     @Override
-    public void load(Path path, Map<String, ConfigEntry<?>> entries) {
+    public void load(Path path, Map<String, ConfigEntry<?>> entries, Map<String, ListConfigEntry> listEntries) {
         try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
             StringBuilder stringBuilder = new StringBuilder();
             String line;
@@ -70,6 +76,10 @@ public class Json5Writer implements FormatWriter {
             for (ConfigEntry<?> entry : entries.values()) {
                 String value = SharedJson.extractValue(json, entry.key());
                 if (value != null) entry.load(value);
+            }
+            for (ListConfigEntry listEntry : listEntries.values()) {
+                String value = SharedJson.extractList(json, listEntry.key());
+                if (value != null) listEntry.load(value);
             }
         } catch (IOException e) {
             ConfigLib.LOGGER.error("Failed to load config: {}", e.getMessage());

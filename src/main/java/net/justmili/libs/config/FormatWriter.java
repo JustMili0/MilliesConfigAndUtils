@@ -1,16 +1,17 @@
 package net.justmili.libs.config;
 
-import net.justmili.libs.config.items.CategoryItem;
 import net.justmili.libs.config.build.ConfigEntry;
+import net.justmili.libs.config.build.ListConfigEntry;
+import net.justmili.libs.config.items.CategoryItem;
 
 import java.nio.file.Path;
 import java.util.Map;
 
 public interface FormatWriter {
-    enum CommentStyle { TAG, SLASH, NONE }
+    enum CommentStyle {TAG, SLASH, NONE}
 
     void write(Path path, CategoryItem root);
-    void load(Path path, Map<String, ConfigEntry<?>> entries);
+    void load(Path path, Map<String, ConfigEntry<?>> entries, Map<String, ListConfigEntry> listEntries);
 
     default String hint(ConfigEntry<?> entry, CommentStyle commentStyle) {
         String prefix = switch (commentStyle) {
@@ -24,5 +25,15 @@ public interface FormatWriter {
         if (defaultValue instanceof Boolean) return prefix+"Allowed values: true, false - Default: "+defaultValue;
 
         return prefix+"Default: "+defaultValue;
+    }
+
+    default String hintList(ListConfigEntry entry, CommentStyle commentStyle) {
+        String prefix = switch (commentStyle) {
+            case TAG -> "# ";
+            case SLASH -> "// ";
+            case NONE -> "";
+        };
+
+        return prefix+"Allowed types: "+entry.allowedType().getSimpleName()+" - Default: "+entry.defaultValue();
     }
 }

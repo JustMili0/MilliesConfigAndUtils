@@ -1,11 +1,12 @@
 package net.justmili.libs.config;
 
 import net.justmili.libs.ConfigLib;
+import net.justmili.libs.config.build.ConfigEntry;
+import net.justmili.libs.config.build.ListConfigEntry;
 import net.justmili.libs.config.items.CategoryItem;
 import net.justmili.libs.config.json.Json5Writer;
 import net.justmili.libs.config.json.JsonWriter;
 import net.justmili.libs.config.props.PropertiesWriter;
-import net.justmili.libs.config.build.ConfigEntry;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -16,6 +17,7 @@ public class ConfigLoader {
     private final Path path;
     private final FormatWriter writer;
     private final Map<String, ConfigEntry<?>> entries = new HashMap<>();
+    private final Map<String, ListConfigEntry> listEntries = new HashMap<>();
     private CategoryItem root;
 
     public ConfigLoader(String modId, String name, FileType fileType, boolean createSubDirectory) {
@@ -35,6 +37,10 @@ public class ConfigLoader {
         entries.put(entry.key(), entry);
     }
 
+    public void registerList(ListConfigEntry entry) {
+        listEntries.put(entry.key(), entry);
+    }
+
     public void loadOrCreate(CategoryItem root) {
         this.root = root;
         File file = path.toFile();
@@ -43,7 +49,7 @@ public class ConfigLoader {
             writer.write(path, root);
             return;
         }
-        writer.load(path, entries);
+        writer.load(path, entries, listEntries);
     }
 
     public void save() {

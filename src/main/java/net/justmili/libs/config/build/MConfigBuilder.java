@@ -2,9 +2,9 @@ package net.justmili.libs.config.build;
 
 import net.justmili.libs.ConfigLib;
 import net.justmili.libs.config.ConfigLoader;
+import net.justmili.libs.config.FileType;
 import net.justmili.libs.config.items.CategoryItem;
 import net.justmili.libs.config.items.CommentItem;
-import net.justmili.libs.config.FileType;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -17,7 +17,6 @@ public class MConfigBuilder {
 
     public MConfigBuilder(String modId, String name, FileType fileType, boolean createSubDirectory) {
         this.config = new ConfigLoader(modId, name, fileType, createSubDirectory);
-
         stack.push(new CategoryItem("root", null));
     }
 
@@ -41,9 +40,11 @@ public class MConfigBuilder {
         stack.pop();
     }
 
-    // Lists // TODO: FINISH
-    public ConfigEntry<List> define(List key, String defaultValue) {
-        return register(new ConfigEntry<>(key, defaultValue, config));
+    // List
+    public ListConfigEntry defineList(String key, List<Object> defaultValue, Class<?> allowedType) {
+        ListConfigEntry entry = new ListConfigEntry(key, defaultValue, allowedType, config);
+        registerList(entry);
+        return entry;
     }
 
     // String
@@ -81,6 +82,15 @@ public class MConfigBuilder {
         return entry;
     }
 
+    private void registerList(ListConfigEntry entry) {
+        if (comment != null) {
+            stack.peek().add(new CommentItem(comment));
+            comment = null;
+        }
+        stack.peek().add(entry);
+        config.registerList(entry);
+    }
+
     public void build() {
         if (comment != null) {
             stack.peek().add(new CommentItem(comment));
@@ -89,5 +99,7 @@ public class MConfigBuilder {
         config.loadOrCreate(stack.peek());
     }
 
-    public ConfigLoader getConfig() { return config; }
+    public ConfigLoader getConfig() {
+        return config;
+    }
 }
