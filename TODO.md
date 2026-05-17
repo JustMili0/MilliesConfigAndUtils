@@ -1,5 +1,9 @@
 # TODO - 1.0
 - Fix utils taken out of 1.20.1 projects
+  - Fix DatagenAssetUtil
+  - Fix DatagenDatautil
+  - Fix EntityUtil
+  - Fix FileUtil
 
 - Make Lumynity Studios Maven
 - Put the mod on the maven

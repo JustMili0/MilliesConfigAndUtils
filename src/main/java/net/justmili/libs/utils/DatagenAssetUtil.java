@@ -367,7 +367,7 @@ public class DatagenAssetUtil {
         public static void createFlatItem(ItemModelGenerators itemGen, Item item) {
             itemGen.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
         }
-        public static void createFlatBlockItem(ItemModelGenerators itemGen, Block block) {
+        public static void createFlatItem(ItemModelGenerators itemGen, Block block) {
             itemGen.generateFlatItem(Item.BY_BLOCK.get(block), ModelTemplates.FLAT_ITEM);
         }
     }
