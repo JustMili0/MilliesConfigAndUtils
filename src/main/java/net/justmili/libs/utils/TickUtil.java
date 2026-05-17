@@ -1,6 +1,5 @@
 package net.justmili.libs.utils;
 
-import dev.architectury.event.events.common.TickEvent;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 

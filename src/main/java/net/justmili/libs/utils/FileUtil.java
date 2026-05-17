@@ -2,7 +2,9 @@ package net.justmili.libs.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.io.BufferedReader;
@@ -18,7 +20,7 @@ import java.util.List;
 public class FileUtil {
     public static File createFile(String path, String fileName) {
         // Starts in instance root
-        // Ex.: "config/lumynlib/", "something.json"
+        // Ex.: "config/config_n_utils/", "something.json"
         return new File(path, fileName);
     }
     public static File createPath(String path) {
@@ -59,7 +61,7 @@ public class FileUtil {
 
                 TickUtil.waitTicks(1 + lineDelay * i, () -> {
                     JsonElement element = JsonParser.parseString(rawJson);
-                    Component component = Component.Serializer.fromJson(element);
+                    Component component = ComponentSerialization.CODEC.parse(JsonOps.INSTANCE, element).result().orElse(null);
                     if (component != null) {
                         player.sendSystemMessage(component);
                     }
