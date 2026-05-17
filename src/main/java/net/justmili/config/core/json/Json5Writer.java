@@ -29,14 +29,14 @@ public class Json5Writer implements FormatWriter {
     }
 
     private void writeItems(BufferedWriter writer, List<ConfigItem> items, String indent) throws IOException {
+        int lastReal = SharedJson.lastRealIndex(items, true);
         for (int i = 0; i < items.size(); i++) {
             ConfigItem item = items.get(i);
-            boolean last = i == items.size()-1;
+            boolean last = i == lastReal;
 
             if (item instanceof CommentItem commentItem) {
                 for (String line : commentItem.comment().split("\n")) writer.write(indent+"// "+line+"\n");
 
-                if (!last) writer.write("\n");
             } else if (item instanceof ConfigEntry<?> entry) {
                 writer.write(indent+"// "+hint(entry, CommentStyle.NONE)+"\n");
                 writer.write(indent+"\""+entry.key()+"\": "+SharedJson.jsonValue(entry)+(last ? "\n" : ",\n"));
@@ -44,8 +44,7 @@ public class Json5Writer implements FormatWriter {
                 if (!last) writer.write("\n");
             } else if (item instanceof CategoryItem category) {
                 if (category.comment() != null) {
-                    for (String line : category.comment().split("\n"))
-                        writer.write(indent+"// "+line+"\n");
+                    for (String line : category.comment().split("\n")) writer.write(indent+"// "+line+"\n");
                 }
 
                 writer.write(indent+"\""+category.name()+"\": {\n");

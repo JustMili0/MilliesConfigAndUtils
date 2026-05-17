@@ -9,6 +9,7 @@ import net.justmili.config.create.ConfigEntry;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -21,18 +22,24 @@ public class PropertiesWriter implements FormatWriter {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("# "+path.getFileName()+"\n\n");
-            writeItems(writer, root);
+            writeItems(writer, root.children(), false);
         } catch (IOException e) {
             ConfigLib.LOGGER.error("Failed to write config: {}", e.getMessage());
         }
     }
 
-    private void writeItems(BufferedWriter writer, CategoryItem category) throws IOException {
-        for (ConfigItem item : category.children()) {
-            if (item instanceof CategoryItem) {
-                ConfigLib.LOGGER.warn("Categories are not supported in .properties format, skipping category '{}'.", ((CategoryItem) item).name());
+    private void writeItems(BufferedWriter writer, List<ConfigItem> items, boolean warnedAboutCategories) throws IOException {
+        for (ConfigItem item : items) {
+            if (item instanceof CategoryItem categoryItem) {
+                if (!warnedAboutCategories) {
+                    ConfigLib.LOGGER.warn("Categories are not supported in .properties format, flattening.");
+                    warnedAboutCategories = true;
+                }
+                writeItems(writer, categoryItem.children(), warnedAboutCategories);
+
             } else if (item instanceof CommentItem commentItem) {
-                writer.write("# "+commentItem.comment()+"\n\n");
+                for (String line : commentItem.comment().split("\n")) writer.write("# "+line+"\n");
+
             } else if (item instanceof ConfigEntry<?> entry) {
                 writer.write(hint(entry, CommentStyle.TAG)+"\n");
                 writer.write(entry.key()+"="+entry.serialize()+"\n\n");

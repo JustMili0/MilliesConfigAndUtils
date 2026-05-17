@@ -66,10 +66,12 @@ public class MConfigBuilder {
     }
 
     private <T> ConfigEntry<T> register(ConfigEntry<T> entry) {
-        // Attach pending lonely comment first if comment was set but we're defining an entry
+        if (comment != null) {
+            stack.peek().add(new CommentItem(comment));
+            comment = null;
+        }
         stack.peek().add(entry);
         config.register(entry);
-        comment = null;
         return entry;
     }
 

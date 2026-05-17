@@ -29,20 +29,23 @@ public class JsonWriter implements FormatWriter {
     }
 
     private void writeItems(BufferedWriter writer, List<ConfigItem> items, String indent, int[] hintCounter) throws IOException {
+        int lastReal = SharedJson.lastRealIndex(items, false);
         for (int i = 0; i < items.size(); i++) {
             ConfigItem item = items.get(i);
-            boolean last = i == items.size()-1;
+            boolean last = i == lastReal;
 
             if (item instanceof CommentItem) {
-                // JSON doesn't support comments, skip silently
+                // JSON doesn't support comments, skip it
             } else if (item instanceof ConfigEntry<?> entry) {
                 writer.write(indent+"\"h"+hintCounter[0]+++"\": \""+hint(entry, CommentStyle.NONE)+"\",\n");
                 writer.write(indent+"\""+entry.key()+"\": "+SharedJson.jsonValue(entry)+(last ? "\n" : ",\n"));
+
                 if (!last) writer.write("\n");
             } else if (item instanceof CategoryItem category) {
                 writer.write(indent+"\""+category.name()+"\": {\n");
                 writeItems(writer, category.children(), indent+"  ", hintCounter);
                 writer.write(indent+"}"+(last ? "\n" : ",\n"));
+
                 if (!last) writer.write("\n");
             }
         }

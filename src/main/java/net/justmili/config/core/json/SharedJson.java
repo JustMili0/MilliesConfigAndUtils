@@ -1,6 +1,10 @@
 package net.justmili.config.core.json;
 
+import net.justmili.config.core.items.CommentItem;
+import net.justmili.config.core.items.ConfigItem;
 import net.justmili.config.create.ConfigEntry;
+
+import java.util.List;
 
 public class SharedJson {
     public static String extractValue(String json, String key) {
@@ -30,5 +34,12 @@ public class SharedJson {
         if (value instanceof String) return "\""+value+"\"";
 
         return String.valueOf(value);
+    }
+
+    public static int lastRealIndex(List<ConfigItem> items, boolean hasComments) {
+        for (int i = items.size()-1; i >= 0; i--) {
+            if (hasComments || !(items.get(i) instanceof CommentItem)) return i;
+        }
+        return -1;
     }
 }
