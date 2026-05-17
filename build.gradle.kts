@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.fabric.loom)
 }
 
+base {
+    archivesName.set("${rootProject.property("archives_base_name")}-${rootProject.property("mod_version")}+mc${libs.versions.minecraft.get()}")
+}
+
 loom {
     accessWidenerPath = file("src/main/resources/${rootProject.property("mod_id")}.accesswidener")
 }

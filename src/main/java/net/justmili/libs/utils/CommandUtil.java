@@ -22,13 +22,22 @@ public class CommandUtil {
         source.sendFailure(Component.literal(message));
     }
     // Send chat message to player/server
-    public static void sendTo(ServerPlayer player, String message) {
+    public static void sendFailTo(ServerPlayer player, String message) {
+        player.sendSystemMessage(Component.literal("§c"+message));
+    }
+    public static void sendOkTo(ServerPlayer player, String message) {
         player.sendSystemMessage(Component.literal(message));
     }
     public static void broadcastTo(LevelAccessor world, String message, boolean bypassHiddenChat) {
         world.getServer().getPlayerList().broadcastSystemMessage(Component.literal(message), bypassHiddenChat);
     }
     public static void broadcastTo(LevelAccessor world, String message) {
+        broadcastTo(world, message, false);
+    }
+    public static void broadcastFailTo(LevelAccessor world, String message, boolean bypassHiddenChat) {
+        world.getServer().getPlayerList().broadcastSystemMessage(Component.literal("§c"+message), bypassHiddenChat);
+    }
+    public static void broadcastFailTo(LevelAccessor world, String message) {
         broadcastTo(world, message, false);
     }
 

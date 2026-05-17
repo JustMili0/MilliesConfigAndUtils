@@ -10,6 +10,5 @@ public class Library implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ExampleConfig.register();
     }
 }

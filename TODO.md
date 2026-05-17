@@ -1,11 +1,6 @@
 # TODO - 1.0
-- Fix utils taken out of 1.20.1 projects
-  - Fix DatagenAssetUtil
-  - Fix DatagenDatautil
-
-- Make Lumynity Studios Maven
-- Put the mod on the maven
 - Write documentation
+- Put the mod on Modrinth
 
 # TODO - 1.1
 - Add YAML/YML support
