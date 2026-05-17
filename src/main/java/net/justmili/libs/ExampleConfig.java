@@ -8,11 +8,11 @@ import net.justmili.libs.config.build.MConfigBuilder;
 import java.util.List;
 
 public class ExampleConfig {
-    public static ConfigEntry<Integer> someInt;
+    public static ConfigEntry<Integer> someInt, newIntInCatNoComment;
     public static ConfigEntry<Double> someDouble;
-    public static ConfigEntry<Boolean> someBool;
-    public static ConfigEntry<String> someString, someOtherString;
-    public static ListConfigEntry someStringList, someDoubleList;
+    public static ConfigEntry<Boolean> someBool, newBoolWithComment;
+    public static ConfigEntry<String> someString, someOtherString, newStringInCatWithComment;
+    public static ListConfigEntry someStringList;
 
     public static void register() {
         for (FileType fileType : new FileType[]{FileType.PROPERTIES, FileType.JSON, FileType.JSON5}) {
@@ -22,15 +22,22 @@ public class ExampleConfig {
             someBool = builder.comment("a comment 2\na comment continuation (because of a second .comment() or \\n )")
                 .define("someBool", true);
             someStringList = builder.comment("a string list").defineList("someStringList", List.of("item1", "item2", "item3"), String.class);
-            someDoubleList = builder.comment("a double list").defineList("someDoubleList", List.of(1.0, 2.5, 3.14), Double.class);
+
+            // someDoubleList removed
+
+            newBoolWithComment = builder.comment("a new bool with a comment").define("newBoolWithComment", false);
 
             builder.comment("A category comment").openCat("someCategory");
             builder.openCat("aCategoryWithNoCommentHenceNoSpacingFromParentCategory");
-            someOtherString = builder.define("someOtherString", "Wawawa");
+            // someOtherString moved out, someString moved in
+            someString = builder.comment("a comment 3").define("someString", "Hello world");
+            newIntInCatNoComment = builder.define("newIntInCatNoComment", 42, 0, 100);
             builder.closeCat();
 
             builder.comment("A category comment").openCat("aCategoryInCategory");
-            someString = builder.comment("a comment 3").define("someString", "Hello world");
+            // someString moved out, someOtherString moved in
+            someOtherString = builder.define("someOtherString", "Wawawa");
+            newStringInCatWithComment = builder.comment("a new string in cat").define("newStringInCatWithComment", "brand new");
             builder.closeCat();
 
             someDouble = builder.comment("a comment 4").define("someDouble", 8.0, 0.0, 16.0);

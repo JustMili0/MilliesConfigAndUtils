@@ -50,6 +50,7 @@ public class ConfigLoader {
             return;
         }
         writer.load(path, entries, listEntries);
+        writer.write(path, root);
     }
 
     public void save() {
