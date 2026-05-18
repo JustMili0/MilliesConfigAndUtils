@@ -34,6 +34,6 @@ public interface FormatWriter {
             case NONE -> "";
         };
 
-        return prefix+"Allowed types: "+entry.allowedType().getSimpleName()+" - Default: "+entry.defaultValue();
+        return prefix+"Allowed types: "+entry.type().getSimpleName()+" - Default: "+entry.defaultValue();
     }
 }

@@ -24,44 +24,33 @@ public class ConfigEntry<T> implements ConfigItem {
         this.max = max;
     }
 
-    public String key() {
-        return key;
+    public T defaultValue() {
+        return defaultValue;
+    }
+    public T min() {
+        return min;
+    }
+    public T max() {
+        return max;
+    }
+    public boolean hasRange() {
+        return min != null && max != null;
     }
 
-    public boolean is(T value) {
-        return this.value.equals(value);
+    public String key() {
+        return key;
     }
 
     public T get() {
         return value;
     }
-
     public void set(T newValue) {
         if (!validate(newValue)) return;
         this.value = newValue;
         config.save();
     }
-
-    public T defaultValue() {
-        return defaultValue;
-    }
-
-    public T min() {
-        return min;
-    }
-
-    public T max() {
-        return max;
-    }
-
-    public boolean hasRange() {
-        return min != null && max != null;
-    }
-
-    private boolean validate(T val) {
-        if (!hasRange()) return true;
-        return ((Comparable<T>) val).compareTo(min) >= 0
-            && ((Comparable<T>) val).compareTo(max) <= 0;
+    public boolean is(T value) {
+        return this.value.equals(value);
     }
 
     public void load(String raw) {
@@ -74,6 +63,11 @@ public class ConfigEntry<T> implements ConfigItem {
         }
     }
 
+    private boolean validate(T val) {
+        if (!hasRange()) return true;
+        return ((Comparable<T>) val).compareTo(min) >= 0
+            && ((Comparable<T>) val).compareTo(max) <= 0;
+    }
     public String serialize() {
         return String.valueOf(value);
     }

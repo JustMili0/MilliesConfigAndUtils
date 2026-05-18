@@ -56,16 +56,16 @@ public class ExampleConfig {
     public static ConfigEntry<Long> someLong;
     public static ConfigEntry<Boolean> someBool;
     public static ConfigEntry<String> someString;
-    public static ListConfigEntry someDoubleList; // ListConfigEntries will change to use the params
-    public static ListConfigEntry someStringList; // as ConfigEnties (ListConfigEntry -> ListConfigEntry<T>)
+    public static ListConfigEntry<Double> someDoubleList;
+    public static ListConfigEntry<String> someStringList;
 
     public static void register() {
-        MConfigBuilder builder = new MConfigBuilder(YourMod.MODID, "suffix-or-name", FileType.JSON5, false);
+        MConfigBuilder builder = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
 
         someInt = builder.comment("Integer entry comment")
             .define("someInt", 10, 0, 100);
 
-        builder.openCat("DecimalNumbers");
+        builder.openCat("Decimal Numbers");
         someFloat = builder.comment("Float entry comment")
             .define("someFloat", 1.0f, 0.1f, 5.0f);
 
@@ -83,12 +83,15 @@ public class ExampleConfig {
         someString = builder.comment("String entry comment")
             .define("someString", "Awawawa");
 
+        builder.openCat("Strings Category");
         someStringList = builder.comment("List entry comment - A string list")
-            .defineList("someStringList", List.of("minecraft:grass_block", "minecraft:dirt", "minecraft:stone"), String.class);
+            .defineList("someStringList", List.of("minecraft:grass_block", "minecraft:dirt", "minecraft:stone"));
+        builder.closeCat();
+
         builder.closeCat();
 
         someDoubleList = builder.comment("List entry comment - A double list")
-            .defineList("someDoubleList", List.of(4.2, 6.9, 6.7), Double.class);
+            .defineList("someDoubleList", List.of(4.2, 6.9, 6.7));
 
         builder.build(); // Will create, load and update the config file depending on the situation
     }
@@ -98,7 +101,7 @@ public class ExampleConfig {
 **TL;DR:**
 - Config creation logic is similar to SuperMartijn642's Config Lib, but isn't based on Suppliers making it editable through your own code instead of it being read-only
 - MConfigBuilder takes:
-    - Mod ID,
+    - Mod ID (or any string really),
     - A file suffix/file name when subdirectory is made,
     - Config file type,
     - Boolean true/false do you want your config to be in a subfolder

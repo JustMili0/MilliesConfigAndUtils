@@ -41,8 +41,8 @@ public class MConfigBuilder {
     }
 
     // List
-    public ListConfigEntry defineList(String key, List<Object> defaultValue, Class<?> allowedType) {
-        ListConfigEntry entry = new ListConfigEntry(key, defaultValue, allowedType, config);
+    public <T> ListConfigEntry<T> defineList(String key, List<T> defaultValue) {
+        ListConfigEntry<T> entry = new ListConfigEntry<>(key, defaultValue, config);
         registerList(entry);
         return entry;
     }
@@ -72,6 +72,11 @@ public class MConfigBuilder {
         return register(new ConfigEntry<>(key, defaultValue, min, max, config));
     }
 
+    // Float
+    public ConfigEntry<Float> define(String key, float defaultValue, float min, float max) {
+        return register(new ConfigEntry<>(key, defaultValue, min, max, config));
+    }
+
     private <T> ConfigEntry<T> register(ConfigEntry<T> entry) {
         if (comment != null) {
             stack.peek().add(new CommentItem(comment));
@@ -82,7 +87,7 @@ public class MConfigBuilder {
         return entry;
     }
 
-    private void registerList(ListConfigEntry entry) {
+    private <T> void registerList(ListConfigEntry<T> entry) {
         if (comment != null) {
             stack.peek().add(new CommentItem(comment));
             comment = null;
