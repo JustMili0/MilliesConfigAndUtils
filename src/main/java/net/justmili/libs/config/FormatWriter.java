@@ -27,7 +27,7 @@ public interface FormatWriter {
         return prefix+"Default: "+defaultValue;
     }
 
-    default String hintList(ListConfigEntry entry, CommentStyle commentStyle) {
+    default String listHint(ListConfigEntry entry, CommentStyle commentStyle) {
         String prefix = switch (commentStyle) {
             case TAG -> "# ";
             case SLASH -> "// ";

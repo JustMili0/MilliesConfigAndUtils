@@ -39,7 +39,7 @@ public class Json5Writer implements FormatWriter {
                 for (String line : commentItem.comment().split("\n")) writer.write(indent+"// "+line+"\n");
 
             } else if (item instanceof ListConfigEntry listEntry) {
-                writer.write(indent+"// "+hintList(listEntry, CommentStyle.NONE)+"\n");
+                writer.write(indent+"// "+listHint(listEntry, CommentStyle.NONE)+"\n");
                 writer.write(indent+"\""+listEntry.key()+"\": "+listEntry.serializeJson(indent)+(last ? "\n" : ",\n"));
                 if (!last) writer.write("\n");
 

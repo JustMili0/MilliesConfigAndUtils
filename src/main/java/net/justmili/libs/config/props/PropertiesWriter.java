@@ -42,7 +42,7 @@ public class PropertiesWriter implements FormatWriter {
                 for (String line : commentItem.comment().split("\n")) writer.write("# "+line+"\n");
 
             } else if (item instanceof ListConfigEntry listEntry) {
-                writer.write(hintList(listEntry, CommentStyle.TAG)+"\n");
+                writer.write(listHint(listEntry, CommentStyle.TAG)+"\n");
                 writer.write(listEntry.key()+"="+listEntry.serialize()+"\n\n");
 
             } else if (item instanceof ConfigEntry<?> entry) {

@@ -8,6 +8,8 @@ import net.justmili.libs.config.build.MConfigBuilder;
 import java.util.List;
 
 public class ExampleConfig {
+    public static MConfigBuilder builder = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
+
     public static ConfigEntry<Integer> someInt;
     public static ConfigEntry<Float> someFloat;
     public static ConfigEntry<Double> someDouble;
@@ -18,8 +20,6 @@ public class ExampleConfig {
     public static ListConfigEntry<String> someStringList;
 
     public static void register() {
-        MConfigBuilder builder = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
-
         someInt = builder.comment("Integer entry comment")
             .define("someInt", 10, 0, 100);
 

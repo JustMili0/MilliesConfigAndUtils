@@ -14,14 +14,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConfigLoader {
+    public final String modId;
+    public final String name;
     private final Path path;
     private final FormatWriter writer;
-    private final Map<String, ConfigEntry<?>> entries = new HashMap<>();
-    private final Map<String, ListConfigEntry> listEntries = new HashMap<>();
-    private CategoryItem root;
+    public final Map<String, ConfigEntry<?>> entries = new HashMap<>();
+    public final Map<String, ListConfigEntry> listEntries = new HashMap<>();
+    public CategoryItem root;
 
     public ConfigLoader(String modId, String name, FileType fileType, boolean createSubDirectory) {
         Path configDirectory = Path.of("config");
+        this.modId = modId;
+        this.name = name;
         this.writer = resolveWriter(fileType);
 
         String extension = extension(fileType);
