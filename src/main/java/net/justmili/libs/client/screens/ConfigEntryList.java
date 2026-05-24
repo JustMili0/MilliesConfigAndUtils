@@ -7,20 +7,28 @@ import net.justmili.libs.config.items.ConfigItem;
 import net.justmili.libs.utils.TranslationKeyUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.function.Consumer;
 
+@SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryList.Row> {
     private final ConfigLoader config;
     private final Consumer<ConfigEntry<?>> onHover;
+    final Deque<Runnable> undoStack = new ArrayDeque<>();
 
     public ConfigEntryList(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config, Consumer<ConfigEntry<?>> onHover) {
         super(minecraft, width, height, y, itemHeight);
@@ -29,27 +37,33 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
         buildRows(config.root.children(), 0);
     }
 
+    @Override
+    public int getRowWidth() {
+        return this.width;
+    }
+
     private void buildRows(List<ConfigItem> items, int depth) {
         for (ConfigItem item : items) {
             if (item instanceof CategoryItem category) addEntry(new CategoryRow(category, depth, this));
-            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover));
+            else if (item instanceof ConfigEntry<?> entry)
+                addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
             // CommentItems are file-only, skip
         }
     }
 
-    void rebuildPreservingState(List<Row> topRows) {
+    private void rebuildPreservingState(List<Row> topRows) {
         clearEntries();
         for (Row row : topRows) {
             addEntry(row);
-            if (row instanceof CategoryRow catRow && catRow.expanded)
-                addChildRows(catRow.category, catRow.depth+1);
+            if (row instanceof CategoryRow catRow && catRow.expanded) addChildRows(catRow.category, catRow.depth+1);
         }
     }
 
     private void addChildRows(CategoryItem category, int depth) {
         for (ConfigItem item : category.children()) {
             if (item instanceof CategoryItem child) addEntry(new CategoryRow(child, depth, this));
-            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover));
+            else if (item instanceof ConfigEntry<?> entry)
+                addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
         }
     }
 
@@ -61,31 +75,24 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
             this.depth = depth;
         }
 
-        protected int indent() { return depth * INDENT; }
+        protected int indent() {
+            return depth * INDENT;
+        }
     }
 
     public static class CategoryRow extends Row {
         final CategoryItem category;
         boolean expanded = false;
-        private final Button toggleButton;
         private final ConfigEntryList list;
 
         public CategoryRow(CategoryItem category, int depth, ConfigEntryList list) {
             super(depth);
             this.category = category;
             this.list = list;
-            this.toggleButton = Button.builder(
-                Component.literal(prefix()+" "+category.name()),
-                btn -> toggle()
-            ).bounds(0, 0, 200, 20).build();
         }
-
-        private String prefix() { return expanded ? "[-]" : "[+]"; }
 
         private void toggle() {
             expanded = !expanded;
-            toggleButton.setMessage(Component.literal(prefix()+" "+category.name()));
-
             List<Row> topRows = new ArrayList<>();
             for (Row row : list.children()) {
                 if (row.depth == 0) topRows.add(row);
@@ -94,30 +101,45 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
         }
 
         @Override
-        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-            toggleButton.setX(getX()+indent());
-            toggleButton.setY(getY());
-            toggleButton.setWidth(getWidth()-indent());
-            toggleButton.render(graphics, mouseX, mouseY, partialTick);
+        public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+            toggle();
+            return true;
         }
 
         @Override
-        public List<? extends GuiEventListener> children() { return List.of(toggleButton); }
+        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+            int x = getX()+indent();
+            int y = getContentYMiddle()-4;
+
+            // Placeholder icons
+            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x, getY()+2);
+
+            Component label = Component.translatableWithFallback(
+                TranslationKeyUtil.catKey(list.config.modId, category.name()), category.name()
+            );
+            graphics.drawString(Minecraft.getInstance().font, label, x+20, y, isHovering ? 0xFFFFAA : 0xFFFFFF);
+        }
 
         @Override
-        public List<? extends NarratableEntry> narratables() { return List.of(toggleButton); }
+        public List<? extends GuiEventListener> children() {
+            return List.of();
+        }
+
+        @Override
+        public List<? extends NarratableEntry> narratables() {
+            return List.of();
+        }
     }
 
     public static class EntryRow extends Row {
         final ConfigEntry<?> entry;
         private final String modId;
         private final Consumer<ConfigEntry<?>> onHover;
-        private final net.minecraft.client.gui.components.AbstractWidget widget;
+        private final AbstractWidget widget;
         private static final int WIDGET_WIDTH = 150;
         private static final int WIDGET_HEIGHT = 20;
 
-        @SuppressWarnings("unchecked")
-        public EntryRow(ConfigEntry<?> entry, String modId, int depth, Consumer<ConfigEntry<?>> onHover) {
+        public EntryRow(ConfigEntry<?> entry, String modId, int depth, Consumer<ConfigEntry<?>> onHover, Deque<Runnable> undoStack) {
             super(depth);
             this.entry = entry;
             this.modId = modId;
@@ -127,31 +149,46 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
                 ConfigEntry<Boolean> boolEntry = (ConfigEntry<Boolean>) entry;
                 this.widget = Button.builder(
                     Component.literal(Boolean.toString(boolEntry.get())),
-                    btn -> {
-                        boolEntry.set(!boolEntry.get());
-                        btn.setMessage(Component.literal(Boolean.toString(boolEntry.get())));
+                    button -> {
+                        boolean previous = boolEntry.get();
+                        boolEntry.set(!previous);
+                        button.setMessage(Component.literal(Boolean.toString(boolEntry.get())));
+                        undoStack.push(() -> {
+                            boolEntry.set(previous);
+                            button.setMessage(Component.literal(Boolean.toString(previous)));
+                        });
                     }
                 ).bounds(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT).build();
+
             } else {
                 EditBox box = new EditBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.empty());
                 box.setValue(String.valueOf(entry.get()));
-                box.setResponder(text -> applyText((ConfigEntry<Object>) entry, text));
+                box.setResponder(text -> {
+                    Object previous = entry.get();
+                    applyText((ConfigEntry<Object>) entry, text);
+                    if (!entry.get().equals(previous))
+                        undoStack.push(() -> {
+                            ((ConfigEntry<Object>) entry).set(previous);
+                            box.setValue(String.valueOf(previous));
+                        });
+                });
                 this.widget = box;
             }
         }
 
-        @SuppressWarnings("unchecked")
         private <T> void applyText(ConfigEntry<T> entry, String text) {
             try {
-                Object def = entry.defaultValue();
-                T parsed;
-                if (def instanceof Integer) parsed = (T) Integer.valueOf(text);
-                else if (def instanceof Long) parsed = (T) Long.valueOf(text);
-                else if (def instanceof Double) parsed = (T) Double.valueOf(text);
-                else if (def instanceof Float) parsed = (T) Float.valueOf(text);
-                else parsed = (T) text;
+                Object defaultValue = entry.defaultValue();
+                T parsed = switch (defaultValue) {
+                    case Integer i -> (T) Integer.valueOf(text);
+                    case Long l -> (T) Long.valueOf(text);
+                    case Double d -> (T) Double.valueOf(text);
+                    case Float f -> (T) Float.valueOf(text);
+                    case null, default -> (T) text;
+                };
                 entry.set(parsed);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
 
         @Override
@@ -167,9 +204,13 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
         }
 
         @Override
-        public List<? extends GuiEventListener> children() { return List.of(widget); }
+        public List<? extends GuiEventListener> children() {
+            return List.of(widget);
+        }
 
         @Override
-        public List<? extends NarratableEntry> narratables() { return List.of(widget); }
+        public List<? extends NarratableEntry> narratables() {
+            return List.of(widget);
+        }
     }
 }
