@@ -1,8 +1,10 @@
-package net.justmili.libs.core.util;
+package net.justmili.libs.client.screens;
 
 import net.minecraft.network.chat.Component;
 
-public class TranslationKeyUtil {
+public class ScreenElements {
+    public static final int COLOR_WHITE = 0xFFFFFFFF;
+
     public static String toUniform(String input) {
         if (input == null || input.isBlank()) return input;
 

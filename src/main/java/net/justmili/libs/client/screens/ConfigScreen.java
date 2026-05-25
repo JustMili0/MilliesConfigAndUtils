@@ -3,8 +3,7 @@ package net.justmili.libs.client.screens;
 import net.justmili.libs.config.ConfigLoader;
 import net.justmili.libs.config.build.ConfigEntry;
 import net.justmili.libs.config.build.MConfigBuilder;
-import net.justmili.libs.core.data.SharedValues;
-import net.justmili.libs.core.util.TranslationKeyUtil;
+import net.justmili.libs.config.items.CategoryItem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -21,7 +20,6 @@ import java.util.function.Consumer;
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreen extends Screen {
     private static final int
-        // Placement and sizes
         PREVIEW_WIDTH = 160,
         ITEM_HEIGHT = 24,
         TAB_HEIGHT = 24,
@@ -32,8 +30,9 @@ public class ConfigScreen extends Screen {
     private final List<MConfigBuilder> builders;
     private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
     private TabNavigationBar tabBar;
-    private ConfigEntryList entryList;
+    private ConfigScreenBuilder entryList;
     private ConfigEntry<?> hoveredEntry = null;
+    private CategoryItem hoveredCategory = null;
 
     public ConfigScreen(Component title, Screen parent, List<MConfigBuilder> builders) {
         super(title);
@@ -43,6 +42,48 @@ public class ConfigScreen extends Screen {
 
     public ConfigScreen(Component title, Screen parent, MConfigBuilder builder) {
         this(title, parent, List.of(builder));
+    }
+
+    private void setActiveConfig(ConfigLoader config) {
+        if (entryList != null) removeWidget(entryList);
+
+        int listWidth = this.width-PREVIEW_WIDTH-2, listY = TAB_HEIGHT+2, listHeight = this.height-listY;
+        entryList = new ConfigScreenBuilder(this.minecraft, listWidth, listHeight, listY, ITEM_HEIGHT, config,
+            entry -> hoveredEntry = entry, category -> {
+            hoveredCategory = category;
+            hoveredEntry = null;
+        });
+
+        addRenderableWidget(entryList);
+    }
+
+    private void renderPreviewPanel(GuiGraphics graphics, int x, int y) {
+        int textWidth = PREVIEW_WIDTH-PANEL_PADDING * 2;
+
+        if (hoveredEntry != null) {
+            String modId = builders.stream()
+                .filter(builder -> builder.getConfig().entries.containsKey(hoveredEntry.key())).findFirst()
+                .map(builder -> builder.getConfig().modId).orElse("unknown");
+
+            Component name = ScreenElements.resolve(ScreenElements.varKey(modId, hoveredEntry.key())).copy().withStyle(style -> style.withBold(true));
+            graphics.drawWordWrap(font, name, x, y, textWidth, ScreenElements.COLOR_WHITE);
+            y += font.wordWrapHeight(name, textWidth)+4;
+
+            graphics.drawWordWrap(font, ScreenElements.resolve(
+                ScreenElements.varDescKey(modId, hoveredEntry.key())), x, y, textWidth, ScreenElements.COLOR_WHITE);
+
+        } else if (hoveredCategory != null) {
+            String modId = builders.stream()
+                .filter(builder -> builder.getConfig().modId != null).findFirst()
+                .map(builder -> builder.getConfig().modId).orElse("unknown");
+
+            Component name = ScreenElements.resolve(ScreenElements.catKey(modId, hoveredCategory.name())).copy().withStyle(style -> style.withBold(true));
+            graphics.drawWordWrap(font, name, x, y, textWidth, ScreenElements.COLOR_WHITE);
+            y += font.wordWrapHeight(name, textWidth)+4;
+
+            graphics.drawWordWrap(font, ScreenElements.resolve(
+                ScreenElements.catDescKey(modId, hoveredCategory.name())), x, y, textWidth, ScreenElements.COLOR_WHITE);
+        }
     }
 
     @Override
@@ -58,11 +99,11 @@ public class ConfigScreen extends Screen {
             twoButtonY = panelBottom-PANEL_BUTTON_HEIGHT * 2-4,
             twoButtonW = (PREVIEW_WIDTH-PANEL_PADDING * 3) / 2;
 
-        addRenderableWidget(Button.builder(Component.literal("Done"), btn -> onClose())
+        addRenderableWidget(Button.builder(Component.translatable("gui.config.done"), button -> onClose())
             .bounds(panelX+PANEL_PADDING, panelBottom-PANEL_BUTTON_HEIGHT, PREVIEW_WIDTH-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
             .build());
 
-        addRenderableWidget(Button.builder(Component.literal("Reset"), btn -> {
+        addRenderableWidget(Button.builder(Component.translatable("gui.config.reset"), button -> {
             if (hoveredEntry == null) return;
 
             Object previous = hoveredEntry.get();
@@ -70,20 +111,11 @@ public class ConfigScreen extends Screen {
             if (entryList != null) entryList.undoStack.push(() -> ((ConfigEntry<Object>) hoveredEntry).set(previous));
         }).bounds(panelX+PANEL_PADDING, twoButtonY, twoButtonW, PANEL_BUTTON_HEIGHT).build());
 
-        addRenderableWidget(Button.builder(Component.literal("Undo"), btn -> {
+        addRenderableWidget(Button.builder(Component.translatable("gui.config.undo"), button -> {
             if (entryList != null && !entryList.undoStack.isEmpty()) entryList.undoStack.pop().run();
         }).bounds(panelX+PANEL_PADDING * 2+twoButtonW, twoButtonY, twoButtonW, PANEL_BUTTON_HEIGHT).build());
 
         if (!builders.isEmpty()) setActiveConfig(builders.getFirst().getConfig());
-    }
-
-    private void setActiveConfig(ConfigLoader config) {
-        if (entryList != null) removeWidget(entryList);
-
-        int listWidth = this.width-PREVIEW_WIDTH-2, listY = TAB_HEIGHT+2, listHeight = this.height-listY;
-        entryList = new ConfigEntryList(this.minecraft, listWidth, listHeight, listY, ITEM_HEIGHT, config, entry -> hoveredEntry = entry);
-
-        addRenderableWidget(entryList);
     }
 
     @Override
@@ -91,36 +123,12 @@ public class ConfigScreen extends Screen {
         super.render(graphics, mouseX, mouseY, delta);
 
         if (tabBar != null)
-            graphics.hLine(0, this.width-PREVIEW_WIDTH, tabBar.getRectangle().bottom(), SharedValues.COLOR_WHITE);
+            graphics.hLine(0, this.width-PREVIEW_WIDTH, tabBar.getRectangle().bottom(), ScreenElements.COLOR_WHITE);
 
         int panelX = this.width-PREVIEW_WIDTH;
-        graphics.fill(panelX, 0, panelX+1, this.height, SharedValues.COLOR_WHITE);
+        graphics.fill(panelX, 0, panelX+1, this.height, ScreenElements.COLOR_WHITE);
 
         renderPreviewPanel(graphics, panelX+PANEL_PADDING, PANEL_PADDING);
-    }
-
-    private void renderPreviewPanel(GuiGraphics graphics, int x, int y) {
-        if (hoveredEntry == null) {
-            graphics.drawString(font, Component.literal("Hover an entry"), x, y, SharedValues.COLOR_LIGHT_GRAY);
-            return;
-        }
-
-        int textWidth = PREVIEW_WIDTH-PANEL_PADDING * 2;
-        String modId = builders.stream()
-            .filter(builder -> builder.getConfig().entries.containsKey(hoveredEntry.key())).findFirst()
-            .map(builder -> builder.getConfig().modId).orElse("unknown"),
-
-            nameKey = TranslationKeyUtil.varKey(modId, hoveredEntry.key()),
-            descKey = TranslationKeyUtil.varDescKey(modId, hoveredEntry.key());
-
-        // Name
-        Component name = TranslationKeyUtil.resolve(nameKey).copy().withStyle(style -> style.withBold(true));
-        graphics.drawWordWrap(font, name, x, y, textWidth, SharedValues.COLOR_WHITE);
-        y += font.wordWrapHeight(name, textWidth)+4;
-
-        // Desc
-        Component desc = TranslationKeyUtil.resolve(descKey);
-        graphics.drawWordWrap(font, desc, x, y, textWidth, SharedValues.COLOR_LIGHT_GRAY);
     }
 
     @Override

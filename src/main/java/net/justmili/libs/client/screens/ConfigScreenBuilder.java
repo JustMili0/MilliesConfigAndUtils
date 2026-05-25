@@ -4,8 +4,6 @@ import net.justmili.libs.config.ConfigLoader;
 import net.justmili.libs.config.build.ConfigEntry;
 import net.justmili.libs.config.items.CategoryItem;
 import net.justmili.libs.config.items.ConfigItem;
-import net.justmili.libs.core.data.SharedValues;
-import net.justmili.libs.core.util.TranslationKeyUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -26,16 +24,41 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @SuppressWarnings({"unchecked", "NullableProblems"})
-public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryList.Row> {
+public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScreenBuilder.Row> {
     private final ConfigLoader config;
     private final Consumer<ConfigEntry<?>> onHover;
+    private final Consumer<CategoryItem> onCatHover;
     final Deque<Runnable> undoStack = new ArrayDeque<>();
 
-    public ConfigEntryList(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config, Consumer<ConfigEntry<?>> onHover) {
+    public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config, Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover) {
         super(minecraft, width, height, y, itemHeight);
         this.config = config;
         this.onHover = onHover;
+        this.onCatHover = onCatHover;
         buildRows(config.root.children(), 0);
+    }
+
+    private void buildRows(List<ConfigItem> items, int depth) {
+        for (ConfigItem item : items) {
+            if (item instanceof CategoryItem category) addEntry(new CategoryRow(category, depth, onCatHover, this));
+            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
+            // CommentItems are file-only, skip
+        }
+    }
+
+    private void rebuildPreservingState(List<Row> topRows) {
+        clearEntries();
+        for (Row row : topRows) {
+            addEntry(row);
+            if (row instanceof CategoryRow catRow && catRow.expanded) addChildRows(catRow.category, catRow.depth+1);
+        }
+    }
+
+    private void addChildRows(CategoryItem category, int depth) {
+        for (ConfigItem item : category.children()) {
+            if (item instanceof CategoryItem) addEntry(new CategoryRow(category, depth, onCatHover, this));
+            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
+        }
     }
 
     @Override
@@ -53,96 +76,19 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
         return this.getX()+this.width-6;
     }
 
-    private void buildRows(List<ConfigItem> items, int depth) {
-        for (ConfigItem item : items) {
-            if (item instanceof CategoryItem category) addEntry(new CategoryRow(category, depth, this));
-            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
-            // CommentItems are file-only, skip
-        }
-    }
-
-    private void rebuildPreservingState(List<Row> topRows) {
-        clearEntries();
-        for (Row row : topRows) {
-            addEntry(row);
-            if (row instanceof CategoryRow catRow && catRow.expanded) addChildRows(catRow.category, catRow.depth+1);
-        }
-    }
-
-    private void addChildRows(CategoryItem category, int depth) {
-        for (ConfigItem item : category.children()) {
-            if (item instanceof CategoryItem child) addEntry(new CategoryRow(child, depth, this));
-            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
-        }
-    }
-
     public abstract static class Row extends ContainerObjectSelectionList.Entry<Row> {
         protected final int depth;
-        protected static final int INDENT = 10;
 
         public Row(int depth) {
             this.depth = depth;
         }
 
         protected int indent() {
-            return depth * INDENT;
+            return depth * 10;
         }
     }
 
-    public static class CategoryRow extends Row {
-        final CategoryItem category;
-        private final Consumer<CategoryItem> onHover;
-        private final ConfigEntryList list;
-        boolean expanded = false;
-
-        public CategoryRow(CategoryItem category, int depth, Consumer<CategoryItem> onHover, ConfigEntryList list) {
-            super(depth);
-            this.category = category;
-            this.onHover = onHover;
-            this.list = list;
-        }
-
-        private void toggle() {
-            expanded = !expanded;
-            List<Row> topRows = new ArrayList<>();
-            for (Row row : list.children()) {
-                if (row.depth == 0) topRows.add(row);
-            }
-            list.rebuildPreservingState(topRows);
-        }
-
-        @Override
-        public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
-            toggle();
-            return true;
-        }
-
-        @Override
-        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-            if (isHovering) onHover.accept(entry);
-            int x = getX()+indent();
-
-            // Placeholder icons
-            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x+6, getY()+2);
-            Component label = TranslationKeyUtil.resolve(TranslationKeyUtil.catKey(list.config.modId, category.name()));
-
-            if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));
-            else if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
-
-            graphics.drawString(Minecraft.getInstance().font, label, x+20, getContentYMiddle()-4, SharedValues.COLOR_WHITE);
-        }
-
-        @Override
-        public List<? extends GuiEventListener> children() {
-            return List.of();
-        }
-
-        @Override
-        public List<? extends NarratableEntry> narratables() {
-            return List.of();
-        }
-    }
-
+    // Entries
     public static class EntryRow extends Row {
         private final String modId;
         private final ConfigEntry<?> entry;
@@ -206,10 +152,10 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
         @Override
         public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             if (isHovering) onHover.accept(entry);
-            Component label = TranslationKeyUtil.resolve(TranslationKeyUtil.varKey(modId, entry.key()));
+            Component label = ScreenElements.resolve(ScreenElements.varKey(modId, entry.key()));
             if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
 
-            graphics.drawString(Minecraft.getInstance().font, label, getX()+indent()+6, getContentYMiddle()-4, SharedValues.COLOR_WHITE);
+            graphics.drawString(Minecraft.getInstance().font, label, getX()+indent()+6, getContentYMiddle()-4, ScreenElements.COLOR_WHITE);
 
             widget.setX(getX()+getWidth()-WIDGET_WIDTH-4);
             widget.setY(getY()+2);
@@ -224,6 +170,61 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
         @Override
         public List<? extends NarratableEntry> narratables() {
             return List.of(widget);
+        }
+    }
+
+    // Categories
+    public static class CategoryRow extends Row {
+        final CategoryItem category;
+        private final Consumer<CategoryItem> onCatHover;
+        private final ConfigScreenBuilder list;
+        boolean expanded = false;
+
+        public CategoryRow(CategoryItem category, int depth, Consumer<CategoryItem> onCatHover, ConfigScreenBuilder list) {
+            super(depth);
+            this.category = category;
+            this.onCatHover = onCatHover;
+            this.list = list;
+        }
+
+        private void toggle() {
+            expanded = !expanded;
+            List<Row> topRows = new ArrayList<>();
+            for (Row row : list.children()) {
+                if (row.depth == 0) topRows.add(row);
+            }
+            list.rebuildPreservingState(topRows);
+        }
+
+        @Override
+        public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+            toggle();
+            return true;
+        }
+
+        @Override
+        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+            if (isHovering) onCatHover.accept(category);
+            int x = getX()+indent();
+
+            // Placeholder icons
+            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x+4, getY()+2);
+            Component label = ScreenElements.resolve(ScreenElements.catKey(list.config.modId, category.name()));
+
+            if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));
+            else if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
+
+            graphics.drawString(Minecraft.getInstance().font, label, x+20, getContentYMiddle()-4, ScreenElements.COLOR_WHITE);
+        }
+
+        @Override
+        public List<? extends GuiEventListener> children() {
+            return List.of();
+        }
+
+        @Override
+        public List<? extends NarratableEntry> narratables() {
+            return List.of();
         }
     }
 }

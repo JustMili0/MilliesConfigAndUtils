@@ -17,9 +17,6 @@
   "environment": "*",
   "accessWidener": "${mod_id}.accesswidener",
   "entrypoints": {
-    "client": [
-      "net.justmili.libs.client.FabricClient"
-    ],
     "main": [
       "net.justmili.libs.Library"
     ],

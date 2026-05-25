@@ -10,7 +10,7 @@ public class ModMenuEntrypoint implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> new ConfigScreen(
-            Component.literal("Millie's Config & Utils"),
+            Component.translatable("config.title.millieslibs"),
             parent, ExampleConfig.builder
         );
     }
