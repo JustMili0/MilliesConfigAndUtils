@@ -1,17 +1,19 @@
-package net.justmili.libs.utils;
+package net.justmili.libs.core.util;
+
+import net.minecraft.network.chat.Component;
 
 public class TranslationKeyUtil {
     public static String toUniform(String input) {
         if (input == null || input.isBlank()) return input;
 
-        String withUnderscores = input.replace(" ", "_").replace("-", "_");
-        if (withUnderscores.equals(withUnderscores.toLowerCase())) return withUnderscores.toLowerCase();
-
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < withUnderscores.length(); i++) {
-            char c = withUnderscores.charAt(i);
-            if (Character.isUpperCase(c)) {
-                if (i > 0) result.append('_');
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (c == ' ' || c == '-') {
+                result.append('_');
+            } else if (Character.isUpperCase(c)) {
+                if (i > 0 && input.charAt(i-1) != ' ' && input.charAt(i-1) != '-' && input.charAt(i-1) != '_')
+                    result.append('_');
                 result.append(Character.toLowerCase(c));
             } else {
                 result.append(c);
@@ -34,5 +36,9 @@ public class TranslationKeyUtil {
 
     public static String catDescKey(String modId, String name) {
         return "config.cat."+modId+"."+toUniform(name)+".desc";
+    }
+
+    public static Component resolve(String transKey) {
+        return Component.translatable(transKey);
     }
 }

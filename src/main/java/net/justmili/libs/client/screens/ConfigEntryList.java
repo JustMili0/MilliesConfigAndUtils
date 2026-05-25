@@ -4,7 +4,8 @@ import net.justmili.libs.config.ConfigLoader;
 import net.justmili.libs.config.build.ConfigEntry;
 import net.justmili.libs.config.items.CategoryItem;
 import net.justmili.libs.config.items.ConfigItem;
-import net.justmili.libs.utils.TranslationKeyUtil;
+import net.justmili.libs.core.data.SharedValues;
+import net.justmili.libs.core.util.TranslationKeyUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -39,14 +40,23 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
 
     @Override
     public int getRowWidth() {
-        return this.width;
+        return this.width-6;
+    }
+
+    @Override
+    public int getRowLeft() {
+        return this.getX()+2;
+    }
+
+    @Override
+    protected int scrollBarX() {
+        return this.getX()+this.width-6;
     }
 
     private void buildRows(List<ConfigItem> items, int depth) {
         for (ConfigItem item : items) {
             if (item instanceof CategoryItem category) addEntry(new CategoryRow(category, depth, this));
-            else if (item instanceof ConfigEntry<?> entry)
-                addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
+            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
             // CommentItems are file-only, skip
         }
     }
@@ -62,8 +72,7 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
     private void addChildRows(CategoryItem category, int depth) {
         for (ConfigItem item : category.children()) {
             if (item instanceof CategoryItem child) addEntry(new CategoryRow(child, depth, this));
-            else if (item instanceof ConfigEntry<?> entry)
-                addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
+            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
         }
     }
 
@@ -82,12 +91,14 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
 
     public static class CategoryRow extends Row {
         final CategoryItem category;
-        boolean expanded = false;
+        private final Consumer<CategoryItem> onHover;
         private final ConfigEntryList list;
+        boolean expanded = false;
 
-        public CategoryRow(CategoryItem category, int depth, ConfigEntryList list) {
+        public CategoryRow(CategoryItem category, int depth, Consumer<CategoryItem> onHover, ConfigEntryList list) {
             super(depth);
             this.category = category;
+            this.onHover = onHover;
             this.list = list;
         }
 
@@ -108,16 +119,17 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
 
         @Override
         public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+            if (isHovering) onHover.accept(entry);
             int x = getX()+indent();
-            int y = getContentYMiddle()-4;
 
             // Placeholder icons
-            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x, getY()+2);
+            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x+6, getY()+2);
+            Component label = TranslationKeyUtil.resolve(TranslationKeyUtil.catKey(list.config.modId, category.name()));
 
-            Component label = Component.translatableWithFallback(
-                TranslationKeyUtil.catKey(list.config.modId, category.name()), category.name()
-            );
-            graphics.drawString(Minecraft.getInstance().font, label, x+20, y, isHovering ? 0xFFFFAA : 0xFFFFFF);
+            if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));
+            else if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
+
+            graphics.drawString(Minecraft.getInstance().font, label, x+20, getContentYMiddle()-4, SharedValues.COLOR_WHITE);
         }
 
         @Override
@@ -132,8 +144,8 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
     }
 
     public static class EntryRow extends Row {
-        final ConfigEntry<?> entry;
         private final String modId;
+        private final ConfigEntry<?> entry;
         private final Consumer<ConfigEntry<?>> onHover;
         private final AbstractWidget widget;
         private static final int WIDGET_WIDTH = 150;
@@ -141,8 +153,8 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
 
         public EntryRow(ConfigEntry<?> entry, String modId, int depth, Consumer<ConfigEntry<?>> onHover, Deque<Runnable> undoStack) {
             super(depth);
-            this.entry = entry;
             this.modId = modId;
+            this.entry = entry;
             this.onHover = onHover;
 
             if (entry.get() instanceof Boolean) {
@@ -194,9 +206,10 @@ public class ConfigEntryList extends ContainerObjectSelectionList<ConfigEntryLis
         @Override
         public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             if (isHovering) onHover.accept(entry);
+            Component label = TranslationKeyUtil.resolve(TranslationKeyUtil.varKey(modId, entry.key()));
+            if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
 
-            Component label = Component.translatableWithFallback(TranslationKeyUtil.varKey(modId, entry.key()), entry.key());
-            graphics.drawString(Minecraft.getInstance().font, label, getX()+indent(), getContentYMiddle()-4, 0xFFFFFF);
+            graphics.drawString(Minecraft.getInstance().font, label, getX()+indent()+6, getContentYMiddle()-4, SharedValues.COLOR_WHITE);
 
             widget.setX(getX()+getWidth()-WIDGET_WIDTH-4);
             widget.setY(getY()+2);
