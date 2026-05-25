@@ -19,11 +19,19 @@ import java.util.function.Consumer;
 
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreen extends Screen {
-    private static final int PREVIEW_WIDTH = 160;
-    private static final int ITEM_HEIGHT = 24;
-    private static final int TAB_HEIGHT = 24;
-    private static final int PANEL_BUTTON_HEIGHT = 20;
-    private static final int PANEL_PADDING = 6;
+    private static final int
+        // Placement and sizes
+        PREVIEW_WIDTH = 160,
+        ITEM_HEIGHT = 24,
+        TAB_HEIGHT = 24,
+        PANEL_BUTTON_HEIGHT = 20,
+        PANEL_PADDING = 6,
+        // Colors
+        COLOR_WHITE = 0xFFFFFFFF,
+        COLOR_PISS = 0xFFFF55FF,
+        COLOR_LIGHT_GRAY = 0xAAAAAAFF,
+        COLOR_DARK_GRAY = 0xCC111111;
+
 
     public final Screen parent;
     private final List<MConfigBuilder> builders;
@@ -52,16 +60,14 @@ public class ConfigScreen extends Screen {
         addRenderableWidget(tabBar);
         tabBar.selectTab(0, false);
 
-        int panelX = this.width-PREVIEW_WIDTH,
-            panelBottom = this.height-PANEL_PADDING;
+        int panelX = this.width-PREVIEW_WIDTH, panelBottom = this.height-PANEL_PADDING;
 
         Button doneButton = Button.builder(Component.literal("Done"), btn -> onClose())
             .bounds(panelX+PANEL_PADDING, panelBottom-PANEL_BUTTON_HEIGHT, PREVIEW_WIDTH-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
             .build();
         addRenderableWidget(doneButton);
 
-        int twoButtonY = panelBottom-PANEL_BUTTON_HEIGHT * 2-4,
-            twoButtonW = (PREVIEW_WIDTH-PANEL_PADDING * 3) / 2;
+        int twoButtonY = panelBottom-PANEL_BUTTON_HEIGHT * 2-4, twoButtonW = (PREVIEW_WIDTH-PANEL_PADDING * 3) / 2;
 
         Button resetButton = Button.builder(Component.literal("Reset"), btn -> {
             if (hoveredEntry == null) return;
@@ -96,22 +102,22 @@ public class ConfigScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         super.render(graphics, mouseX, mouseY, delta);
 
-        if (tabBar != null) graphics.hLine(0, this.width-PREVIEW_WIDTH, tabBar.getRectangle().bottom(), 0xFFFFFFFF);
+        if (tabBar != null) graphics.hLine(0, this.width-PREVIEW_WIDTH, tabBar.getRectangle().bottom(), COLOR_WHITE);
 
         int panelX = this.width-PREVIEW_WIDTH, panelY = 0;
         // Panel background
-        graphics.fill(panelX, panelY, this.width, this.height, 0xCC111111);
+        graphics.fill(panelX, panelY, this.width, this.height, COLOR_DARK_GRAY);
         // Panel left border
-        graphics.fill(panelX, panelY, panelX+1, this.height, 0xFFFFFFFF);
+        graphics.fill(panelX, panelY, panelX+1, this.height, COLOR_WHITE);
 
         renderPreviewPanel(graphics, panelX+PANEL_PADDING, panelY+PANEL_PADDING);
     }
 
     private void renderPreviewPanel(GuiGraphics graphics, int x, int y) {
-        int textWidth = PREVIEW_WIDTH-PANEL_PADDING * 2;
+        int textWidth = PREVIEW_WIDTH-PANEL_PADDING*2;
 
         if (hoveredEntry == null) {
-            graphics.drawString(font, Component.literal("Hover an entry"), x, y, 0xAAAAAA);
+            graphics.drawString(font, Component.literal("Hover an entry"), x, y, COLOR_LIGHT_GRAY);
             return;
         }
 
@@ -120,21 +126,14 @@ public class ConfigScreen extends Screen {
             .map(b -> b.getConfig().modId).orElse("unknown");
 
         // Name
-        Component name = Component.translatableWithFallback(TranslationKeyUtil.varKey(modId, hoveredEntry.key()), hoveredEntry.key());
-        graphics.drawWordWrap(font, name, x, y, textWidth, 0xFFFFFF);
-        y += font.lineHeight+4;
+        Component name = Component.translatableWithFallback(TranslationKeyUtil.varKey(modId, hoveredEntry.key()), hoveredEntry.key())
+            .withStyle(s -> s.withBold(true));
+        graphics.drawWordWrap(font, name, x, y, textWidth, COLOR_WHITE);
+        y += font.wordWrapHeight(name, textWidth)+4;
 
-        // Description
+        // Normal desc
         Component desc = Component.translatable(TranslationKeyUtil.varDescKey(modId, hoveredEntry.key()));
-        graphics.drawWordWrap(font, desc, x, y, textWidth, 0xAAAAAA);
-        y += font.wordWrapHeight(desc, textWidth)+6;
-
-        // Current value
-        graphics.drawString(font, Component.literal("Value: "+hoveredEntry.get()), x, y, 0xFFFF55);
-        y += font.lineHeight+2;
-
-        // Default value
-        graphics.drawString(font, Component.literal("Default: "+hoveredEntry.defaultValue()), x, y, 0xAAAAAA);
+        graphics.drawWordWrap(font, desc, x, y, textWidth, COLOR_WHITE);
     }
 
     @Override

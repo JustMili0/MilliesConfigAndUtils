@@ -8,6 +8,7 @@ import net.justmili.libs.config.build.MConfigBuilder;
 import java.util.List;
 
 public class ExampleConfig {
+    // Leave your builders exposed if you want to hook your mod to Mod Menu or (Neo)Forge Config...
     public static MConfigBuilder builder = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
 
     public static ConfigEntry<Integer> someInt;
@@ -20,6 +21,10 @@ public class ExampleConfig {
     public static ListConfigEntry<String> someStringList;
 
     public static void register() {
+        // ...Or keep it in the register method if you'd like
+        // (but you won't be able to integrate your mod with Mod Menu/(Neo)Forge Config)
+        // MConfigBuilder builder = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
+
         someInt = builder.comment("Integer entry comment")
             .define("someInt", 10, 0, 100);
 

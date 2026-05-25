@@ -4,13 +4,27 @@ Easy to use :D
 <hr>
 
 ## Why?
-I really needed a config lib and utils for the stuff I often make.<br>
+I really needed a config lib and utils for the stuff I often make.
+
+## Dev Notes
+1. YAML/YML support is not yet implemented!
+2. Version 1.1 is currently in progress and will bring some structural changes (changed mod id and packages) as well as new tools and features. Then there will be update 1.2 which probably will be the last update and will mark the beggining of me porting the mod to older and newer versions as well as other mod loaders.
+3. After all projects by [Lumynity Studios](https://modrinth.com/organization/lumynity-studios) will be updated to latest versions and loaders as well as my mod [Left Forgotten](https://modrinth.com/mod/left-forgotten), this library will no longer support Minecraft 1.20.1!
+
+### Planned version-loader support?
+- 26.2.x - Fabric
+- 26.1.x - Fabric, NeoForge
+- 1.21.11 - Fabric/Quilt, NeoForge
+- (1.21.6-)1.21.8 - Fabric/Quilt, NeoForge
+- 1.21.4 - Fabric/Quilt, NeoForge
+- 1.21.1 - Fabric/Quilt, NeoForge
+- 1.20.1 - Fabric/Quilt, Forge
 
 <hr>
 
 ## Documentation
 **Config Library - Example Config**<br>
-A lot of design inspiration came from [SuperMartijn642's Config Lib](https://modrinth.com/mod/supermartijn642s-config-lib)
+A lot of design inspiration came from [SuperMartijn642's Config Lib](https://modrinth.com/mod/supermartijn642s-config-lib) (No code was directly copied from that project.)
 
 <details>
 <summary>How to Add to Gradle Project</summary>
@@ -50,6 +64,9 @@ import net.justmili.libs.config.build.MConfigBuilder;
 import java.util.List;
 
 public class ExampleConfig {
+    // Leave your builders exposed if you want to hook your mod to Mod Menu or (Neo)Forge Config...
+    public static MConfigBuilder builder = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
+
     public static ConfigEntry<Integer> someInt;
     public static ConfigEntry<Float> someFloat;
     public static ConfigEntry<Double> someDouble;
@@ -60,8 +77,10 @@ public class ExampleConfig {
     public static ListConfigEntry<String> someStringList;
 
     public static void register() {
-        MConfigBuilder builder = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
-
+        // ...Or keep it in the register method if you'd like
+        // (but you won't be able to integrate your mod with Mod Menu/(Neo)Forge Config)
+        // MConfigBuilder builder = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
+        
         someInt = builder.comment("Integer entry comment")
             .define("someInt", 10, 0, 100);
 
@@ -96,12 +115,13 @@ public class ExampleConfig {
         builder.build(); // Will create, load and update the config file depending on the situation
     }
 }
+
 ```
 
 **TL;DR:**
 - Config creation logic is similar to SuperMartijn642's Config Lib, but isn't based on Suppliers making it editable through your own code instead of it being read-only
 - MConfigBuilder takes:
-    - Mod ID (or any string really),
+    - Mod ID,
     - A file suffix/file name when subdirectory is made,
     - Config file type,
     - Boolean true/false do you want your config to be in a subfolder
@@ -146,21 +166,5 @@ public class YourMod implements ModInitializer {
 Idk how to explain all that so good luck
 
 </details>
-
-<hr>
-
-### How long will this be kept updated?
-Very long
-
-### Planned version-loader support?
-- 26.2.x - Fabric
-- 26.1.x - Fabric, NeoForge
-- 1.21.11 - Fabric/Quilt, NeoForge
-- ...idk...
-- 1.21.1 - Fabric/Quilt, NeoForge
-- 1.20.1 - Fabric/Quilt, Forge
-
-### Planned config UI?
-Yes I'm planning on it
 
 <hr>
