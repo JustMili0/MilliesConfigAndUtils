@@ -1,6 +1,6 @@
 package net.justmili.libs.v1.config.type.json;
 
-import net.justmili.libs.v1.config.build.ConfigEntry;
+import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.items.CommentItem;
 import net.justmili.libs.v1.config.items.ConfigItem;
 

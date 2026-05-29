@@ -1,7 +1,8 @@
 package net.justmili.libs.v1.config.screen;
 
+import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.config.ConfigLoader;
-import net.justmili.libs.v1.config.build.ConfigEntry;
+import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.ConfigItem;
 import net.minecraft.client.Minecraft;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
@@ -28,13 +28,17 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
     private final ConfigLoader config;
     private final Consumer<ConfigEntry<?>> onHover;
     private final Consumer<CategoryItem> onCatHover;
-    private final Deque<Runnable> undoStack = new ArrayDeque<>();
+    public final Deque<Runnable> undoStack = new ArrayDeque<>();
 
     public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config, Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover) {
-        super(minecraft, width, height, y, itemHeight);
+        super(minecraft, width, height, y, y + height, itemHeight);
         this.config = config;
         this.onHover = onHover;
         this.onCatHover = onCatHover;
+        if (config.root == null) {
+            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. Please ensure your config class is registered during mod init.", config.modId);
+            return;
+        }
         buildRows(config.root.children(), 0);
     }
 
@@ -68,12 +72,12 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
 
     @Override
     public int getRowLeft() {
-        return this.getX()+2;
+        return this.x0+2;
     }
 
     @Override
-    protected int scrollBarX() {
-        return this.getX()+this.width-6;
+    protected int getScrollbarPosition() {
+        return this.x0+this.width-6;
     }
 
     public abstract static class Row extends ContainerObjectSelectionList.Entry<Row> {
@@ -137,28 +141,27 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
         private <T> void applyText(ConfigEntry<T> entry, String text) {
             try {
                 Object defaultValue = entry.defaultValue();
-                T parsed = switch (defaultValue) {
-                    case Integer i -> (T) Integer.valueOf(text);
-                    case Long l -> (T) Long.valueOf(text);
-                    case Double d -> (T) Double.valueOf(text);
-                    case Float f -> (T) Float.valueOf(text);
-                    case null, default -> (T) text;
-                };
+                T parsed;
+                if (defaultValue instanceof Integer) parsed = (T) Integer.valueOf(text);
+                else if (defaultValue instanceof Long) parsed = (T) Long.valueOf(text);
+                else if (defaultValue instanceof Double) parsed = (T) Double.valueOf(text);
+                else if (defaultValue instanceof Float) parsed = (T) Float.valueOf(text);
+                else parsed = (T) text;
                 entry.set(parsed);
             } catch (NumberFormatException ignored) {
             }
         }
 
         @Override
-        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             if (isHovering) onHover.accept(entry);
             Component label = ScreenElements.resolve(ScreenElements.varKey(modId, entry.key()));
             if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
 
-            graphics.drawString(Minecraft.getInstance().font, label, getX()+indent()+6, getContentYMiddle()-4, ScreenElements.COLOR_WHITE);
+            graphics.drawString(Minecraft.getInstance().font, label, left+indent()+6, top+(height-9)/2, ScreenElements.COLOR_WHITE);
 
-            widget.setX(getX()+getWidth()-WIDGET_WIDTH-4);
-            widget.setY(getY()+2);
+            widget.setX(left+width-WIDGET_WIDTH-4);
+            widget.setY(top+2);
             widget.render(graphics, mouseX, mouseY, partialTick);
         }
 
@@ -197,24 +200,24 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
         }
 
         @Override
-        public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
             toggle();
             return true;
         }
 
         @Override
-        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             if (isHovering) onCatHover.accept(category);
-            int x = getX()+indent();
+            int x = left+indent();
 
             // Placeholder icons
-            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x+4, getY()+2);
+            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x+4, top+2);
             Component label = ScreenElements.resolve(ScreenElements.catKey(list.config.modId, category.name()));
 
             if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));
             else if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
 
-            graphics.drawString(Minecraft.getInstance().font, label, x+20, getContentYMiddle()-4, ScreenElements.COLOR_WHITE);
+            graphics.drawString(Minecraft.getInstance().font, label, x+20, top+(height-9)/2, ScreenElements.COLOR_WHITE);
         }
 
         @Override

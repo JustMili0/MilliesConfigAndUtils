@@ -42,7 +42,7 @@ public class ListConfigEntry<T> implements ConfigItem {
     }
     public Class<?> type() {
         if (defaultValue.isEmpty()) return String.class;
-        return defaultValue.getFirst().getClass();
+        return defaultValue.get(0).getClass();
     }
 
     public void load(String raw) {

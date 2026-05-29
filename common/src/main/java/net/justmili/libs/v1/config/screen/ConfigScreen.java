@@ -115,7 +115,7 @@ public class ConfigScreen extends Screen {
             if (entryList != null && !entryList.undoStack.isEmpty()) entryList.undoStack.pop().run();
         }).bounds(panelX+PANEL_PADDING * 2+twoButtonW, twoButtonY, twoButtonW, PANEL_BUTTON_HEIGHT).build());
 
-        if (!builders.isEmpty()) setActiveConfig(builders.getFirst().getConfig());
+        if (!builders.isEmpty()) setActiveConfig(builders.get(0).getConfig());
     }
 
     @Override
@@ -140,11 +140,6 @@ public class ConfigScreen extends Screen {
         @Override
         public Component getTabTitle() {
             return Component.literal(config.name != null && !config.name.isBlank() ? config.name : config.modId);
-        }
-
-        @Override
-        public Component getTabExtraNarration() {
-            return null;
         }
 
         @Override
