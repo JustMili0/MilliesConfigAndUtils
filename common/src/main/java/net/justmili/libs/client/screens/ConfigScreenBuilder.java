@@ -1,9 +1,9 @@
 package net.justmili.libs.client.screens;
 
-import net.justmili.libs.config.ConfigLoader;
-import net.justmili.libs.config.build.ConfigEntry;
-import net.justmili.libs.config.items.CategoryItem;
-import net.justmili.libs.config.items.ConfigItem;
+import net.justmili.libs.v1.config.ConfigLoader;
+import net.justmili.libs.v1.config.build.ConfigEntry;
+import net.justmili.libs.v1.config.items.CategoryItem;
+import net.justmili.libs.v1.config.items.ConfigItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -28,7 +28,7 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
     private final ConfigLoader config;
     private final Consumer<ConfigEntry<?>> onHover;
     private final Consumer<CategoryItem> onCatHover;
-    final Deque<Runnable> undoStack = new ArrayDeque<>();
+    private final Deque<Runnable> undoStack = new ArrayDeque<>();
 
     public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config, Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover) {
         super(minecraft, width, height, y, itemHeight);

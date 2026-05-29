@@ -1,0 +1,88 @@
+package net.justmili.libs.v1.utils;
+
+import net.justmili.libs.data.MobData;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+public class EntityUtil {
+    // Player
+    public static void applyEffect(ServerPlayer player, MobEffect effects, int duration, int power) {
+        player.addEffect(new MobEffectInstance(effects, duration, power, false, false, false));
+    }
+    public static void moveToValidRespawnPos(ServerPlayer player) {
+        BlockPos respawnPos = player.getRespawnPosition();
+        ResourceKey<Level> respawnDim = player.getRespawnDimension();
+
+        if (respawnPos != null) {
+            ServerLevel targetLevel = player.server.getLevel(respawnDim);
+            if (targetLevel != null) {
+                Optional<Vec3> maybeSpot = Player.findRespawnPositionAndUseSpawnBlock(targetLevel, respawnPos, 0, player.isRespawnForced(), false);
+
+                if (maybeSpot.isPresent()) {
+                    Vec3 spot = maybeSpot.get();
+                    player.teleportTo(targetLevel, spot.x, spot.y+0.05, spot.z, 180, 0);
+                    return;
+                }
+
+                double fallbackX = respawnPos.getX()+0.5,
+                    fallbackY = respawnPos.getY()+0.05,
+                    fallbackZ = respawnPos.getZ()+0.5;
+                player.teleportTo(targetLevel, fallbackX, fallbackY, fallbackZ, 180,0);
+            }
+        }
+    }
+    public static boolean hasAdvancement(ServerPlayer player, ResourceLocation namespacedAdvancementID) {
+        return player.getAdvancements().getOrStartProgress(
+            player.server.getAdvancements().getAdvancement(namespacedAdvancementID)
+        ).isDone();
+    }
+    public static void grantAdvancement(ServerPlayer player, ResourceLocation namespacedAdvancementID) {
+        Advancement advancement = player.server.getAdvancements().getAdvancement(namespacedAdvancementID);
+        AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
+        if (!progress.isDone()) {
+            for (String criteria : progress.getRemainingCriteria())
+                player.getAdvancements().award(advancement, criteria);
+        }
+    }
+
+    // Non-player
+    // ----------
+
+    // Generic
+    public static <T extends Mob> List<T> getNearby(ServerPlayer player, Class<T> mob, double radius) {
+        return player.level().getEntitiesOfClass(mob, player.getBoundingBox().inflate(radius));
+    }
+    // For a list of entities within an aea of a player
+    public static <T extends Mob> void executeForNearby(ServerPlayer player, List<MobData> dataList, BiConsumer<T, MobData> action) {
+        dataList.forEach(data ->
+            getNearby(player, data.entityClass().asSubclass(Mob.class), data.range())
+                .forEach(mob -> action.accept((T) mob, data))
+        );
+    }
+    // For a single entity
+    public static <T extends Mob> void executeForNearby(ServerPlayer player, Class<?> entityClass, double range, Consumer<T> action) {
+        getNearby(player, entityClass.asSubclass(Mob.class), range)
+            .forEach(mob -> action.accept((T) mob));
+    }
+
+    public static <T extends Mob> void executeForNearby(ServerPlayer player, Class<?> entityClass, double range, double speed, BiConsumer<T, Double> action) {
+        getNearby(player, entityClass.asSubclass(Mob.class), range)
+            .forEach(mob -> action.accept((T) mob, speed));
+    }
+}
