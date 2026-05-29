@@ -1,11 +1,14 @@
 pluginManagement {
-	repositories {
-		maven("https://maven.fabricmc.net/") {
+    repositories {
+        maven("https://maven.fabricmc.net/") {
             name = "Fabric"
         }
-		mavenCentral()
-		gradlePluginPortal()
-	}
+        maven("https://maven.minecraftforge.net")
+        maven("https://maven.architectury.dev/")
+        gradlePluginPortal()
+    }
 }
 
-rootProject.name = "Millie's Config & Utils"
+include("common", "fabric", "forge")
+
+rootProject.name = "Millie's Core Libraries"

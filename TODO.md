@@ -1,16 +1,15 @@
 *Note: keep TODO and README on the latest main branch you're working on
 
-# TODO - 1.1
-- Fix builder tabs in config screen
-- Add ability to add custom images to entry descriptions (similar to YACL)
-- Add color picker entry
-- Add custom textures (on a 256x256 texture atlas(?)) for widgets
-- Add YAML/YML support
-
-# TODO - 1.2
-- Add datagen utils and everything else that you commonly use
-- Add multiloader API stuff (registry, events, networking, etc., basically Architectury API)
-- Rebrand mod to `Millie's Libs & API`
+# TODO - 1.0
+- Backport the whole config screen builder to 1.20.1
+- (Cross-Loader API) Add cross-loader events
+  - Straight up replicate the entirety of Fabric's event system adding whatever it's missing that Forge itself has for some reason
+- (Config Lib) Fix builder tabs in config screen
+- (Config Lib) Add ability to add custom images to entry descriptions (similar to YACL)
+- (Config Lib) Add color picker entry
+- (Config Lib) Add custom textures (on a 256x256 texture atlas(?)) for widgets
+- (Config Lib) Add YAML/YML support
+- (Cross-Loader API) Add cross-loader registries, networking and other
 - Write full documentation
 
 ### YAML/YML - Design

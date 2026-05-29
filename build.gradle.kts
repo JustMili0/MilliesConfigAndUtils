@@ -1,64 +1,84 @@
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import net.fabricmc.loom.api.fabricapi.FabricApiExtension
+import org.gradle.accessors.dm.LibrariesForLibs
+
 plugins {
-    alias(libs.plugins.fabric.loom)
+    java
+    alias(libs.plugins.arch.loom) apply false
+    alias(libs.plugins.arch.plugin)
+    alias(libs.plugins.shadow) apply false
 }
 
-base {
-    archivesName.set("${rootProject.property("archives_base_name")}-${rootProject.property("mod_version")}+mc${libs.versions.minecraft.get()}-Fabric")
+val mcVersion = libs.versions.minecraft.get()
+
+architectury {
+    minecraft = mcVersion
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/${rootProject.property("mod_id")}.accesswidener")
-}
+allprojects {
+    group = rootProject.property("maven_group") as String
+    version = rootProject.property("mod_version") as String
 
-repositories {
-    maven("https://maven.parchmentmc.org") // Mappings
-    maven("https://maven.terraformersmc.com/") // Mod Menu
-    maven("https://api.modrinth.com/maven")
-}
-
-dependencies {
-    minecraft(libs.minecraft.get())
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
-    })
-
-    modImplementation(libs.fabric.loader.get())
-    modImplementation(libs.fabric.api.get())
-
-    modImplementation("com.terraformersmc:modmenu:${rootProject.property("mod_menu")}") // Mod menu
-    // Just for performance
-    modImplementation("maven.modrinth:lithium:mc1.21.11-0.21.4-fabric")
-    modImplementation("maven.modrinth:sodium:mc1.21.11-0.8.12-beta.3-fabric")
-}
-
-tasks.processResources {
-    filesMatching("fabric.mod.json") {
-        expand(mapOf(
-            "mod_id" to rootProject.property("mod_id"),
-            "mod_name" to rootProject.property("mod_name"),
-            "mod_version" to rootProject.property("mod_version"),
-            "mod_description" to rootProject.property("mod_description"),
-            "mod_authors" to rootProject.property("mod_authors"),
-            "mod_license" to rootProject.property("mod_license"),
-            "fabric_loader_version" to libs.versions.fabric.loader.get(),
-            "fabric_api_version" to libs.versions.fabric.api.get(),
-            "minecraft_version_constraint" to rootProject.property("minecraft_version_constraint")
-        ))
+    repositories {
     }
 }
 
-tasks.withType<JavaCompile>().configureEach {
-	options.release = 21
-}
+subprojects {
+    apply(plugin = "java")
+    apply(plugin = "dev.architectury.loom")
+    apply(plugin = "architectury-plugin")
 
-java {
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
-}
+    val libs = rootProject.extensions.getByName<LibrariesForLibs>("libs")
+    base { archivesName.set(rootProject.property("archives_base_name") as String) }
 
-tasks.jar {
-	from("LICENSE") {
-		rename { "${it}" }
-	}
+    repositories {
+        maven("https://maven.parchmentmc.org")
+        maven("https://maven.minecraftforge.net/")
+        maven("https://repo.spongepowered.org/repository/maven-public/")
+        maven("https://maven.bawnorton.com/releases") // MixinSqured
+        maven("https://maven.enjarai.dev/mirrors") // MixinSqured
+        maven("https://maven.terraformersmc.com/") // Mod Menu
+    }
+
+    val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
+    val fabricApi = project.extensions.getByName<FabricApiExtension>("fabricApi")
+    loom.silentMojangMappingsLicense()
+
+    dependencies {
+        "minecraft"(libs.minecraft.get())
+
+        // Uncomment if you want datagen (fabric)
+        // IMPORTANT: Only for the sake of compiling - not to be used for anything else!
+        "modCompileOnly"(fabricApi.module("fabric-recipe-api-v1", libs.versions.fabric.api.get()))
+
+        "mappings"(loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${mcVersion}:${libs.versions.parchment.get()}@zip")
+        })
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    tasks.withType<JavaCompile>().configureEach {
+        options.release.set(17)
+    }
+
+    val detectedPlatform = when {
+        project.name.contains("fabric", true) -> "Fabric"
+        project.name.contains("forge", true) -> "Forge"
+        else -> null
+    }
+    project.version = if (detectedPlatform != null) {
+        "${rootProject.property("mod_version")}+mc${mcVersion}-${detectedPlatform}"
+    } else {
+        rootProject.property("mod_version") as String
+    }
+
+    tasks.withType<Jar>().configureEach {
+        archiveBaseName.set(rootProject.property("archives_base_name") as String)
+        archiveVersion.set(project.version.toString())
+    }
 }
