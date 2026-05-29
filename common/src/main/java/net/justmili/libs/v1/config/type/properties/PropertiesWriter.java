@@ -1,9 +1,9 @@
-package net.justmili.libs.v1.config.props;
+package net.justmili.libs.v1.config.type.properties;
 
 import net.justmili.libs.CoreLibs;
-import net.justmili.libs.v1.config.FormatWriter;
-import net.justmili.libs.v1.config.build.ConfigEntry;
-import net.justmili.libs.v1.config.build.ListConfigEntry;
+import net.justmili.libs.v1.config.type.FormatWriter;
+import net.justmili.libs.v1.config.entry.ConfigEntry;
+import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.CommentItem;
 import net.justmili.libs.v1.config.items.ConfigItem;

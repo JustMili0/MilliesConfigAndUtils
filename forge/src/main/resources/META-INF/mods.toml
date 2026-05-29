@@ -23,24 +23,3 @@ mandatory = true
 versionRange = "[${forge_version},)"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "lumynlib"
-mandatory = true
-versionRange = "[1,)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "architectury"
-mandatory = true
-versionRange = "[${architectury_api},)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "terrablender"
-mandatory = true
-versionRange = "[${terrablender},)"
-ordering = "NONE"
-side = "BOTH"

@@ -10,14 +10,11 @@
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "net.justmili.libs.fabric.client.FabricClient"
-    ],
     "main": [
       "net.justmili.libs.fabric.CoreLibsFabric"
     ],
     "modmenu": [
-      "net.justmili.libs.fabric.client.ModMenuEntrypoint"
+      "net.justmili.libs.fabric.ModMenuEntrypoint"
     ]
   },
   "mixins": [
@@ -26,8 +23,10 @@
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
-    "fabric-api": ">=${fabric_api_version}",
     "minecraft": "${minecraft_version_constraint}"
+  },
+  "recommends": {
+    "fabric-api": ">=${fabric_api_version}"
   },
   "custom": {
     "modmenu": {

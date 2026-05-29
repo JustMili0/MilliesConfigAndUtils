@@ -1,7 +1,7 @@
-package net.justmili.libs.v1.config;
+package net.justmili.libs.v1.config.type;
 
-import net.justmili.libs.v1.config.build.ConfigEntry;
-import net.justmili.libs.v1.config.build.ListConfigEntry;
+import net.justmili.libs.v1.config.entry.ConfigEntry;
+import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 
 import java.nio.file.Path;

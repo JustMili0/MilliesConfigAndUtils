@@ -1,9 +1,9 @@
-package net.justmili.libs.fabric.client;
+package net.justmili.libs.fabric;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.justmili.libs.ExampleConfig;
-import net.justmili.libs.v1.config.builder.ConfigScreen;
+import net.justmili.libs.v1.config.screen.ConfigScreen;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;

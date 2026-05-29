@@ -18,7 +18,7 @@ import java.util.List;
 public class FileUtil {
     public static File createFile(String path, String fileName) {
         // Starts in instance root
-        // Ex.: "config/millieslibs/", "something.json"
+        // Ex.: "config/milliecorelibs/", "something.json"
         return new File(path, fileName);
     }
     public static File createPath(String path) {

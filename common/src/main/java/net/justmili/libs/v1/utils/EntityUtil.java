@@ -1,6 +1,6 @@
 package net.justmili.libs.v1.utils;
 
-import net.justmili.libs.data.MobData;
+import net.justmili.libs.v1.data.MobData;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.core.BlockPos;
@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -25,6 +26,7 @@ public class EntityUtil {
     public static void applyEffect(ServerPlayer player, MobEffect effects, int duration, int power) {
         player.addEffect(new MobEffectInstance(effects, duration, power, false, false, false));
     }
+
     public static void moveToValidRespawnPos(ServerPlayer player) {
         BlockPos respawnPos = player.getRespawnPosition();
         ResourceKey<Level> respawnDim = player.getRespawnDimension();
@@ -47,28 +49,38 @@ public class EntityUtil {
             }
         }
     }
+
     public static boolean hasAdvancement(ServerPlayer player, ResourceLocation namespacedAdvancementID) {
-        return player.getAdvancements().getOrStartProgress(
-            player.server.getAdvancements().getAdvancement(namespacedAdvancementID)
-        ).isDone();
+        Advancement advancement = player.server.getAdvancements().getAdvancement(namespacedAdvancementID);
+        if (advancement == null) return false;
+
+        return player.getAdvancements().getOrStartProgress(advancement).isDone();
     }
     public static void grantAdvancement(ServerPlayer player, ResourceLocation namespacedAdvancementID) {
         Advancement advancement = player.server.getAdvancements().getAdvancement(namespacedAdvancementID);
+        if (advancement == null) return;
+
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
-        if (!progress.isDone()) {
-            for (String criteria : progress.getRemainingCriteria())
-                player.getAdvancements().award(advancement, criteria);
-        }
+        if (!progress.isDone()) for (String criteria : progress.getRemainingCriteria()) player.getAdvancements().award(advancement, criteria);
+    }
+    public static void revokeAdvancement(ServerPlayer player, ResourceLocation namespacedAdvancementID) {
+        Advancement advancement = player.server.getAdvancements().getAdvancement(namespacedAdvancementID);
+        if (advancement == null) return;
+
+        AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
+        if (progress.isDone()) for (String criteria : progress.getCompletedCriteria()) player.getAdvancements().revoke(advancement, criteria);
     }
 
     // Non-player
-    // ----------
+    public static void applyEffect(LivingEntity entity, MobEffect effects, int duration, int power) {
+        entity.addEffect(new MobEffectInstance(effects, duration, power, false, false, false));
+    }
 
     // Generic
     public static <T extends Mob> List<T> getNearby(ServerPlayer player, Class<T> mob, double radius) {
         return player.level().getEntitiesOfClass(mob, player.getBoundingBox().inflate(radius));
     }
-    // For a list of entities within an aea of a player
+    // For a list of entities within an area of a player
     public static <T extends Mob> void executeForNearby(ServerPlayer player, List<MobData> dataList, BiConsumer<T, MobData> action) {
         dataList.forEach(data ->
             getNearby(player, data.entityClass().asSubclass(Mob.class), data.range())

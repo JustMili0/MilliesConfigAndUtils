@@ -1,8 +1,9 @@
-package net.justmili.libs.v1.config.builder;
+package net.justmili.libs.v1.config;
 
 import net.justmili.libs.CoreLibs;
-import net.justmili.libs.v1.config.ConfigLoader;
-import net.justmili.libs.v1.config.FileType;
+import net.justmili.libs.v1.config.entry.ConfigEntry;
+import net.justmili.libs.v1.config.entry.ListConfigEntry;
+import net.justmili.libs.v1.config.type.FileType;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.CommentItem;
 

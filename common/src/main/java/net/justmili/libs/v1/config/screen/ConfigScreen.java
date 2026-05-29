@@ -1,7 +1,7 @@
-package net.justmili.libs.v1.config.builder;
+package net.justmili.libs.v1.config.screen;
 
-import net.justmili.libs.client.screens.ConfigScreenBuilder;
-import net.justmili.libs.client.screens.ScreenElements;
+import net.justmili.libs.v1.config.entry.ConfigEntry;
+import net.justmili.libs.v1.config.MConfigBuilder;
 import net.justmili.libs.v1.config.ConfigLoader;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.minecraft.client.gui.GuiGraphics;

@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.config.builder;
+package net.justmili.libs.v1.config.entry;
 
 import net.justmili.libs.v1.config.ConfigLoader;
 import net.justmili.libs.v1.config.items.ConfigItem;

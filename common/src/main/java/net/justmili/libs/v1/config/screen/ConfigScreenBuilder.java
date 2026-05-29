@@ -1,4 +1,4 @@
-package net.justmili.libs.client.screens;
+package net.justmili.libs.v1.config.screen;
 
 import net.justmili.libs.v1.config.ConfigLoader;
 import net.justmili.libs.v1.config.build.ConfigEntry;

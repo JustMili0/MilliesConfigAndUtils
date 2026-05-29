@@ -1,9 +1,9 @@
-package net.justmili.libs.v1.config.json;
+package net.justmili.libs.v1.config.type.json;
 
 import net.justmili.libs.CoreLibs;
-import net.justmili.libs.v1.config.FormatWriter;
-import net.justmili.libs.v1.config.build.ConfigEntry;
-import net.justmili.libs.v1.config.build.ListConfigEntry;
+import net.justmili.libs.v1.config.entry.ConfigEntry;
+import net.justmili.libs.v1.config.entry.ListConfigEntry;
+import net.justmili.libs.v1.config.type.FormatWriter;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.CommentItem;
 import net.justmili.libs.v1.config.items.ConfigItem;
@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-public class Json5Writer implements FormatWriter {
+public class JsonWriter implements FormatWriter {
 
     @Override
     public void write(Path path, CategoryItem root) {
@@ -22,41 +22,36 @@ public class Json5Writer implements FormatWriter {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("{\n");
-            writeItems(writer, root.children(), "  ");
+            writeItems(writer, root.children(), "  ", new int[]{0});
             writer.write("}\n");
         } catch (IOException e) {
             CoreLibs.LOGGER.error("Failed to write config: {}", e.getMessage());
         }
     }
 
-    private void writeItems(BufferedWriter writer, List<ConfigItem> items, String indent) throws IOException {
-        int lastReal = SharedJson.lastRealIndex(items, true);
+    private void writeItems(BufferedWriter writer, List<ConfigItem> items, String indent, int[] hintCounter) throws IOException {
+        int lastReal = SharedJson.lastRealIndex(items, false);
         for (int i = 0; i < items.size(); i++) {
             ConfigItem item = items.get(i);
             boolean last = i == lastReal;
 
-            if (item instanceof CommentItem commentItem) {
-                for (String line : commentItem.comment().split("\n")) writer.write(indent+"// "+line+"\n");
+            if (item instanceof CommentItem) {
+                // JSON doesn't support comments, skip silently
 
             } else if (item instanceof ListConfigEntry listEntry) {
-                writer.write(indent+"// "+listHint(listEntry, CommentStyle.NONE)+"\n");
+                writer.write(indent+"\"_h"+hintCounter[0]+++"\": \""+listHint(listEntry, CommentStyle.NONE)+"\",\n");
                 writer.write(indent+"\""+listEntry.key()+"\": "+listEntry.serializeJson(indent)+(last ? "\n" : ",\n"));
                 if (!last) writer.write("\n");
 
             } else if (item instanceof ConfigEntry<?> entry) {
-                writer.write(indent+"// "+hint(entry, CommentStyle.NONE)+"\n");
+                writer.write(indent+"\"_h"+hintCounter[0]+++"\": \""+hint(entry, CommentStyle.NONE)+"\",\n");
                 writer.write(indent+"\""+entry.key()+"\": "+SharedJson.jsonValue(entry)+(last ? "\n" : ",\n"));
                 if (!last) writer.write("\n");
 
             } else if (item instanceof CategoryItem category) {
-                if (category.comment() != null) {
-                    for (String line : category.comment().split("\n")) writer.write(indent+"// "+line+"\n");
-                }
-
                 writer.write(indent+"\""+category.name()+"\": {\n");
-                writeItems(writer, category.children(), indent+"  ");
+                writeItems(writer, category.children(), indent+"  ", hintCounter);
                 writer.write(indent+"}"+(last ? "\n" : ",\n"));
-
                 if (!last) writer.write("\n");
             }
         }
@@ -67,10 +62,7 @@ public class Json5Writer implements FormatWriter {
         try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
             StringBuilder stringBuilder = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) {
-                String stripped = line.contains("//") ? line.substring(0, line.indexOf("//")) : line;
-                stringBuilder.append(stripped).append("\n");
-            }
+            while ((line = reader.readLine()) != null) stringBuilder.append(line).append("\n");
 
             String json = stringBuilder.toString();
             for (ConfigEntry<?> entry : entries.values()) {
