@@ -1,31 +1,35 @@
-# Millie's Config & Utils
-Easy to use :D
+# Millie's Core Libraries
+The all-in-one for you.
 
 <hr>
 
 ## Why?
-I really needed a config lib and utils for the stuff I often make.
+Well there's a couple reasons
+- Architectury API kinda sucks, it's good usually but has some weird quirks and takes its sweet time to get updated
+- Most Config libraries either don't have everything I need or are a pain to work with
+- I hate having more than 2-3 dependencies
 
 ## Dev Notes
-1. YAML/YML support is not yet implemented!
-2. Version 1.1 is currently in progress and will bring some structural changes (changed mod id and packages) as well as new tools and features. Then there will be update 1.2 which probably will be the last update and will mark the beggining of me porting the mod to older and newer versions as well as other mod loaders.
-3. After all projects by [Lumynity Studios](https://modrinth.com/organization/lumynity-studios) will be updated to latest versions and loaders as well as my mod [Left Forgotten](https://modrinth.com/mod/left-forgotten), this library will no longer support Minecraft 1.20.1!
+After all projects by [Lumynity Studios](https://modrinth.com/organization/lumynity-studios) will be updated to latest versions and loaders as well as my mod [Left Forgotten](https://modrinth.com/mod/left-forgotten), this library will no longer support Minecraft 1.20.1!
 
 ### Planned version-loader support?
 - 26.2.x - Fabric
 - 26.1.x - Fabric, NeoForge
-- 1.21.11 - Fabric/Quilt, NeoForge
-- (1.21.6-)1.21.8 - Fabric/Quilt, NeoForge
-- 1.21.4 - Fabric/Quilt, NeoForge
-- 1.21.1 - Fabric/Quilt, NeoForge
-- 1.20.1 - Fabric/Quilt, Forge
+- 1.21.11 - Fabric, NeoForge
+- (1.21.6-)1.21.8 - Fabric, NeoForge
+- 1.21.5 - Fabric, NeoForge
+- 1.21.4 - Fabric, NeoForge
+- 1.21.1 - Fabric, NeoForge
+- 1.20.1 - Fabric/Quilt, Forge <- We are here
 
 <hr>
 
 ## Documentation
-**Config Library - Example Config**<br>
-A lot of design inspiration came from [SuperMartijn642's Config Lib](https://modrinth.com/mod/supermartijn642s-config-lib) (No code was directly copied from that project.)
+All documentation can be found under [docs.lumynitystudios.net/corelibs](https://docs.lumynitystudios.net/corelibs)<br>
+(URL may change as the website at the time of writing this is not yet made)
 
+<!-- TO BE DELETED -->
+**Config Library - Example Config**<br>
 <details>
 <summary>How to Add to Gradle Project</summary>
 
