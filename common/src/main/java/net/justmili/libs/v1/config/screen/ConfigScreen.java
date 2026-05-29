@@ -20,19 +20,16 @@ import java.util.function.Consumer;
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreen extends Screen {
     private static final int
-        BACKGROUND_X_OFFSET = -2, // Don't fucking touch it
         ITEM_HEIGHT = 24,
         TAB_HEIGHT = 24,
+        BACKGROUND_X_OFFSET = 164,
         PANEL_PADDING = 6,
         PANEL_BUTTON_HEIGHT = 20,
         PANEL_BUTTON_WIDTH = 74,
         PANEL_DIVIDER_X_OFFSET = 1,
-        ENTRY_LIST_X_OFFSET = 2,
         ENTRY_LIST_Y_OFFSET = 2,
-        TAB_BAR_Y = 0,
         HLINE_Y = 25,
-        PREVIEW_TEXT_X_OFFSET = PANEL_PADDING,
-        PREVIEW_TEXT_Y_OFFSET = PANEL_PADDING,
+        PREVIEW_TEXT_Y_OFFSET = TAB_HEIGHT+PANEL_PADDING,
         BUTTON_ROW_BOTTOM_OFFSET = PANEL_PADDING,
         BUTTON_ROW_GAP = 4;
 
@@ -49,6 +46,7 @@ public class ConfigScreen extends Screen {
         this.parent = parent;
         this.builders = builders;
     }
+
     public ConfigScreen(Component title, Screen parent, MConfigBuilder builder) {
         this(title, parent, List.of(builder));
     }
@@ -57,13 +55,47 @@ public class ConfigScreen extends Screen {
         return width-BACKGROUND_X_OFFSET;
     }
 
+    private int ENTRY_LIST_WIDTH() {
+        return PANEL_X_OFFSET()-PANEL_DIVIDER_X_OFFSET;
+    }
+
+    @Override
+    protected void init() {
+        int entryListWidth = ENTRY_LIST_WIDTH();
+        List<Tab> tabs = builders.stream().map(builder -> (Tab) new ConfigTab(builder.getConfig(), this::setActiveConfig)).toList();
+
+        tabBar = TabNavigationBar.builder(tabManager, entryListWidth).addTabs(tabs.toArray(new Tab[0])).build();
+        addRenderableWidget(tabBar);
+        tabBar.selectTab(0, false);
+
+        int buttonRowY = height-BUTTON_ROW_BOTTOM_OFFSET-PANEL_BUTTON_HEIGHT,
+            twoButtonY = buttonRowY-PANEL_BUTTON_HEIGHT-BUTTON_ROW_GAP;
+
+        addRenderableWidget(Button.builder(Component.translatable("gui.config.done"), button -> onClose())
+            .bounds(PANEL_X_OFFSET()+PANEL_PADDING, buttonRowY, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
+            .build());
+
+        addRenderableWidget(Button.builder(Component.translatable("gui.config.reset"), button -> {
+            if (hoveredEntry == null) return;
+
+            Object previous = hoveredEntry.get();
+            ((ConfigEntry<Object>) hoveredEntry).set(hoveredEntry.defaultValue());
+            if (entryList != null) entryList.undoStack.push(() -> ((ConfigEntry<Object>) hoveredEntry).set(previous));
+        }).bounds(PANEL_X_OFFSET()+PANEL_PADDING, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
+
+        addRenderableWidget(Button.builder(Component.translatable("gui.config.undo"), button -> {
+            if (entryList != null && !entryList.undoStack.isEmpty()) entryList.undoStack.pop().run();
+        }).bounds(PANEL_X_OFFSET()+PANEL_PADDING+PANEL_BUTTON_WIDTH+BUTTON_ROW_GAP, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
+
+        if (!builders.isEmpty()) setActiveConfig(builders.get(0).getConfig());
+    }
+
     private void setActiveConfig(ConfigLoader config) {
         if (entryList != null) removeWidget(entryList);
 
-        int listWidth = PANEL_X_OFFSET()-ENTRY_LIST_X_OFFSET;
-        int listY = TAB_HEIGHT+ENTRY_LIST_Y_OFFSET;
-        int listHeight = height-listY;
-        entryList = new ConfigScreenBuilder(minecraft, listWidth, listHeight, listY, ITEM_HEIGHT, config,
+        int listY = TAB_HEIGHT+ENTRY_LIST_Y_OFFSET,
+            listHeight = height-listY;
+        entryList = new ConfigScreenBuilder(minecraft, ENTRY_LIST_WIDTH(), listHeight, listY, ITEM_HEIGHT, config,
             entry -> hoveredEntry = entry, category -> {
             hoveredCategory = category;
             hoveredEntry = null;
@@ -72,10 +104,29 @@ public class ConfigScreen extends Screen {
         addRenderableWidget(entryList);
     }
 
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        hoveredEntry = null;
+        hoveredCategory = null;
+
+        renderBackground(graphics);
+        graphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
+        // Yes, texture size is 31x31 because it matches perfectly, don't ask me why or how, I don't fucking know
+        graphics.blit(Screen.BACKGROUND_LOCATION, PANEL_X_OFFSET(), 0, 0, width-10, BACKGROUND_X_OFFSET, height, 31, 31);
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+        super.render(graphics, mouseX, mouseY, delta);
+
+        if (tabBar != null) graphics.hLine(0, width, HLINE_Y, ScreenElements.COLOR_WHITE);
+        graphics.vLine(PANEL_X_OFFSET()-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT, height, ScreenElements.COLOR_WHITE);
+
+        renderPreviewPanel(graphics);
+    }
+
     private void renderPreviewPanel(GuiGraphics graphics) {
-        int x = PANEL_X_OFFSET()+PREVIEW_TEXT_X_OFFSET;
-        int y = PREVIEW_TEXT_Y_OFFSET;
-        int textWidth = BACKGROUND_X_OFFSET-PANEL_PADDING * 2;
+        int x = PANEL_X_OFFSET()+PANEL_PADDING,
+            y = PREVIEW_TEXT_Y_OFFSET,
+            textWidth = BACKGROUND_X_OFFSET-PANEL_PADDING * 2;
 
         if (hoveredEntry != null) {
             String modId = builders.stream()
@@ -101,48 +152,6 @@ public class ConfigScreen extends Screen {
             graphics.drawWordWrap(font, ScreenElements.resolve(
                 ScreenElements.catDescKey(modId, hoveredCategory.name())), x, y, textWidth, ScreenElements.COLOR_WHITE);
         }
-    }
-
-    @Override
-    protected void init() {
-        List<Tab> tabs = builders.stream().map(builder -> (Tab) new ConfigTab(builder.getConfig(), this::setActiveConfig)).toList();
-
-        tabBar = TabNavigationBar.builder(tabManager, width).addTabs(tabs.toArray(new Tab[0])).build();
-        addRenderableWidget(tabBar);
-        tabBar.selectTab(0, false);
-
-        int panelX = PANEL_X_OFFSET();
-        int buttonRowY = height-BUTTON_ROW_BOTTOM_OFFSET-PANEL_BUTTON_HEIGHT;
-        int twoButtonY = buttonRowY-PANEL_BUTTON_HEIGHT-BUTTON_ROW_GAP;
-
-        addRenderableWidget(Button.builder(Component.translatable("gui.config.done"), button -> onClose())
-            .bounds(panelX+PANEL_PADDING, buttonRowY, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
-            .build());
-
-        addRenderableWidget(Button.builder(Component.translatable("gui.config.reset"), button -> {
-            if (hoveredEntry == null) return;
-
-            Object previous = hoveredEntry.get();
-            ((ConfigEntry<Object>) hoveredEntry).set(hoveredEntry.defaultValue());
-            if (entryList != null) entryList.undoStack.push(() -> ((ConfigEntry<Object>) hoveredEntry).set(previous));
-        }).bounds(panelX+PANEL_PADDING, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
-
-        addRenderableWidget(Button.builder(Component.translatable("gui.config.undo"), button -> {
-            if (entryList != null && !entryList.undoStack.isEmpty()) entryList.undoStack.pop().run();
-        }).bounds(panelX+PANEL_PADDING+PANEL_BUTTON_WIDTH+BUTTON_ROW_GAP, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
-
-        if (!builders.isEmpty()) setActiveConfig(builders.get(0).getConfig());
-    }
-
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        super.render(graphics, mouseX, mouseY, delta);
-
-        if (tabBar != null) graphics.hLine(0, width, HLINE_Y, ScreenElements.COLOR_WHITE);
-
-        graphics.vLine(PANEL_X_OFFSET()-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT, height, ScreenElements.COLOR_WHITE);
-
-        renderPreviewPanel(graphics);
     }
 
     @Override

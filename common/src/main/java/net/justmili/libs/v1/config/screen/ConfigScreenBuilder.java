@@ -6,6 +6,7 @@ import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.ConfigItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -25,13 +26,30 @@ import java.util.function.Consumer;
 
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScreenBuilder.Row> {
+    private static final int
+        SCROLLBAR_WIDTH = 6,
+        SCROLLBAR_MARGIN = 2,
+        ROW_WIDTH_REDUCTION = SCROLLBAR_WIDTH+SCROLLBAR_MARGIN-2,
+        ROW_LEFT_MARGIN = 2,
+        DEPTH_INDENT = 10,
+        WIDGET_WIDTH = 150,
+        WIDGET_HEIGHT = 20,
+        LABEL_LEFT_PADDING = 6,
+        LABEL_RIGHT_GAP = 8,
+        WIDGET_RIGHT_MARGIN = 4,
+        WIDGET_TOP_MARGIN = 2,
+        CAT_ICON_SIZE = 20,
+        CAT_ICON_X_OFFSET = 4,
+        CAT_LABEL_X_OFFSET = 20,
+        CAT_LABEL_RIGHT_MARGIN = 30;
+
     private final ConfigLoader config;
     private final Consumer<ConfigEntry<?>> onHover;
     private final Consumer<CategoryItem> onCatHover;
     public final Deque<Runnable> undoStack = new ArrayDeque<>();
 
     public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config, Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover) {
-        super(minecraft, width, height, y, y + height, itemHeight);
+        super(minecraft, width, height, y, y+height, itemHeight);
         this.config = config;
         this.onHover = onHover;
         this.onCatHover = onCatHover;
@@ -45,7 +63,8 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
     private void buildRows(List<ConfigItem> items, int depth) {
         for (ConfigItem item : items) {
             if (item instanceof CategoryItem category) addEntry(new CategoryRow(category, depth, onCatHover, this));
-            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
+            else if (item instanceof ConfigEntry<?> entry)
+                addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
             // CommentItems are file-only, skip
         }
     }
@@ -60,24 +79,25 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
 
     private void addChildRows(CategoryItem category, int depth) {
         for (ConfigItem item : category.children()) {
-            if (item instanceof CategoryItem) addEntry(new CategoryRow(category, depth, onCatHover, this));
-            else if (item instanceof ConfigEntry<?> entry) addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
+            if (item instanceof CategoryItem child) addEntry(new CategoryRow(child, depth, onCatHover, this));
+            else if (item instanceof ConfigEntry<?> entry)
+                addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
         }
     }
 
     @Override
     public int getRowWidth() {
-        return this.width-6;
+        return this.width-ROW_WIDTH_REDUCTION;
     }
 
     @Override
     public int getRowLeft() {
-        return this.x0+2;
+        return this.x0+ROW_LEFT_MARGIN;
     }
 
     @Override
     protected int getScrollbarPosition() {
-        return this.x0+this.width-6;
+        return this.x0+this.width-SCROLLBAR_WIDTH;
     }
 
     public abstract static class Row extends ContainerObjectSelectionList.Entry<Row> {
@@ -88,7 +108,7 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
         }
 
         protected int indent() {
-            return depth * 10;
+            return depth * DEPTH_INDENT;
         }
     }
 
@@ -98,8 +118,6 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
         private final ConfigEntry<?> entry;
         private final Consumer<ConfigEntry<?>> onHover;
         private final AbstractWidget widget;
-        private static final int WIDGET_WIDTH = 150;
-        private static final int WIDGET_HEIGHT = 20;
 
         public EntryRow(ConfigEntry<?> entry, String modId, int depth, Consumer<ConfigEntry<?>> onHover, Deque<Runnable> undoStack) {
             super(depth);
@@ -125,6 +143,7 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
             } else {
                 EditBox box = new EditBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.empty());
                 box.setValue(String.valueOf(entry.get()));
+                box.setFilter(text -> validateInput(entry.defaultValue(), text));
                 box.setResponder(text -> {
                     Object previous = entry.get();
                     applyText((ConfigEntry<Object>) entry, text);
@@ -136,6 +155,15 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
                 });
                 this.widget = box;
             }
+        }
+
+        private static boolean validateInput(Object defaultValue, String text) {
+            if (text.isEmpty()) return true;
+            if (defaultValue instanceof Integer) return text.matches("-?\\d*");
+            if (defaultValue instanceof Long) return text.matches("-?\\d*");
+            if (defaultValue instanceof Double) return text.matches("-?\\d*\\.?\\d*");
+            if (defaultValue instanceof Float) return text.matches("-?\\d*\\.?\\d*");
+            return true;
         }
 
         private <T> void applyText(ConfigEntry<T> entry, String text) {
@@ -158,10 +186,22 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
             Component label = ScreenElements.resolve(ScreenElements.varKey(modId, entry.key()));
             if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
 
-            graphics.drawString(Minecraft.getInstance().font, label, left+indent()+6, top+(height-9)/2, ScreenElements.COLOR_WHITE);
+            Font font = Minecraft.getInstance().font;
+            int labelX = left+indent()+LABEL_LEFT_PADDING,
+                labelMaxWidth = width-WIDGET_WIDTH-LABEL_RIGHT_GAP-indent(),
+                labelY = top+(height-9)/2;
 
-            widget.setX(left+width-WIDGET_WIDTH-4);
-            widget.setY(top+2);
+            String labelStr = label.getString();
+            if (font.width(labelStr) > labelMaxWidth) {
+                while (font.width(labelStr+"...") > labelMaxWidth && !labelStr.isEmpty())
+                    labelStr = labelStr.substring(0, labelStr.length()-1);
+                graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, ScreenElements.COLOR_WHITE);
+            } else {
+                graphics.drawString(font, label, labelX, labelY, ScreenElements.COLOR_WHITE);
+            }
+
+            widget.setX(left+width-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN);
+            widget.setY(top+WIDGET_TOP_MARGIN);
             widget.render(graphics, mouseX, mouseY, partialTick);
         }
 
@@ -194,7 +234,7 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
             expanded = !expanded;
             List<Row> topRows = new ArrayList<>();
             for (Row row : list.children()) {
-                if (row.depth == 0) topRows.add(row);
+                if (row.depth == depth) topRows.add(row);
             }
             list.rebuildPreservingState(topRows);
         }
@@ -210,14 +250,27 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
             if (isHovering) onCatHover.accept(category);
             int x = left+indent();
 
+            Font font = Minecraft.getInstance().font;
+            int labelX = x+CAT_LABEL_X_OFFSET,
+                labelMaxWidth = width-indent()-CAT_LABEL_RIGHT_MARGIN,
+                labelY = top+(height-9)/2;
+
             // Placeholder icons
-            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x+4, top+2);
+            graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(),
+                x+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE)/2);
             Component label = ScreenElements.resolve(ScreenElements.catKey(list.config.modId, category.name()));
 
             if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));
             else if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
 
-            graphics.drawString(Minecraft.getInstance().font, label, x+20, top+(height-9)/2, ScreenElements.COLOR_WHITE);
+            String labelStr = label.getString();
+            if (font.width(labelStr) > labelMaxWidth) {
+                while (font.width(labelStr+"...") > labelMaxWidth && !labelStr.isEmpty())
+                    labelStr = labelStr.substring(0, labelStr.length()-1);
+                graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, ScreenElements.COLOR_WHITE);
+            } else {
+                graphics.drawString(font, label, labelX, labelY, ScreenElements.COLOR_WHITE);
+            }
         }
 
         @Override
