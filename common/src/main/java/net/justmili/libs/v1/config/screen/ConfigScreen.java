@@ -20,11 +20,21 @@ import java.util.function.Consumer;
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreen extends Screen {
     private static final int
-        BACKGROUND_X_OFFSET = 160, // Broken bg x offset, making space for the "preview" panel
+        BACKGROUND_X_OFFSET = -2, // Don't fucking touch it
         ITEM_HEIGHT = 24,
         TAB_HEIGHT = 24,
+        PANEL_PADDING = 6,
         PANEL_BUTTON_HEIGHT = 20,
-        PANEL_PADDING = 6;
+        PANEL_BUTTON_WIDTH = 74,
+        PANEL_DIVIDER_X_OFFSET = 1,
+        ENTRY_LIST_X_OFFSET = 2,
+        ENTRY_LIST_Y_OFFSET = 2,
+        TAB_BAR_Y = 0,
+        HLINE_Y = 25,
+        PREVIEW_TEXT_X_OFFSET = PANEL_PADDING,
+        PREVIEW_TEXT_Y_OFFSET = PANEL_PADDING,
+        BUTTON_ROW_BOTTOM_OFFSET = PANEL_PADDING,
+        BUTTON_ROW_GAP = 4;
 
     public final Screen parent;
     private final List<MConfigBuilder> builders;
@@ -39,16 +49,21 @@ public class ConfigScreen extends Screen {
         this.parent = parent;
         this.builders = builders;
     }
-
     public ConfigScreen(Component title, Screen parent, MConfigBuilder builder) {
         this(title, parent, List.of(builder));
+    }
+
+    private int PANEL_X_OFFSET() {
+        return width-BACKGROUND_X_OFFSET;
     }
 
     private void setActiveConfig(ConfigLoader config) {
         if (entryList != null) removeWidget(entryList);
 
-        int listWidth = this.width-BACKGROUND_X_OFFSET-2, listY = TAB_HEIGHT+2, listHeight = this.height-listY;
-        entryList = new ConfigScreenBuilder(this.minecraft, listWidth, listHeight, listY, ITEM_HEIGHT, config,
+        int listWidth = PANEL_X_OFFSET()-ENTRY_LIST_X_OFFSET;
+        int listY = TAB_HEIGHT+ENTRY_LIST_Y_OFFSET;
+        int listHeight = height-listY;
+        entryList = new ConfigScreenBuilder(minecraft, listWidth, listHeight, listY, ITEM_HEIGHT, config,
             entry -> hoveredEntry = entry, category -> {
             hoveredCategory = category;
             hoveredEntry = null;
@@ -57,7 +72,9 @@ public class ConfigScreen extends Screen {
         addRenderableWidget(entryList);
     }
 
-    private void renderPreviewPanel(GuiGraphics graphics, int x, int y) {
+    private void renderPreviewPanel(GuiGraphics graphics) {
+        int x = PANEL_X_OFFSET()+PREVIEW_TEXT_X_OFFSET;
+        int y = PREVIEW_TEXT_Y_OFFSET;
         int textWidth = BACKGROUND_X_OFFSET-PANEL_PADDING * 2;
 
         if (hoveredEntry != null) {
@@ -67,7 +84,7 @@ public class ConfigScreen extends Screen {
 
             Component name = ScreenElements.resolve(ScreenElements.varKey(modId, hoveredEntry.key())).copy().withStyle(style -> style.withBold(true));
             graphics.drawWordWrap(font, name, x, y, textWidth, ScreenElements.COLOR_WHITE);
-            y += font.wordWrapHeight(name, textWidth)+4;
+            y += font.wordWrapHeight(name, textWidth);
 
             graphics.drawWordWrap(font, ScreenElements.resolve(
                 ScreenElements.varDescKey(modId, hoveredEntry.key())), x, y, textWidth, ScreenElements.COLOR_WHITE);
@@ -79,7 +96,7 @@ public class ConfigScreen extends Screen {
 
             Component name = ScreenElements.resolve(ScreenElements.catKey(modId, hoveredCategory.name())).copy().withStyle(style -> style.withBold(true));
             graphics.drawWordWrap(font, name, x, y, textWidth, ScreenElements.COLOR_WHITE);
-            y += font.wordWrapHeight(name, textWidth)+4;
+            y += font.wordWrapHeight(name, textWidth);
 
             graphics.drawWordWrap(font, ScreenElements.resolve(
                 ScreenElements.catDescKey(modId, hoveredCategory.name())), x, y, textWidth, ScreenElements.COLOR_WHITE);
@@ -90,17 +107,16 @@ public class ConfigScreen extends Screen {
     protected void init() {
         List<Tab> tabs = builders.stream().map(builder -> (Tab) new ConfigTab(builder.getConfig(), this::setActiveConfig)).toList();
 
-        tabBar = TabNavigationBar.builder(tabManager, this.width-BACKGROUND_X_OFFSET).addTabs(tabs.toArray(new Tab[0])).build();
+        tabBar = TabNavigationBar.builder(tabManager, width).addTabs(tabs.toArray(new Tab[0])).build();
         addRenderableWidget(tabBar);
         tabBar.selectTab(0, false);
 
-        int panelX = this.width-BACKGROUND_X_OFFSET,
-            panelBottom = this.height-PANEL_PADDING,
-            twoButtonY = panelBottom-PANEL_BUTTON_HEIGHT * 2-4,
-            twoButtonW = (BACKGROUND_X_OFFSET-PANEL_PADDING * 3) / 2;
+        int panelX = PANEL_X_OFFSET();
+        int buttonRowY = height-BUTTON_ROW_BOTTOM_OFFSET-PANEL_BUTTON_HEIGHT;
+        int twoButtonY = buttonRowY-PANEL_BUTTON_HEIGHT-BUTTON_ROW_GAP;
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.done"), button -> onClose())
-            .bounds(panelX+PANEL_PADDING, panelBottom-PANEL_BUTTON_HEIGHT, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
+            .bounds(panelX+PANEL_PADDING, buttonRowY, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
             .build());
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.reset"), button -> {
@@ -109,11 +125,11 @@ public class ConfigScreen extends Screen {
             Object previous = hoveredEntry.get();
             ((ConfigEntry<Object>) hoveredEntry).set(hoveredEntry.defaultValue());
             if (entryList != null) entryList.undoStack.push(() -> ((ConfigEntry<Object>) hoveredEntry).set(previous));
-        }).bounds(panelX+PANEL_PADDING, twoButtonY, twoButtonW, PANEL_BUTTON_HEIGHT).build());
+        }).bounds(panelX+PANEL_PADDING, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.undo"), button -> {
             if (entryList != null && !entryList.undoStack.isEmpty()) entryList.undoStack.pop().run();
-        }).bounds(panelX+PANEL_PADDING * 2+twoButtonW, twoButtonY, twoButtonW, PANEL_BUTTON_HEIGHT).build());
+        }).bounds(panelX+PANEL_PADDING+PANEL_BUTTON_WIDTH+BUTTON_ROW_GAP, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
 
         if (!builders.isEmpty()) setActiveConfig(builders.get(0).getConfig());
     }
@@ -122,18 +138,16 @@ public class ConfigScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         super.render(graphics, mouseX, mouseY, delta);
 
-        if (tabBar != null)
-            graphics.hLine(0, this.width-BACKGROUND_X_OFFSET, tabBar.getRectangle().bottom(), ScreenElements.COLOR_WHITE);
+        if (tabBar != null) graphics.hLine(0, width, HLINE_Y, ScreenElements.COLOR_WHITE);
 
-        int panelX = this.width-BACKGROUND_X_OFFSET;
-        graphics.fill(panelX, 0, panelX+1, this.height, ScreenElements.COLOR_WHITE);
+        graphics.vLine(PANEL_X_OFFSET()-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT, height, ScreenElements.COLOR_WHITE);
 
-        renderPreviewPanel(graphics, panelX+PANEL_PADDING, PANEL_PADDING);
+        renderPreviewPanel(graphics);
     }
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(parent);
+        if (minecraft != null) minecraft.setScreen(parent);
     }
 
     private record ConfigTab(ConfigLoader config, Consumer<ConfigLoader> onSelect) implements Tab {
