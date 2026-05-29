@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreen extends Screen {
     private static final int
-        PREVIEW_WIDTH = 160,
+        BACKGROUND_X_OFFSET = 160, // Broken bg x offset, making space for the "preview" panel
         ITEM_HEIGHT = 24,
         TAB_HEIGHT = 24,
         PANEL_BUTTON_HEIGHT = 20,
@@ -47,7 +47,7 @@ public class ConfigScreen extends Screen {
     private void setActiveConfig(ConfigLoader config) {
         if (entryList != null) removeWidget(entryList);
 
-        int listWidth = this.width-PREVIEW_WIDTH-2, listY = TAB_HEIGHT+2, listHeight = this.height-listY;
+        int listWidth = this.width-BACKGROUND_X_OFFSET-2, listY = TAB_HEIGHT+2, listHeight = this.height-listY;
         entryList = new ConfigScreenBuilder(this.minecraft, listWidth, listHeight, listY, ITEM_HEIGHT, config,
             entry -> hoveredEntry = entry, category -> {
             hoveredCategory = category;
@@ -58,7 +58,7 @@ public class ConfigScreen extends Screen {
     }
 
     private void renderPreviewPanel(GuiGraphics graphics, int x, int y) {
-        int textWidth = PREVIEW_WIDTH-PANEL_PADDING * 2;
+        int textWidth = BACKGROUND_X_OFFSET-PANEL_PADDING * 2;
 
         if (hoveredEntry != null) {
             String modId = builders.stream()
@@ -90,17 +90,17 @@ public class ConfigScreen extends Screen {
     protected void init() {
         List<Tab> tabs = builders.stream().map(builder -> (Tab) new ConfigTab(builder.getConfig(), this::setActiveConfig)).toList();
 
-        tabBar = TabNavigationBar.builder(tabManager, this.width-PREVIEW_WIDTH).addTabs(tabs.toArray(new Tab[0])).build();
+        tabBar = TabNavigationBar.builder(tabManager, this.width-BACKGROUND_X_OFFSET).addTabs(tabs.toArray(new Tab[0])).build();
         addRenderableWidget(tabBar);
         tabBar.selectTab(0, false);
 
-        int panelX = this.width-PREVIEW_WIDTH,
+        int panelX = this.width-BACKGROUND_X_OFFSET,
             panelBottom = this.height-PANEL_PADDING,
             twoButtonY = panelBottom-PANEL_BUTTON_HEIGHT * 2-4,
-            twoButtonW = (PREVIEW_WIDTH-PANEL_PADDING * 3) / 2;
+            twoButtonW = (BACKGROUND_X_OFFSET-PANEL_PADDING * 3) / 2;
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.done"), button -> onClose())
-            .bounds(panelX+PANEL_PADDING, panelBottom-PANEL_BUTTON_HEIGHT, PREVIEW_WIDTH-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
+            .bounds(panelX+PANEL_PADDING, panelBottom-PANEL_BUTTON_HEIGHT, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
             .build());
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.reset"), button -> {
@@ -123,9 +123,9 @@ public class ConfigScreen extends Screen {
         super.render(graphics, mouseX, mouseY, delta);
 
         if (tabBar != null)
-            graphics.hLine(0, this.width-PREVIEW_WIDTH, tabBar.getRectangle().bottom(), ScreenElements.COLOR_WHITE);
+            graphics.hLine(0, this.width-BACKGROUND_X_OFFSET, tabBar.getRectangle().bottom(), ScreenElements.COLOR_WHITE);
 
-        int panelX = this.width-PREVIEW_WIDTH;
+        int panelX = this.width-BACKGROUND_X_OFFSET;
         graphics.fill(panelX, 0, panelX+1, this.height, ScreenElements.COLOR_WHITE);
 
         renderPreviewPanel(graphics, panelX+PANEL_PADDING, PANEL_PADDING);

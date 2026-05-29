@@ -11,6 +11,7 @@ public class CoreLibs {
 
     public static void init() {
         TickUtil.registerProcessQueue();
+        ExampleConfig.register();
     }
 
     public static ResourceLocation parse(String modId, String path) { return new ResourceLocation(modId, path); }

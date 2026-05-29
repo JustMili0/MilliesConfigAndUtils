@@ -1,0 +1,6 @@
+{
+  "config.var.examplemod.some_int.name": "Some Integer",
+  "config.var.examplemod.some_int.desc": "An integer value",
+  "config.var.examplemod.some_bool.name": "Some Boolean",
+  "config.var.examplemod.some_bool.desc": "A boolean value"
+}
