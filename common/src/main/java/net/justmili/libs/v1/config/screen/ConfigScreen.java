@@ -112,7 +112,8 @@ public class ConfigScreen extends Screen {
         renderBackground(graphics);
         graphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
         // Yes, texture size is 31x31 because it matches perfectly, don't ask me why or how, I don't fucking know
-        graphics.blit(Screen.BACKGROUND_LOCATION, PANEL_X_OFFSET(), 0, 0, width-10, BACKGROUND_X_OFFSET, height, 31, 31);
+        graphics.blit(Screen.BACKGROUND_LOCATION, PANEL_X_OFFSET(), 0, 0, width-10, BACKGROUND_X_OFFSET, height,
+            31, 31);
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         super.render(graphics, mouseX, mouseY, delta);
@@ -133,7 +134,8 @@ public class ConfigScreen extends Screen {
                 .filter(builder -> builder.getConfig().entries.containsKey(hoveredEntry.key())).findFirst()
                 .map(builder -> builder.getConfig().modId).orElse("unknown");
 
-            Component name = ScreenElements.resolve(ScreenElements.varKey(modId, hoveredEntry.key())).copy().withStyle(style -> style.withBold(true));
+            Component name = ScreenElements.resolve(ScreenElements.varKey(modId, hoveredEntry.key()))
+                .copy().withStyle(style -> style.withBold(true));
             graphics.drawWordWrap(font, name, x, y, textWidth, ScreenElements.COLOR_WHITE);
             y += font.wordWrapHeight(name, textWidth);
 
@@ -145,7 +147,8 @@ public class ConfigScreen extends Screen {
                 .filter(builder -> builder.getConfig().modId != null).findFirst()
                 .map(builder -> builder.getConfig().modId).orElse("unknown");
 
-            Component name = ScreenElements.resolve(ScreenElements.catKey(modId, hoveredCategory.name())).copy().withStyle(style -> style.withBold(true));
+            Component name = ScreenElements.resolve(ScreenElements.catKey(modId, hoveredCategory.name()))
+                .copy().withStyle(style -> style.withBold(true));
             graphics.drawWordWrap(font, name, x, y, textWidth, ScreenElements.COLOR_WHITE);
             y += font.wordWrapHeight(name, textWidth);
 

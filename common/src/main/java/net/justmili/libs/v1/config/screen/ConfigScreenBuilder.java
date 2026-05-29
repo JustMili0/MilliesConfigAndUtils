@@ -48,13 +48,15 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
     private final Consumer<CategoryItem> onCatHover;
     public final Deque<Runnable> undoStack = new ArrayDeque<>();
 
-    public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config, Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover) {
+    public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight,
+                               ConfigLoader config, Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover) {
         super(minecraft, width, height, y, y+height, itemHeight);
         this.config = config;
         this.onHover = onHover;
         this.onCatHover = onCatHover;
         if (config.root == null) {
-            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. Please ensure your config class is registered during mod init.", config.modId);
+            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. " +
+                "Please ensure your config class is registered during mod init.", config.modId);
             return;
         }
         buildRows(config.root.children(), 0);
@@ -181,7 +183,8 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
         }
 
         @Override
-        public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
+                           int mouseX, int mouseY, boolean isHovering, float partialTick) {
             if (isHovering) onHover.accept(entry);
             Component label = ScreenElements.resolve(ScreenElements.varKey(modId, entry.key()));
             if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
@@ -246,7 +249,8 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<ConfigScre
         }
 
         @Override
-        public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
+                           int mouseX, int mouseY, boolean isHovering, float partialTick) {
             if (isHovering) onCatHover.accept(category);
             int x = left+indent();
 
