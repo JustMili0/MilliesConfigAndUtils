@@ -68,6 +68,7 @@ public class ConfigLoader {
             case JSON -> new JsonWriter();
             case JSON5 -> new Json5Writer();
             case YAML, YML -> throw new UnsupportedOperationException("YAML/YML support is not yet implemented.");
+            case TOML -> throw new UnsupportedOperationException("TOML support is not yet implemented.");
             default -> new PropertiesWriter();
         };
     }
