@@ -46,7 +46,6 @@ public class ConfigScreen extends Screen {
         this.parent = parent;
         this.builders = builders;
     }
-
     public ConfigScreen(Component title, Screen parent, MConfigBuilder builder) {
         this(title, parent, List.of(builder));
     }
@@ -54,7 +53,6 @@ public class ConfigScreen extends Screen {
     private int PANEL_X_OFFSET() {
         return width-BACKGROUND_X_OFFSET;
     }
-
     private int ENTRY_LIST_WIDTH() {
         return PANEL_X_OFFSET()-PANEL_DIVIDER_X_OFFSET;
     }
@@ -89,7 +87,6 @@ public class ConfigScreen extends Screen {
 
         if (!builders.isEmpty()) setActiveConfig(builders.get(0).getConfig());
     }
-
     private void setActiveConfig(ConfigLoader config) {
         if (entryList != null) removeWidget(entryList);
 
@@ -118,12 +115,11 @@ public class ConfigScreen extends Screen {
 
         super.render(graphics, mouseX, mouseY, delta);
 
-        if (tabBar != null) graphics.hLine(0, width, HLINE_Y, ScreenElements.COLOR_WHITE);
-        graphics.vLine(PANEL_X_OFFSET()-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT, height, ScreenElements.COLOR_WHITE);
+        if (tabBar != null) graphics.hLine(0, width, HLINE_Y, SharedElements.COLOR_WHITE);
+        graphics.vLine(PANEL_X_OFFSET()-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT, height, SharedElements.COLOR_WHITE);
 
         renderPreviewPanel(graphics);
     }
-
     private void renderPreviewPanel(GuiGraphics graphics) {
         int x = PANEL_X_OFFSET()+PANEL_PADDING,
             y = PREVIEW_TEXT_Y_OFFSET,
@@ -134,26 +130,26 @@ public class ConfigScreen extends Screen {
                 .filter(builder -> builder.getConfig().entries.containsKey(hoveredEntry.key())).findFirst()
                 .map(builder -> builder.getConfig().modId).orElse("unknown");
 
-            Component name = ScreenElements.resolve(ScreenElements.varKey(modId, hoveredEntry.key()))
+            Component name = SharedElements.resolve(SharedElements.varKey(modId, hoveredEntry.key()))
                 .copy().withStyle(style -> style.withBold(true));
-            graphics.drawWordWrap(font, name, x, y, textWidth, ScreenElements.COLOR_WHITE);
+            graphics.drawWordWrap(font, name, x, y, textWidth, SharedElements.COLOR_WHITE);
             y += font.wordWrapHeight(name, textWidth);
 
-            graphics.drawWordWrap(font, ScreenElements.resolve(
-                ScreenElements.varDescKey(modId, hoveredEntry.key())), x, y, textWidth, ScreenElements.COLOR_WHITE);
+            graphics.drawWordWrap(font, SharedElements.resolve(
+                SharedElements.varDescKey(modId, hoveredEntry.key())), x, y, textWidth, SharedElements.COLOR_WHITE);
 
         } else if (hoveredCategory != null) {
             String modId = builders.stream()
                 .filter(builder -> builder.getConfig().modId != null).findFirst()
                 .map(builder -> builder.getConfig().modId).orElse("unknown");
 
-            Component name = ScreenElements.resolve(ScreenElements.catKey(modId, hoveredCategory.name()))
+            Component name = SharedElements.resolve(SharedElements.catKey(modId, hoveredCategory.name()))
                 .copy().withStyle(style -> style.withBold(true));
-            graphics.drawWordWrap(font, name, x, y, textWidth, ScreenElements.COLOR_WHITE);
+            graphics.drawWordWrap(font, name, x, y, textWidth, SharedElements.COLOR_WHITE);
             y += font.wordWrapHeight(name, textWidth);
 
-            graphics.drawWordWrap(font, ScreenElements.resolve(
-                ScreenElements.catDescKey(modId, hoveredCategory.name())), x, y, textWidth, ScreenElements.COLOR_WHITE);
+            graphics.drawWordWrap(font, SharedElements.resolve(
+                SharedElements.catDescKey(modId, hoveredCategory.name())), x, y, textWidth, SharedElements.COLOR_WHITE);
         }
     }
 
