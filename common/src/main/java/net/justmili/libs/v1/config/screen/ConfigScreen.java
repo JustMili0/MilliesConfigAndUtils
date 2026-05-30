@@ -1,8 +1,8 @@
 package net.justmili.libs.v1.config.screen;
 
-import net.justmili.libs.v1.config.entry.ConfigEntry;
-import net.justmili.libs.v1.config.MConfigBuilder;
 import net.justmili.libs.v1.config.ConfigLoader;
+import net.justmili.libs.v1.config.MConfigBuilder;
+import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -74,8 +74,8 @@ public class ConfigScreen extends Screen {
 
         entryList = new ConfigScreenBuilder(minecraft, entryListWidth, listHeight, listY, ITEM_HEIGHT, config,
             entry -> hoveredEntry = entry,
-            category -> { hoveredCategory = category; hoveredEntry = null;},
-            list -> { hoveredList = list; hoveredEntry = null; hoveredCategory = null;
+            category -> { hoveredCategory = category; hoveredEntry = null; },
+            listEntry -> { hoveredList = listEntry; hoveredEntry = null; hoveredCategory = null;
         });
 
         addRenderableWidget(entryList);

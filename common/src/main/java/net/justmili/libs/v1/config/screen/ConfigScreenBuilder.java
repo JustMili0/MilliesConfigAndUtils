@@ -22,8 +22,8 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
     public final ConfigLoader config;
     private final Consumer<ConfigEntry<?>> onHover;
-    private final Consumer<ListConfigEntry<?>> onListHover;
     private final Consumer<CategoryItem> onCatHover;
+    private final Consumer<ListConfigEntry<?>> onListHover;
     public final Deque<Runnable> undoStack = new ArrayDeque<>();
 
     public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config,
@@ -31,11 +31,10 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
         super(minecraft, width, height, y, y+height, itemHeight);
         this.config = config;
         this.onHover = onHover;
-        this.onListHover = onListHover;
         this.onCatHover = onCatHover;
+        this.onListHover = onListHover;
         if (config.root == null) {
-            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. " +
-                "Please ensure your config class is registered during mod init.", config.modId);
+            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. Please ensure your config class is registered during mod init.", config.modId);
             return;
         }
         buildRows(config.root.children(), 0);
@@ -53,22 +52,22 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
                     .findFirst().orElse(null);
                 CategoryRow row = existing != null ? existing : new CategoryRow(category, depth, onCatHover, this);
                 addEntry(row);
-
-                if (row.expanded) buildRowsPreservingExpansion(category.children(), depth+1, expandedCats, expandedLists);
-
+                if (row.expanded)
+                    buildRowsPreservingExpansion(category.children(), depth+1, expandedCats, expandedLists);
             } else if (item instanceof ConfigEntry<?> entry) {
                 addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack, this));
-
             } else if (item instanceof ListConfigEntry<?> listEntry) {
                 ListEntryRow existing = expandedLists.stream()
                     .filter(r -> r.entry == listEntry)
                     .findFirst().orElse(null);
-                ListEntryRow row = existing != null ? existing : new ListEntryRow(listEntry, config.modId, depth, this, onListHover);
+                ListEntryRow row = existing != null ? existing : new ListEntryRow(listEntry, config.modId, depth, this, onListHover, undoStack);
+                if (existing != null) row.rebuildInlineWidgets();
                 addEntry(row);
-
                 if (row.expanded) {
-                    for (int i = 0; i < listEntry.get().size(); i++) addEntry(new ListElementRow<>(listEntry, i, depth+1, this, undoStack));
-                    addEntry(new ListAddRow<>(listEntry, depth+1, this, undoStack));
+                    for (int i = 1; i < listEntry.get().size(); i++)
+                        addEntry(new ListElementRow<>(listEntry, i, depth+1, this, undoStack));
+                    if (listEntry.get().size() > 0)
+                        addEntry(new ListAddRow<>(listEntry, depth+1, this, undoStack));
                 }
             }
             // CommentItems are file-only, skip

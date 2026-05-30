@@ -2,7 +2,6 @@ package net.justmili.libs.v1.config.screen.rows;
 
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
-import net.justmili.libs.v1.config.screen.SharedElements;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -26,7 +25,7 @@ public class ListAddRow<T> extends Row {
         this.list = list;
         this.addBtn = Button.builder(Component.empty(), btn -> {
             List<T> current = new ArrayList<>(entry.get());
-            T blank = SharedElements.blankValue(entry.defaultValue().isEmpty() ? null : entry.defaultValue().get(0));
+            T blank = newBlank(entry.defaultValue().isEmpty() ? null : entry.defaultValue().get(0));
             current.add(blank);
             entry.set(current);
             undoStack.push(() -> {
@@ -48,7 +47,7 @@ public class ListAddRow<T> extends Row {
         addBtn.setX(btnX);
         addBtn.setY(btnY);
         addBtn.render(graphics, mouseX, mouseY, partialTick);
-        graphics.renderItem(SharedElements.isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE)
+        graphics.renderItem(isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE)
             ? Items.SPECTRAL_ARROW.getDefaultInstance()
             : Items.ARROW.getDefaultInstance(), btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
     }

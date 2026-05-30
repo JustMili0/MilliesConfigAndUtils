@@ -107,12 +107,23 @@ public class SharedElements {
         if (objectValue instanceof Float) return text.matches("-?\\d*\\.?\\d*");
         return true;
     }
-    public static <T> T blankValue(Object sample) {
+    public static <T> T newBlank(Object sample) {
         if (sample instanceof Integer) return (T) Integer.valueOf(0);
         if (sample instanceof Long) return (T) Long.valueOf(0L);
         if (sample instanceof Double) return (T) Double.valueOf(0.0);
         if (sample instanceof Float) return (T) Float.valueOf(0.0f);
         return (T) "";
+    }
+    public static <T> T parse(Object sample, String text) {
+        try {
+            if (sample instanceof Integer) return (T) Integer.valueOf(text);
+            if (sample instanceof Long) return (T) Long.valueOf(text);
+            if (sample instanceof Double) return (T) Double.valueOf(text);
+            if (sample instanceof Float) return (T) Float.valueOf(text);
+            return (T) text;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     public static boolean isOver(int mouseX, int mouseY, int x, int y, int size) {

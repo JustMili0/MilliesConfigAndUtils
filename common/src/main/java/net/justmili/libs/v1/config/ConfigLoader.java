@@ -79,6 +79,7 @@ public class ConfigLoader {
             case JSON5 -> ".json5";
             case YAML -> ".yaml";
             case YML -> ".yml";
+            case TOML -> ".toml";
             default -> ".properties";
         };
     }
