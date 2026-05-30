@@ -7,11 +7,11 @@ import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.ConfigItem;
 import net.justmili.libs.v1.config.screen.rows.*;
-import net.justmili.libs.v1.config.screen.rows.category.CategoryRow;
-import net.justmili.libs.v1.config.screen.rows.entry.EntryRow;
-import net.justmili.libs.v1.config.screen.rows.list.ListAddRow;
-import net.justmili.libs.v1.config.screen.rows.list.ListElementRow;
-import net.justmili.libs.v1.config.screen.rows.list.ListEntryRow;
+import net.justmili.libs.v1.config.screen.rows.CategoryRow;
+import net.justmili.libs.v1.config.screen.rows.EntryRow;
+import net.justmili.libs.v1.config.screen.rows.ListAddRow;
+import net.justmili.libs.v1.config.screen.rows.ListElementRow;
+import net.justmili.libs.v1.config.screen.rows.ListEntryRow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 

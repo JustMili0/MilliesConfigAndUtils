@@ -1,9 +1,8 @@
-package net.justmili.libs.v1.config.screen.rows.category;
+package net.justmili.libs.v1.config.screen.rows;
 
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.justmili.libs.v1.config.screen.SharedElements;
-import net.justmili.libs.v1.config.screen.rows.Row;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
