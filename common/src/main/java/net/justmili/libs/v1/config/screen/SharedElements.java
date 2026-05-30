@@ -5,6 +5,64 @@ import net.minecraft.network.chat.Component;
 public class SharedElements {
     public static final int COLOR_WHITE = 0xFFFFFFFF;
 
+    // Screen layout
+    public static int
+        ITEM_HEIGHT = 24,
+        TAB_HEIGHT = 24,
+        BACKGROUND_X_OFFSET = 164,
+        PANEL_PADDING = 6,
+        PANEL_BUTTON_HEIGHT = 20,
+        PANEL_BUTTON_WIDTH = 74,
+        PANEL_DIVIDER_X_OFFSET = 1,
+        ENTRY_LIST_Y_OFFSET = 2,
+        HLINE_Y = 25,
+        PREVIEW_TEXT_Y_OFFSET = TAB_HEIGHT+PANEL_PADDING,
+        BUTTON_ROW_BOTTOM_OFFSET = PANEL_PADDING,
+        BUTTON_ROW_GAP = 4;
+    // Row layout
+    public static int
+        SCROLLBAR_WIDTH = 6,
+        SCROLLBAR_MARGIN = 2,
+        ROW_WIDTH_REDUCTION = SCROLLBAR_WIDTH+SCROLLBAR_MARGIN-2,
+        ROW_LEFT_MARGIN = 2,
+        DEPTH_INDENT = 10,
+        WIDGET_WIDTH = 150,
+        WIDGET_HEIGHT = 20,
+        LABEL_LEFT_PADDING = 6,
+        LABEL_RIGHT_GAP = 8,
+        WIDGET_RIGHT_MARGIN = 4,
+        WIDGET_TOP_MARGIN = 2,
+        CAT_ICON_SIZE = 20,
+        CAT_ICON_X_OFFSET = 4,
+        CAT_LABEL_X_OFFSET = 20,
+        CAT_LABEL_RIGHT_MARGIN = 30;
+    // List row layout
+    public static int
+        LIST_ICON_BTN_SIZE = 18,
+        LIST_ICON_OFFSET = 1,
+        LIST_BTN_GAP = 2;
+
+    // Runtime-changing
+    public static int
+        screenWidth = 0,
+        screenHeight = 0,
+        panelX = 0,
+        entryListWidth = 0,
+        buttonRowY = 0,
+        twoButtonY = 0,
+        listY = 0,
+        listHeight = 0;
+    public static void updateRuntimeValues(int width, int height) {
+        screenWidth = width;
+        screenHeight = height;
+        panelX = width-BACKGROUND_X_OFFSET;
+        entryListWidth = panelX-PANEL_DIVIDER_X_OFFSET;
+        buttonRowY = height-BUTTON_ROW_BOTTOM_OFFSET-PANEL_BUTTON_HEIGHT;
+        twoButtonY = buttonRowY-PANEL_BUTTON_HEIGHT-BUTTON_ROW_GAP;
+        listY = TAB_HEIGHT+ENTRY_LIST_Y_OFFSET;
+        listHeight = height-listY;
+    }
+
     public static String toUniform(String input) {
         if (input == null || input.isBlank()) return input;
 
@@ -27,15 +85,12 @@ public class SharedElements {
     public static String varKey(String modId, String key) {
         return "config.var."+modId+"."+toUniform(key)+".name";
     }
-
     public static String varDescKey(String modId, String key) {
         return "config.var."+modId+"."+toUniform(key)+".desc";
     }
-
     public static String catKey(String modId, String name) {
         return "config.cat."+modId+"."+toUniform(name)+".name";
     }
-
     public static String catDescKey(String modId, String name) {
         return "config.cat."+modId+"."+toUniform(name)+".desc";
     }

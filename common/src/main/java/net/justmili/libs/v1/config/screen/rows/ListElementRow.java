@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import static net.justmili.libs.v1.config.screen.ConfigScreenBuilder.*;
+import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
 public class ListElementRow<T> extends Row {
     private final EditBox box;
@@ -25,12 +25,11 @@ public class ListElementRow<T> extends Row {
     private final Button removeBtn;
     private final Button confirmBtn;
     private final Button cancelBtn;
-    private static final int ICON_BTN_SIZE = 18;
-    private static final int ICON_OFFSET = 1;
-    private static final int BTN_GAP = 2;
+    private final ConfigScreenBuilder list;
 
     public ListElementRow(ListConfigEntry<T> entry, int elementIndex, int depth, ConfigScreenBuilder list, Deque<Runnable> undoStack) {
         super(depth);
+        this.list = list;
 
         box = new EditBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.empty());
         box.setValue(String.valueOf(entry.get().get(elementIndex)));
@@ -55,7 +54,7 @@ public class ListElementRow<T> extends Row {
         });
 
         removeBtn = Button.builder(Component.empty(), btn -> pendingDelete = true)
-            .bounds(0, 0, ICON_BTN_SIZE, ICON_BTN_SIZE).build();
+            .bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         removeBtn.setAlpha(0f);
 
         confirmBtn = Button.builder(Component.empty(), btn -> {
@@ -68,11 +67,11 @@ public class ListElementRow<T> extends Row {
                 entry.set(undo);
             });
             list.rebuildFromRoot();
-        }).bounds(0, 0, ICON_BTN_SIZE, ICON_BTN_SIZE).build();
+        }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         confirmBtn.setAlpha(0f);
 
         cancelBtn = Button.builder(Component.empty(), btn -> pendingDelete = false)
-            .bounds(0, 0, ICON_BTN_SIZE, ICON_BTN_SIZE).build();
+            .bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         cancelBtn.setAlpha(0f);
     }
 
@@ -88,47 +87,44 @@ public class ListElementRow<T> extends Row {
         }
     }
 
-    private static boolean isOver(int mouseX, int mouseY, int x, int y, int size) {
-        return mouseX >= x && mouseX <= x+size && mouseY >= y && mouseY <= y+size;
-    }
-
     @Override
     public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-        int btnY = top+(height-ICON_BTN_SIZE) / 2+2;
+        int rightEdge = list.rowRight(),
+            btnY = top+(height-LIST_ICON_BTN_SIZE) / 2+2;
 
         if (pendingDelete) {
-            int cancelX = left+width-WIDGET_WIDTH-ICON_BTN_SIZE * 2-BTN_GAP * 3;
-            int confirmX = cancelX+ICON_BTN_SIZE+BTN_GAP;
-            int boxX = confirmX+ICON_BTN_SIZE+BTN_GAP;
+            int cancelX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE * 2-LIST_BTN_GAP * 3-WIDGET_RIGHT_MARGIN;
+            int confirmX = cancelX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
+            int boxX = confirmX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
 
             cancelBtn.setX(cancelX);
             cancelBtn.setY(btnY);
             cancelBtn.render(graphics, mouseX, mouseY, partialTick);
-            graphics.renderItem(isOver(mouseX, mouseY, cancelX, btnY, ICON_BTN_SIZE)
+            graphics.renderItem(SharedElements.isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE)
                 ? Items.RED_STAINED_GLASS_PANE.getDefaultInstance()
-                : Items.BARRIER.getDefaultInstance(), cancelX+ICON_OFFSET, btnY+ICON_OFFSET);
+                : Items.BARRIER.getDefaultInstance(), cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             confirmBtn.setX(confirmX);
             confirmBtn.setY(btnY);
             confirmBtn.render(graphics, mouseX, mouseY, partialTick);
-            graphics.renderItem(isOver(mouseX, mouseY, confirmX, btnY, ICON_BTN_SIZE)
+            graphics.renderItem(SharedElements.isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE)
                 ? Items.GREEN_STAINED_GLASS_PANE.getDefaultInstance()
-                : Items.SCUTE.getDefaultInstance(), confirmX+ICON_OFFSET, btnY+ICON_OFFSET);
+                : Items.SCUTE.getDefaultInstance(), confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             box.setX(boxX);
             box.setY(top+WIDGET_TOP_MARGIN);
             box.setWidth(WIDGET_WIDTH);
             box.render(graphics, mouseX, mouseY, partialTick);
         } else {
-            int removeX = left+width-WIDGET_WIDTH-ICON_BTN_SIZE-BTN_GAP * 2;
-            int boxX = removeX+ICON_BTN_SIZE+BTN_GAP;
+            int removeX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN;
+            int boxX = removeX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
 
             removeBtn.setX(removeX);
             removeBtn.setY(btnY);
             removeBtn.render(graphics, mouseX, mouseY, partialTick);
-            graphics.renderItem(isOver(mouseX, mouseY, removeX, btnY, ICON_BTN_SIZE)
+            graphics.renderItem(SharedElements.isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE)
                 ? Items.RED_STAINED_GLASS_PANE.getDefaultInstance()
-                : Items.BARRIER.getDefaultInstance(), removeX+ICON_OFFSET, btnY+ICON_OFFSET);
+                : Items.BARRIER.getDefaultInstance(), removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             box.setX(boxX);
             box.setY(top+WIDGET_TOP_MARGIN);

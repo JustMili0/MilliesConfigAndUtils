@@ -1,6 +1,7 @@
 package net.justmili.libs.v1.config.screen.rows;
 
 import net.justmili.libs.v1.config.entry.ConfigEntry;
+import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.justmili.libs.v1.config.screen.SharedElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -17,19 +18,21 @@ import java.util.Deque;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.justmili.libs.v1.config.screen.ConfigScreenBuilder.*;
+import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
 public class EntryRow extends Row {
     private final String modId;
     private final ConfigEntry<?> entry;
     private final Consumer<ConfigEntry<?>> onHover;
     private final AbstractWidget widget;
+    private final ConfigScreenBuilder list;
 
-    public EntryRow(ConfigEntry<?> entry, String modId, int depth, Consumer<ConfigEntry<?>> onHover, Deque<Runnable> undoStack) {
+    public EntryRow(ConfigEntry<?> entry, String modId, int depth, Consumer<ConfigEntry<?>> onHover, Deque<Runnable> undoStack, ConfigScreenBuilder list) {
         super(depth);
         this.modId = modId;
         this.entry = entry;
         this.onHover = onHover;
+        this.list = list;
 
         if (entry.get() instanceof Boolean) {
             ConfigEntry<Boolean> boolEntry = (ConfigEntry<Boolean>) entry;
@@ -84,20 +87,22 @@ public class EntryRow extends Row {
         if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
 
         Font font = Minecraft.getInstance().font;
-        int labelX = left+indent()+LABEL_LEFT_PADDING,
-            labelMaxWidth = width-WIDGET_WIDTH-LABEL_RIGHT_GAP-indent(),
-            labelY = top+(height-9) / 2;
+        int rightEdge = list.rowRight(),
+            labelX = left+indent()+LABEL_LEFT_PADDING,
+            labelMaxWidth = rightEdge-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN-LABEL_RIGHT_GAP-labelX,
+            labelY = top+(height-9)/2,
+            widgetX = rightEdge-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN;
 
         String labelStr = label.getString();
         if (font.width(labelStr) > labelMaxWidth) {
             while (font.width(labelStr+"...") > labelMaxWidth && !labelStr.isEmpty())
                 labelStr = labelStr.substring(0, labelStr.length()-1);
-            graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, SharedElements.COLOR_WHITE);
+            graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, COLOR_WHITE);
         } else {
-            graphics.drawString(font, label, labelX, labelY, SharedElements.COLOR_WHITE);
+            graphics.drawString(font, label, labelX, labelY, COLOR_WHITE);
         }
 
-        widget.setX(left+width-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN);
+        widget.setX(widgetX);
         widget.setY(top+WIDGET_TOP_MARGIN);
         widget.render(graphics, mouseX, mouseY, partialTick);
     }

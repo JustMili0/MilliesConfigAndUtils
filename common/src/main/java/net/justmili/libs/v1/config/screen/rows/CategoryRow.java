@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static net.justmili.libs.v1.config.screen.ConfigScreenBuilder.*;
+import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
 public class CategoryRow extends Row {
     public final CategoryItem category;

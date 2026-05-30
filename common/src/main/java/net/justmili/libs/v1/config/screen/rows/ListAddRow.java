@@ -15,16 +15,15 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import static net.justmili.libs.v1.config.screen.ConfigScreenBuilder.WIDGET_WIDTH;
+import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
 public class ListAddRow<T> extends Row {
     private final Button addBtn;
-    private static final int ICON_BTN_SIZE = 18;
-    private static final int ICON_OFFSET = 1;
-    private static final int BTN_GAP = 2;
+    private final ConfigScreenBuilder list;
 
     public ListAddRow(ListConfigEntry<T> entry, int depth, ConfigScreenBuilder list, Deque<Runnable> undoStack) {
         super(depth);
+        this.list = list;
         this.addBtn = Button.builder(Component.empty(), btn -> {
             List<T> current = new ArrayList<>(entry.get());
             T blank = SharedElements.blankValue(entry.defaultValue().isEmpty() ? null : entry.defaultValue().get(0));
@@ -36,20 +35,22 @@ public class ListAddRow<T> extends Row {
                 entry.set(undo);
             });
             list.rebuildFromRoot();
-        }).bounds(0, 0, ICON_BTN_SIZE, ICON_BTN_SIZE).build();
+        }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         addBtn.setAlpha(0f);
     }
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-        int btnX = left+width-WIDGET_WIDTH-ICON_BTN_SIZE-BTN_GAP * 2+20;
-        int btnY = top+(height-ICON_BTN_SIZE) / 2+1;
+        int rightEdge = list.rowRight(),
+            btnX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN+20,
+            btnY = top+(height-LIST_ICON_BTN_SIZE) / 2+1;
+
         addBtn.setX(btnX);
         addBtn.setY(btnY);
         addBtn.render(graphics, mouseX, mouseY, partialTick);
-        graphics.renderItem(SharedElements.isOver(mouseX, mouseY, btnX, btnY, ICON_BTN_SIZE)
+        graphics.renderItem(SharedElements.isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE)
             ? Items.SPECTRAL_ARROW.getDefaultInstance()
-            : Items.ARROW.getDefaultInstance(), btnX+ICON_OFFSET, btnY+ICON_OFFSET);
+            : Items.ARROW.getDefaultInstance(), btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
     }
 
     @Override

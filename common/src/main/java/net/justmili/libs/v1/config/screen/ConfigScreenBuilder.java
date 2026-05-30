@@ -7,11 +7,6 @@ import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.ConfigItem;
 import net.justmili.libs.v1.config.screen.rows.*;
-import net.justmili.libs.v1.config.screen.rows.CategoryRow;
-import net.justmili.libs.v1.config.screen.rows.EntryRow;
-import net.justmili.libs.v1.config.screen.rows.ListAddRow;
-import net.justmili.libs.v1.config.screen.rows.ListElementRow;
-import net.justmili.libs.v1.config.screen.rows.ListEntryRow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 
@@ -21,37 +16,26 @@ import java.util.Deque;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static net.justmili.libs.v1.config.screen.SharedElements.*;
+
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
-    public static final int
-        SCROLLBAR_WIDTH = 6,
-        SCROLLBAR_MARGIN = 2,
-        ROW_WIDTH_REDUCTION = SCROLLBAR_WIDTH+SCROLLBAR_MARGIN-2,
-        ROW_LEFT_MARGIN = 2,
-        DEPTH_INDENT = 10,
-        WIDGET_WIDTH = 150,
-        WIDGET_HEIGHT = 20,
-        LABEL_LEFT_PADDING = 6,
-        LABEL_RIGHT_GAP = 8,
-        WIDGET_RIGHT_MARGIN = 4,
-        WIDGET_TOP_MARGIN = 2,
-        CAT_ICON_SIZE = 20,
-        CAT_ICON_X_OFFSET = 4,
-        CAT_LABEL_X_OFFSET = 20,
-        CAT_LABEL_RIGHT_MARGIN = 30;
-
     public final ConfigLoader config;
     private final Consumer<ConfigEntry<?>> onHover;
+    private final Consumer<ListConfigEntry<?>> onListHover;
     private final Consumer<CategoryItem> onCatHover;
     public final Deque<Runnable> undoStack = new ArrayDeque<>();
 
-    public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config, Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover) {
+    public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config,
+                               Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover, Consumer<ListConfigEntry<?>> onListHover) {
         super(minecraft, width, height, y, y+height, itemHeight);
         this.config = config;
         this.onHover = onHover;
+        this.onListHover = onListHover;
         this.onCatHover = onCatHover;
         if (config.root == null) {
-            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. Please ensure your config class is registered during mod init.", config.modId);
+            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. " +
+                "Please ensure your config class is registered during mod init.", config.modId);
             return;
         }
         buildRows(config.root.children(), 0);
@@ -69,19 +53,21 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
                     .findFirst().orElse(null);
                 CategoryRow row = existing != null ? existing : new CategoryRow(category, depth, onCatHover, this);
                 addEntry(row);
-                if (row.expanded)
-                    buildRowsPreservingExpansion(category.children(), depth+1, expandedCats, expandedLists);
+
+                if (row.expanded) buildRowsPreservingExpansion(category.children(), depth+1, expandedCats, expandedLists);
+
             } else if (item instanceof ConfigEntry<?> entry) {
-                addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack));
+                addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack, this));
+
             } else if (item instanceof ListConfigEntry<?> listEntry) {
                 ListEntryRow existing = expandedLists.stream()
                     .filter(r -> r.entry == listEntry)
                     .findFirst().orElse(null);
-                ListEntryRow row = existing != null ? existing : new ListEntryRow(listEntry, config.modId, depth, this);
+                ListEntryRow row = existing != null ? existing : new ListEntryRow(listEntry, config.modId, depth, this, onListHover);
                 addEntry(row);
+
                 if (row.expanded) {
-                    for (int i = 0; i < listEntry.get().size(); i++)
-                        addEntry(new ListElementRow<>(listEntry, i, depth+1, this, undoStack));
+                    for (int i = 0; i < listEntry.get().size(); i++) addEntry(new ListElementRow<>(listEntry, i, depth+1, this, undoStack));
                     addEntry(new ListAddRow<>(listEntry, depth+1, this, undoStack));
                 }
             }
@@ -98,6 +84,10 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
         }
         clearEntries();
         buildRowsPreservingExpansion(config.root.children(), 0, expandedCats, expandedLists);
+    }
+
+    public int rowRight() {
+        return getRowLeft()+getRowWidth();
     }
 
     @Override
