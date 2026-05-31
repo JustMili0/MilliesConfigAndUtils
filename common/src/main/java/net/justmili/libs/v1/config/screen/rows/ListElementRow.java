@@ -40,7 +40,7 @@ public class ListElementRow<T> extends Row {
                 List<T> current = new ArrayList<>(entry.get());
                 T previous = current.get(elementIndex);
                 T parsed = parse(entry.defaultValue().get(0), text);
-                
+
                 if (parsed != null && !parsed.equals(previous)) {
                     current.set(elementIndex, parsed);
                     entry.set(current);

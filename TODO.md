@@ -2,7 +2,7 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
-  - Fix all from "Weird issues found" (#weird-issues-found)
+  - Fix list entry inputs that are inline with the list name are clickable, but not editable
   - Make each entry have its own selectable "section" so "Reset" know what to reset
   - Give "Reset" button a proper function
   - Make boolean values `true`/`false` use `gui.config.bool.true` and `gui.config.bool.false` for text display
@@ -17,9 +17,6 @@
 - (Cross-Loader API) Add cross-loader registries, networking and other
 - (Config Lib) Add TOML support
 - Write full documentation
-
-# Weird issues found:
-- List inputs that are inline with the list name are clickable, but not editable
 
 ### YAML/YML - Design
 ```yaml
