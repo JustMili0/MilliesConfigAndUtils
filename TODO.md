@@ -2,6 +2,7 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
+  - Make each entry have its own selectable "section" so "Reset" know what to reset
   - Give "Reset" button a proper function
   - Give "Reset" and "Undo" Hover-over descriptions
   - Make boolean values `true`/`false` use `gui.config.bool.true` and `gui.config.bool.false` for text display
@@ -16,6 +17,10 @@
 - (Cross-Loader API) Add cross-loader registries, networking and other
 - (Config Lib) Add TOML support
 - Write full documentation
+
+# Weird issues found:
+- Integer input in config screen doesn't allow numbers past 100 (e.g. 101 and higher)
+- List inputs that are inline with the list name are clickable, but not editable
 
 ### YAML/YML - Design
 ```yaml

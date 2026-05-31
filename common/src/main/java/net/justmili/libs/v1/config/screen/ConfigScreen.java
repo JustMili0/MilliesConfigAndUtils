@@ -8,6 +8,7 @@ import net.justmili.libs.v1.config.items.CategoryItem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
@@ -25,11 +26,19 @@ public class ConfigScreen extends Screen {
     public final Screen parent;
     private final List<MConfigBuilder> builders;
     private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
-    private TabNavigationBar tabBar;
-    private ConfigScreenBuilder entryList;
+    private ConfigScreenBuilder screenBuilder;
+
+    // Widgets
+    private Button doneButton;
+    private Button resetButton;
+    private Button undoButton;
+
+    // Selection and Hovers
     private ConfigEntry<?> hoveredEntry = null;
     private ListConfigEntry<?> hoveredList = null;
     private CategoryItem hoveredCategory = null;
+    private ConfigEntry<?> selectedEntry = null;
+    private ListConfigEntry<?> selectedList = null;
 
     public ConfigScreen(Component title, Screen parent, List<MConfigBuilder> builders) {
         super(title);
@@ -44,37 +53,49 @@ public class ConfigScreen extends Screen {
     protected void init() {
         updateRuntimeValues(width, height);
 
+        // Build Builder Tabs
         List<Tab> tabs = builders.stream().map(builder -> (Tab) new ConfigTab(builder.getConfig(), this::setActiveConfig)).toList();
-        tabBar = TabNavigationBar.builder(tabManager, width).addTabs(tabs.toArray(new Tab[0])).build();
-        addRenderableWidget(tabBar);
-        tabBar.selectTab(0, false);
-        tabBar.arrangeElements();
+        TabNavigationBar tabNavigationBar = TabNavigationBar.builder(tabManager, width).addTabs(tabs.toArray(new Tab[0])).build();
+        addRenderableWidget(tabNavigationBar);
+        tabNavigationBar.selectTab(0, false);
+        tabNavigationBar.arrangeElements();
 
-        addRenderableWidget(Button.builder(Component.translatable("gui.config.done"), button -> onClose())
+        // Build buttons
+        doneButton = Button.builder(Component.translatable("gui.config.done"), button -> onClose())
             .bounds(panelX+PANEL_PADDING, buttonRowY, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
-            .build());
+            .build();
 
-        addRenderableWidget(Button.builder(Component.translatable("gui.config.reset"), button -> {
-            if (hoveredEntry == null) return;
+        undoButton = Button.builder(Component.translatable("gui.config.undo"), button -> {
+                if (screenBuilder != null && !screenBuilder.undoStack.isEmpty()) screenBuilder.undoStack.pop().run();
+            }).bounds(panelX+PANEL_PADDING+PANEL_BUTTON_WIDTH+BUTTON_ROW_GAP, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT)
+            .tooltip(Tooltip.create(Component.translatable("gui.config.undo.desc")))
+            .build();
+        undoButton.active = false;
 
-            Object previous = hoveredEntry.get();
-            ((ConfigEntry<Object>) hoveredEntry).set(hoveredEntry.defaultValue());
-            if (entryList != null) entryList.undoStack.push(() -> ((ConfigEntry<Object>) hoveredEntry).set(previous));
+        resetButton = Button.builder(Component.translatable("gui.config.reset"), button -> {
+                if (selectedEntry == null) return;
+                Object previous = selectedEntry.get();
+                ((ConfigEntry<Object>) selectedEntry).set(selectedEntry.defaultValue());
+                if (screenBuilder != null) screenBuilder.undoStack.push(() -> ((ConfigEntry<Object>) selectedEntry).set(previous));
+            }).bounds(panelX+PANEL_PADDING, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT)
+            .tooltip(Tooltip.create(Component.translatable("gui.config.reset.desc")))
+            .build();
+        resetButton.active = false;
 
-        }).bounds(panelX+PANEL_PADDING, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
+        addRenderableWidget(doneButton);
+        addRenderableWidget(undoButton);
+        addRenderableWidget(resetButton);
 
-        addRenderableWidget(Button.builder(Component.translatable("gui.config.undo"), button -> {
-            if (entryList != null && !entryList.undoStack.isEmpty()) entryList.undoStack.pop().run();
-
-        }).bounds(panelX+PANEL_PADDING+PANEL_BUTTON_WIDTH+BUTTON_ROW_GAP, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
-
+        // Build config
         if (!builders.isEmpty()) setActiveConfig(builders.get(0).getConfig());
     }
 
     private void setActiveConfig(ConfigLoader config) {
-        if (entryList != null) removeWidget(entryList);
+        if (screenBuilder != null) removeWidget(screenBuilder);
+        selectedEntry = null;
+        selectedList = null;
 
-        entryList = new ConfigScreenBuilder(minecraft, entryListWidth, listHeight, listY, ITEM_HEIGHT, config,
+        screenBuilder = new ConfigScreenBuilder(minecraft, entryListWidth, listHeight, listY, ITEM_HEIGHT, config,
             entry -> hoveredEntry = entry,
             category -> {
                 hoveredCategory = category;
@@ -86,7 +107,7 @@ public class ConfigScreen extends Screen {
                 hoveredCategory = null;
             });
 
-        addRenderableWidget(entryList);
+        addRenderableWidget(screenBuilder);
     }
 
     @Override
@@ -95,16 +116,22 @@ public class ConfigScreen extends Screen {
         hoveredList = null;
         hoveredCategory = null;
 
+        // Draw background
         graphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
-        // Yes, texture size is 31x31 because it matches perfectly, don't ask me why or how, I don't fucking know
         graphics.blit(Screen.BACKGROUND_LOCATION, 0, TAB_HEIGHT, 1, width, width, height-TAB_HEIGHT, 32, 32);
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         super.render(graphics, mouseX, mouseY, delta);
 
+        // Update button states
+        if (resetButton != null) resetButton.active = selectedEntry != null;
+        if (undoButton != null) undoButton.active = screenBuilder != null && !screenBuilder.undoStack.isEmpty();
+
+        // Draw borderlines splitting apart the screen into the Config Panel and the Preview Panel
         graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT-2, height, COLOR_SEMITRANS_GRAY);
         graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET+1, TAB_HEIGHT-2, height, COLOR_SEMITRANS_BLACK);
 
+        // Render preview panel
         renderPreviewPanel(graphics);
     }
 
