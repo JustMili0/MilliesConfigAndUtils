@@ -2,9 +2,10 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
+  - Make text in inputs turn red (`SharedElements.COLOR_RED`) when exceeding the key's max or min value
+  - Fix all from "Weird issues found" (#weird-issues-found)
   - Make each entry have its own selectable "section" so "Reset" know what to reset
   - Give "Reset" button a proper function
-  - Give "Reset" and "Undo" Hover-over descriptions
   - Make boolean values `true`/`false` use `gui.config.bool.true` and `gui.config.bool.false` for text display
   - Make builder tabs use custom translation keys as well (just like config entries etc)
   - Make custom textures to replace the placeholder icons

@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 @SuppressWarnings({"unchecked"})
 public class SharedElements {
     public static final int COLOR_WHITE = 0xFFFFFFFF,
+                            COLOR_RED = 0xFFFB5454,
                             COLOR_SEMITRANS_GRAY = 0x55B1A89C,
                             COLOR_SEMITRANS_BLACK = 0x80010200;
 
