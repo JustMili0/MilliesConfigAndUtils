@@ -141,7 +141,8 @@ public class ListEntryRow extends Row {
             graphics.drawString(font, label, labelX, labelY, COLOR_WHITE);
         }
 
-        graphics.renderItem(expanded ? Items.COOKED_PORKCHOP.getDefaultInstance() : Items.PORKCHOP.getDefaultInstance(),
+        renderIcon(graphics,
+            expanded ? ICON_LIST_OPEN : ICON_LIST_CLOSED,
             left+indent()+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
 
         if (expanded) {
@@ -153,42 +154,48 @@ public class ListEntryRow extends Row {
                 inlineAddBtn.setX(btnX);
                 inlineAddBtn.setY(btnY);
                 inlineAddBtn.render(graphics, mouseX, mouseY, partialTick);
-                graphics.renderItem(isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE)
-                    ? Items.SPECTRAL_ARROW.getDefaultInstance()
-                    : Items.ARROW.getDefaultInstance(), btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                
+                renderIcon(graphics,
+                    isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE)
+                        ? ICON_ADD_HOVER : ICON_ADD,
+                    btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                
             } else if (inlinePendingDelete) {
-                int cancelX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE * 2-LIST_BTN_GAP * 3-WIDGET_RIGHT_MARGIN;
-                int confirmX = cancelX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
-                int boxX = confirmX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
+                int cancelX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE * 2-LIST_BTN_GAP * 3-WIDGET_RIGHT_MARGIN,
+                    confirmX = cancelX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP,
+                    boxX = confirmX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
 
                 inlineCancelBtn.setX(cancelX);
                 inlineCancelBtn.setY(btnY);
                 inlineCancelBtn.render(graphics, mouseX, mouseY, partialTick);
-                graphics.renderItem(isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE)
-                    ? Items.RED_STAINED_GLASS_PANE.getDefaultInstance()
-                    : Items.BARRIER.getDefaultInstance(), cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderIcon(graphics,
+                    isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE)
+                        ? ICON_CANCEL_HOVER : ICON_CANCEL,
+                    cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
                 inlineConfirmBtn.setX(confirmX);
                 inlineConfirmBtn.setY(btnY);
                 inlineConfirmBtn.render(graphics, mouseX, mouseY, partialTick);
-                graphics.renderItem(isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE)
-                    ? Items.GREEN_STAINED_GLASS_PANE.getDefaultInstance()
-                    : Items.SCUTE.getDefaultInstance(), confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderIcon(graphics,
+                    isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE)
+                        ? ICON_DELETE_HOVER : ICON_DELETE,
+                    confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
                 inlineBox.setX(boxX);
                 inlineBox.setY(top+WIDGET_TOP_MARGIN);
                 inlineBox.setWidth(WIDGET_WIDTH);
                 inlineBox.render(graphics, mouseX, mouseY, partialTick);
             } else {
-                int removeX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN;
-                int boxX = removeX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
+                int removeX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN,
+                    boxX = removeX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
 
                 inlineRemoveBtn.setX(removeX);
                 inlineRemoveBtn.setY(btnY);
                 inlineRemoveBtn.render(graphics, mouseX, mouseY, partialTick);
-                graphics.renderItem(isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE)
-                    ? Items.RED_STAINED_GLASS_PANE.getDefaultInstance()
-                    : Items.BARRIER.getDefaultInstance(), removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderIcon(graphics,
+                    isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE)
+                        ? ICON_REMOVE_LIST_HOVER : ICON_REMOVE_LIST,
+                    removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
                 inlineBox.setX(boxX);
                 inlineBox.setY(top+WIDGET_TOP_MARGIN);

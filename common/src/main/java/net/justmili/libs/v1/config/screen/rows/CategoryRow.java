@@ -53,7 +53,7 @@ public class CategoryRow extends Row {
             labelY = top+(height-9) / 2;
 
         // Placeholder icons
-        graphics.renderItem(expanded ? Items.COOKED_BEEF.getDefaultInstance() : Items.BEEF.getDefaultInstance(), x+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
+        renderIcon(graphics, expanded ? ICON_CAT_OPEN : ICON_CAT_CLOSED, x+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
         Component label = SharedElements.resolve(SharedElements.catKey(list.config.modId, category.name()));
 
         if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));

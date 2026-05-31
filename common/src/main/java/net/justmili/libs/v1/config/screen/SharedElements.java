@@ -1,13 +1,31 @@
 package net.justmili.libs.v1.config.screen;
 
+import net.justmili.libs.CoreLibs;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings({"unchecked"})
 public class SharedElements {
-    public static final int COLOR_WHITE = 0xFFFFFFFF,
-                            COLOR_RED = 0xFFFB5454,
-                            COLOR_SEMITRANS_GRAY = 0x55B1A89C,
-                            COLOR_SEMITRANS_BLACK = 0x80010200;
+    public static final ResourceLocation ICONS = CoreLibs.asResource("textures/gui/icons.png");
+    public static final int
+        ICON_CAT_CLOSED = 1, // Arrow right
+        ICON_CAT_OPEN = 2, // Arrow down
+        ICON_LIST_CLOSED = 3, // Vertical dots
+        ICON_LIST_OPEN = 4, // Dotted list
+        ICON_ADD = 5, // Plus
+        ICON_ADD_HOVER = 6, // Plus highlighted
+        ICON_REMOVE_LIST = 7, // Minus
+        ICON_REMOVE_LIST_HOVER = 8, // Minus highlighted
+        ICON_CANCEL = 9, // X
+        ICON_CANCEL_HOVER = 10, // X highlighted
+        ICON_DELETE = 11, // Trash bin
+        ICON_DELETE_HOVER = 12; // Trash bin highlighted
+    public static final int
+        COLOR_WHITE = 0xFFFFFFFF,
+        COLOR_RED = 0xFFFB5454,
+        COLOR_SEMITRANS_GRAY = 0x55B1A89C,
+        COLOR_SEMITRANS_BLACK = 0x80010200;
 
     // Screen layout
     public static int
@@ -134,5 +152,12 @@ public class SharedElements {
 
     public static boolean isOver(int mouseX, int mouseY, int x, int y, int size) {
         return mouseX >= x && mouseX <= x+size && mouseY >= y && mouseY <= y+size;
+    }
+
+    public static void renderIcon(GuiGraphics graphics, int index, int x, int y) {
+        int i = index-1;
+        int iconX = (i % 16) * 16;
+        int iconY = (i / 16) * 16;
+        graphics.blit(ICONS, x, y, iconX, iconY, 16, 16, 256, 256);
     }
 }

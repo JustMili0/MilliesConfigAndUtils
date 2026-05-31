@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -49,9 +48,9 @@ public class ListAddRow<T> extends Row {
         addBtn.setX(btnX);
         addBtn.setY(btnY);
         addBtn.render(graphics, mouseX, mouseY, partialTick);
-        graphics.renderItem(isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE)
-            ? Items.SPECTRAL_ARROW.getDefaultInstance()
-            : Items.ARROW.getDefaultInstance(), btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+        renderIcon(graphics,
+            isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE) ? ICON_ADD_HOVER : ICON_ADD,
+            btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
     }
 
     @Override

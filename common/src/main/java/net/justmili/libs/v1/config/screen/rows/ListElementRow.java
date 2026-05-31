@@ -96,16 +96,18 @@ public class ListElementRow<T> extends Row {
             cancelBtn.setX(cancelX);
             cancelBtn.setY(btnY);
             cancelBtn.render(graphics, mouseX, mouseY, partialTick);
-            graphics.renderItem(SharedElements.isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE)
-                ? Items.RED_STAINED_GLASS_PANE.getDefaultInstance()
-                : Items.BARRIER.getDefaultInstance(), cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderIcon(graphics,
+                isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE)
+                    ? ICON_CANCEL_HOVER : ICON_CANCEL,
+                cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             confirmBtn.setX(confirmX);
             confirmBtn.setY(btnY);
             confirmBtn.render(graphics, mouseX, mouseY, partialTick);
-            graphics.renderItem(SharedElements.isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE)
-                ? Items.GREEN_STAINED_GLASS_PANE.getDefaultInstance()
-                : Items.SCUTE.getDefaultInstance(), confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderIcon(graphics,
+                isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE)
+                    ? ICON_DELETE_HOVER : ICON_DELETE,
+                confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             box.setX(boxX);
             box.setY(top+WIDGET_TOP_MARGIN);
@@ -118,9 +120,10 @@ public class ListElementRow<T> extends Row {
             removeBtn.setX(removeX);
             removeBtn.setY(btnY);
             removeBtn.render(graphics, mouseX, mouseY, partialTick);
-            graphics.renderItem(SharedElements.isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE)
-                ? Items.RED_STAINED_GLASS_PANE.getDefaultInstance()
-                : Items.BARRIER.getDefaultInstance(), removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderIcon(graphics,
+                isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE)
+                    ? ICON_REMOVE_LIST_HOVER : ICON_REMOVE_LIST,
+                removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             box.setX(boxX);
             box.setY(top+WIDGET_TOP_MARGIN);
