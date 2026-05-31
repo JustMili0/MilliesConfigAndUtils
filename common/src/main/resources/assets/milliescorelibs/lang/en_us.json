@@ -1,5 +1,7 @@
 {
   "config.title.milliescorelibs": "Millie's Core Libraries",
+  "gui.config.bool.true": "True",
+  "gui.config.bool.false": "False",
   "gui.config.done": "Done",
   "gui.config.undo": "Undo",
   "gui.config.reset": "Reset"

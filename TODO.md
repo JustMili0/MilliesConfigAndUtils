@@ -2,21 +2,18 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
-  - Fix some inputs clipping into the scrollbar
-  - Fix Builder Tabs
-  - Give "Reset" a proper purpose
-  - Add hover-over text for Reset and Undo buttons
-    - Undo - Undoes last performed change
-    - Reset - Resets selected key to default value
+  - Give "Reset" button a proper function
+  - Make boolean values `true`/`false` use `gui.config.bool.true` and `gui.config.bool.false` for text display
+  - Make builder tabs use custom translation keys as well (just like config entries etc)
 - (Config Lib) Add custom textures (on a 256x256 texture atlas(?)) for widgets
 - (Cross-Loader API) Add cross-loader events
   - Straight up replicate the entirety of Fabric's event system adding whatever it's missing that Forge itself has for some reason
-- (Config Lib) Fix builder tabs in config screen
-- (Config Lib) Add ability to add custom images to entry descriptions (similar to YACL)
-- (Config Lib) Add color picker entry
 - (Config Lib) Add enum selector entry
+- (Config Lib) Add color picker entry
+- (Config Lib) Add ability to add custom images to entry descriptions (similar to YACL)
 - (Config Lib) Add YAML/YML support
 - (Cross-Loader API) Add cross-loader registries, networking and other
+- (Config Lib) Add TOML support
 - Write full documentation
 
 ### YAML/YML - Design

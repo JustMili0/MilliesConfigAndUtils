@@ -4,7 +4,9 @@ import net.minecraft.network.chat.Component;
 
 @SuppressWarnings({"unchecked"})
 public class SharedElements {
-    public static final int COLOR_WHITE = 0xFFFFFFFF;
+    public static final int COLOR_WHITE = 0xFFFFFFFF,
+                            COLOR_SEMITRANS_GRAY = 0x55B1A89C,
+                            COLOR_SEMITRANS_BLACK = 0x80010200;
 
     // Screen layout
     public static int
@@ -16,7 +18,6 @@ public class SharedElements {
         PANEL_BUTTON_WIDTH = 74,
         PANEL_DIVIDER_X_OFFSET = 1,
         ENTRY_LIST_Y_OFFSET = 2,
-        HLINE_Y = 25,
         PREVIEW_TEXT_Y_OFFSET = TAB_HEIGHT+PANEL_PADDING,
         BUTTON_ROW_BOTTOM_OFFSET = PANEL_PADDING,
         BUTTON_ROW_GAP = 4;
@@ -83,6 +84,9 @@ public class SharedElements {
         return result.toString();
     }
 
+    public static String builderKey(String modId, String key) {
+        return "config.builder."+modId+"."+toUniform(key)+".name";
+    }
     public static String varKey(String modId, String key) {
         return "config.var."+modId+"."+toUniform(key)+".name";
     }

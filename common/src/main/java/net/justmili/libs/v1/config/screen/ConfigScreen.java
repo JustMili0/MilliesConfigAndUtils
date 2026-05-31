@@ -45,9 +45,10 @@ public class ConfigScreen extends Screen {
         updateRuntimeValues(width, height);
 
         List<Tab> tabs = builders.stream().map(builder -> (Tab) new ConfigTab(builder.getConfig(), this::setActiveConfig)).toList();
-        tabBar = TabNavigationBar.builder(tabManager, entryListWidth).addTabs(tabs.toArray(new Tab[0])).build();
+        tabBar = TabNavigationBar.builder(tabManager, width).addTabs(tabs.toArray(new Tab[0])).build();
         addRenderableWidget(tabBar);
         tabBar.selectTab(0, false);
+        tabBar.arrangeElements();
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.done"), button -> onClose())
             .bounds(panelX+PANEL_PADDING, buttonRowY, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
@@ -94,16 +95,15 @@ public class ConfigScreen extends Screen {
         hoveredList = null;
         hoveredCategory = null;
 
-        renderBackground(graphics);
         graphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
         // Yes, texture size is 31x31 because it matches perfectly, don't ask me why or how, I don't fucking know
-        graphics.blit(Screen.BACKGROUND_LOCATION, panelX, 0, 0, width-10, BACKGROUND_X_OFFSET, height, 31, 31);
+        graphics.blit(Screen.BACKGROUND_LOCATION, 0, TAB_HEIGHT, 1, width, width, height-TAB_HEIGHT, 32, 32);
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         super.render(graphics, mouseX, mouseY, delta);
 
-        if (tabBar != null) graphics.hLine(0, width, HLINE_Y, COLOR_WHITE);
-        graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT, height, COLOR_WHITE);
+        graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT-2, height, COLOR_SEMITRANS_GRAY);
+        graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET+1, TAB_HEIGHT-2, height, COLOR_SEMITRANS_BLACK);
 
         renderPreviewPanel(graphics);
     }

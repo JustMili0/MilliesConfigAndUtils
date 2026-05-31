@@ -38,6 +38,8 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
             return;
         }
         buildRows(config.root.children(), 0);
+        setRenderBackground(false);
+        setRenderTopAndBottom(false);
     }
 
     private void buildRows(List<ConfigItem> items, int depth) {
