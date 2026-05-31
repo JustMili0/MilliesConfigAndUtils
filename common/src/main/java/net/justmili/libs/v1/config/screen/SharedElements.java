@@ -2,6 +2,7 @@ package net.justmili.libs.v1.config.screen;
 
 import net.minecraft.network.chat.Component;
 
+@SuppressWarnings({"unchecked"})
 public class SharedElements {
     public static final int COLOR_WHITE = 0xFFFFFFFF;
 

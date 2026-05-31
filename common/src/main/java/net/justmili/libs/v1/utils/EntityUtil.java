@@ -45,7 +45,7 @@ public class EntityUtil {
                 double fallbackX = respawnPos.getX()+0.5,
                     fallbackY = respawnPos.getY()+0.05,
                     fallbackZ = respawnPos.getZ()+0.5;
-                player.teleportTo(targetLevel, fallbackX, fallbackY, fallbackZ, 180,0);
+                player.teleportTo(targetLevel, fallbackX, fallbackY, fallbackZ, 180, 0);
             }
         }
     }
@@ -61,14 +61,16 @@ public class EntityUtil {
         if (advancement == null) return;
 
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
-        if (!progress.isDone()) for (String criteria : progress.getRemainingCriteria()) player.getAdvancements().award(advancement, criteria);
+        if (!progress.isDone()) for (String criteria : progress.getRemainingCriteria())
+            player.getAdvancements().award(advancement, criteria);
     }
     public static void revokeAdvancement(ServerPlayer player, ResourceLocation namespacedAdvancementID) {
         Advancement advancement = player.server.getAdvancements().getAdvancement(namespacedAdvancementID);
         if (advancement == null) return;
 
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
-        if (progress.isDone()) for (String criteria : progress.getCompletedCriteria()) player.getAdvancements().revoke(advancement, criteria);
+        if (progress.isDone()) for (String criteria : progress.getCompletedCriteria())
+            player.getAdvancements().revoke(advancement, criteria);
     }
 
     // Non-player

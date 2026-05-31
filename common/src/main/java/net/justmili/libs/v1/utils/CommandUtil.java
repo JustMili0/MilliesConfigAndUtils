@@ -41,7 +41,8 @@ public class CommandUtil {
 
     // Other
     public static void executeAsPlayer(ServerPlayer player, String command) {
-        if (player != null) player.level().getServer().getCommands().performPrefixedCommand(player.createCommandSourceStack().withSuppressedOutput(), command);
+        if (player != null) player.level().getServer().getCommands()
+            .performPrefixedCommand(player.createCommandSourceStack().withSuppressedOutput(), command);
     }
     public static void executeAsServer(MinecraftServer server, String command) {
         if (server != null) server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);

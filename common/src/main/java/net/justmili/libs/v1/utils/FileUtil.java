@@ -21,9 +21,11 @@ public class FileUtil {
         // Ex.: "config/milliecorelibs/", "something.json"
         return new File(path, fileName);
     }
+
     public static File createPath(String path) {
         return new File(path);
     }
+
     public static void deleteFileOrPath(Path path) throws Exception {
         Files.deleteIfExists(path);
     }
@@ -42,22 +44,26 @@ public class FileUtil {
                 String raw1 = line1.replace("PLAYERNAME", player.getName().getString());
                 String line2 = buffer.readLine();
                 String raw2 = (line2 != null) ? line2.replace("PLAYERNAME", player.getName().getString()) : "";
-                String combined = raw1 + (raw2.isEmpty() ? "" : "\n" + raw2);
+                String combined = raw1+(raw2.isEmpty() ? "" : "\n"+raw2);
                 String escaped = combined.replace("\"", "\\\"");
-                String json = "{\"text\":\"" + escaped + "\"}";
+                String json = "{\"text\":\""+escaped+"\"}";
                 jsonLines.add(json);
             }
         } catch (Exception e) {
             e.fillInStackTrace();
             return;
         } finally {
-            try { buffer.close(); } catch (Exception ignored) {} }
+            try {
+                buffer.close();
+            } catch (Exception ignored) {
+            }
+        }
 
         TickUtil.waitTicks(initialDelay, () -> {
             for (int i = 0; i < jsonLines.size(); i++) {
                 String rawJson = jsonLines.get(i);
 
-                TickUtil.waitTicks(1 + lineDelay * i, () -> {
+                TickUtil.waitTicks(1+lineDelay * i, () -> {
                     JsonElement element = JsonParser.parseString(rawJson);
                     Component component = Component.Serializer.fromJson(element);
                     if (component != null) {

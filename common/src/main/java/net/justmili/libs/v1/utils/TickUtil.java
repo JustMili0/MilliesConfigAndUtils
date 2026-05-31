@@ -25,6 +25,7 @@ public class TickUtil {
     private static class WorkItem {
         Runnable task;
         int processTicks;
+
         WorkItem(Runnable task, int ticks) {
             this.task = task;
             this.processTicks = ticks;

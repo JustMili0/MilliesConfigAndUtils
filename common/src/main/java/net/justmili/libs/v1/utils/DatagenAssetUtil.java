@@ -25,7 +25,7 @@ public class DatagenAssetUtil {
     private static BlockModelGenerators blockGen;
     private static ItemModelGenerators itemGen;
     private static String modId;
-    
+
     public DatagenAssetUtil(String modId, BlockModelGenerators blockGen) {
         DatagenAssetUtil.modId = modId;
         DatagenAssetUtil.blockGen = blockGen;
@@ -34,8 +34,8 @@ public class DatagenAssetUtil {
         DatagenAssetUtil.modId = modId;
         DatagenAssetUtil.itemGen = itemGen;
     }
-    
-    
+
+
     public static void createWoodFamily(Block planks, Block stairs, Block slab, Block fence, Block fenceGate, Block door, Block trapdoor) {
         TexturedModel texturedModel = TexturedModel.CUBE.get(planks);
         TextureMapping mapping = texturedModel.getMapping();
@@ -227,11 +227,14 @@ public class DatagenAssetUtil {
             .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front_left"))
             .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block, "_back_left"));
 
-        ModelTemplate customBackOrientable = new ModelTemplate(Optional.of(CoreLibs.asMcResource("block/orientable")), Optional.empty(), TextureSlot.TOP, TextureSlot.FRONT, TextureSlot.SIDE, TextureSlot.SOUTH);
+        ModelTemplate customBackOrientable = new ModelTemplate(Optional.of(CoreLibs.asMcResource("block/orientable")),
+            Optional.empty(), TextureSlot.TOP, TextureSlot.FRONT, TextureSlot.SIDE, TextureSlot.SOUTH);
 
         ResourceLocation singleModel = ModelTemplates.CUBE_ORIENTABLE.create(block, singleMapping, blockGen.modelOutput);
-        ResourceLocation leftModel = customBackOrientable.create(TextureMapping.getBlockTexture(block, "_left"), leftMapping, blockGen.modelOutput);
-        ResourceLocation rightModel = customBackOrientable.create(TextureMapping.getBlockTexture(block, "_right"), rightMapping, blockGen.modelOutput);
+        ResourceLocation leftModel = customBackOrientable.create(TextureMapping.getBlockTexture(block, "_left"),
+            leftMapping, blockGen.modelOutput);
+        ResourceLocation rightModel = customBackOrientable.create(TextureMapping.getBlockTexture(block, "_right"),
+            rightMapping, blockGen.modelOutput);
 
         blockGen.blockStateOutput.accept(
             MultiVariantGenerator.multiVariant(block)

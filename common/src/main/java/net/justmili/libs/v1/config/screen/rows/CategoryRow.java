@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 
 import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
+@SuppressWarnings({"NullableProblems"})
 public class CategoryRow extends Row {
     public final CategoryItem category;
     private final Consumer<CategoryItem> onCatHover;

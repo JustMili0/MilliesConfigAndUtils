@@ -19,9 +19,10 @@ import java.util.List;
 
 import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
+@SuppressWarnings({"NullableProblems"})
 public class ListElementRow<T> extends Row {
     private final EditBox box;
-    private boolean pendingDelete = false;
+    public boolean pendingDelete = false;
     private final Button removeBtn;
     private final Button confirmBtn;
     private final Button cancelBtn;
@@ -38,7 +39,7 @@ public class ListElementRow<T> extends Row {
             try {
                 List<T> current = new ArrayList<>(entry.get());
                 T previous = current.get(elementIndex);
-                T parsed = parseElement(entry.defaultValue().get(0), text);
+                T parsed = parse(entry.defaultValue().get(0), text);
                 if (parsed != null && !parsed.equals(previous)) {
                     current.set(elementIndex, parsed);
                     entry.set(current);
@@ -53,8 +54,10 @@ public class ListElementRow<T> extends Row {
             }
         });
 
-        removeBtn = Button.builder(Component.empty(), btn -> pendingDelete = true)
-            .bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
+        removeBtn = Button.builder(Component.empty(), btn -> {
+            list.resetAllPendingDeletes();
+            pendingDelete = true;
+        }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         removeBtn.setAlpha(0f);
 
         confirmBtn = Button.builder(Component.empty(), btn -> {
@@ -75,20 +78,9 @@ public class ListElementRow<T> extends Row {
         cancelBtn.setAlpha(0f);
     }
 
-    private static <T> T parseElement(Object sample, String text) {
-        try {
-            if (sample instanceof Integer) return (T) Integer.valueOf(text);
-            if (sample instanceof Long) return (T) Long.valueOf(text);
-            if (sample instanceof Double) return (T) Double.valueOf(text);
-            if (sample instanceof Float) return (T) Float.valueOf(text);
-            return (T) text;
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
     @Override
-    public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+    public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
+                       int mouseX, int mouseY, boolean isHovering, float partialTick) {
         int rightEdge = list.rowRight(),
             btnY = top+(height-LIST_ICON_BTN_SIZE) / 2+2;
 

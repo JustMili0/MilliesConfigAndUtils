@@ -16,6 +16,7 @@ import java.util.List;
 
 import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
+@SuppressWarnings({"NullableProblems"})
 public class ListAddRow<T> extends Row {
     private final Button addBtn;
     private final ConfigScreenBuilder list;
@@ -39,7 +40,8 @@ public class ListAddRow<T> extends Row {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+    public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
+                       int mouseX, int mouseY, boolean isHovering, float partialTick) {
         int rightEdge = list.rowRight(),
             btnX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN+20,
             btnY = top+(height-LIST_ICON_BTN_SIZE) / 2+1;

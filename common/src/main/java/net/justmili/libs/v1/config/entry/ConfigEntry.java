@@ -33,6 +33,7 @@ public class ConfigEntry<T> implements ConfigItem {
     public T max() {
         return max;
     }
+
     public boolean hasRange() {
         return min != null && max != null;
     }

@@ -33,8 +33,11 @@ public class ListConfigEntry<T> implements ConfigItem {
         this.value = new ArrayList<>(newValue);
         config.save();
     }
-    public boolean is(List<T> other) {
-        return value.equals(other);
+    public boolean is(List<T> list) {
+        return value.equals(list);
+    }
+    public boolean contains(T value) {
+        return this.value.contains(value);
     }
 
     public String key() {
@@ -52,7 +55,7 @@ public class ListConfigEntry<T> implements ConfigItem {
         for (String element : raw.split(",")) {
             String trimmed = element.trim();
             try {
-                parsed.add(parseElement(trimmed));
+                parsed.add(parse(trimmed));
             } catch (Exception e) {
                 CoreLibs.LOGGER.warn("Failed to parse list element '{}' for key '{}', skipping.", trimmed, key);
             }
@@ -93,7 +96,7 @@ public class ListConfigEntry<T> implements ConfigItem {
         return stringBuilder.toString();
     }
 
-    private T parseElement(String raw) {
+    private T parse(String raw) {
         Class<?> type = type();
         if (type == Integer.class) return (T) Integer.valueOf(raw);
         if (type == Long.class) return (T) Long.valueOf(raw);

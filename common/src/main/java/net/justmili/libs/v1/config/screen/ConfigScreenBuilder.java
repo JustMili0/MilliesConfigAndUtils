@@ -18,7 +18,6 @@ import java.util.function.Consumer;
 
 import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
-@SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
     public final ConfigLoader config;
     private final Consumer<ConfigEntry<?>> onHover;
@@ -34,7 +33,8 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
         this.onCatHover = onCatHover;
         this.onListHover = onListHover;
         if (config.root == null) {
-            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. Please ensure your config class is registered during mod init.", config.modId);
+            CoreLibs.LOGGER.error("Config '{}' has no root - config file(s) may not have been loaded. "+
+                "Please ensure your config class is registered during mod init.", config.modId);
             return;
         }
         buildRows(config.root.children(), 0);
@@ -66,7 +66,7 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
                 if (row.expanded) {
                     for (int i = 1; i < listEntry.get().size(); i++)
                         addEntry(new ListElementRow<>(listEntry, i, depth+1, this, undoStack));
-                    if (listEntry.get().size() > 0)
+                    if (!listEntry.get().isEmpty())
                         addEntry(new ListAddRow<>(listEntry, depth+1, this, undoStack));
                 }
             }
@@ -83,6 +83,13 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
         }
         clearEntries();
         buildRowsPreservingExpansion(config.root.children(), 0, expandedCats, expandedLists);
+    }
+
+    public void resetAllPendingDeletes() {
+        for (Row row : children()) {
+            if (row instanceof ListElementRow<?> element) element.pendingDelete = false;
+            if (row instanceof ListEntryRow listEntry) listEntry.inlinePendingDelete = false;
+        }
     }
 
     public int rowRight() {

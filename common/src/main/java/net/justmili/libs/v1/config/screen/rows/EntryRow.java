@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
+@SuppressWarnings({"unchecked", "NullableProblems"})
 public class EntryRow extends Row {
     private final String modId;
     private final ConfigEntry<?> entry;
@@ -81,7 +82,8 @@ public class EntryRow extends Row {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+    public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
+                       int mouseX, int mouseY, boolean isHovering, float partialTick) {
         if (isHovering) onHover.accept(entry);
         Component label = SharedElements.resolve(SharedElements.varKey(modId, entry.key()));
         if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
@@ -90,7 +92,7 @@ public class EntryRow extends Row {
         int rightEdge = list.rowRight(),
             labelX = left+indent()+LABEL_LEFT_PADDING,
             labelMaxWidth = rightEdge-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN-LABEL_RIGHT_GAP-labelX,
-            labelY = top+(height-9)/2,
+            labelY = top+(height-9) / 2,
             widgetX = rightEdge-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN;
 
         String labelStr = label.getString();

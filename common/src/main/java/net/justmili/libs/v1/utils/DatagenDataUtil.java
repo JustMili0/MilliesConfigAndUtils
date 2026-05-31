@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 public class DatagenDataUtil {
     private static String modId;
     private static Consumer<FinishedRecipe> writer;
-    
+
     public DatagenDataUtil(String modId, Consumer<FinishedRecipe> finishedRecipeConsumer) {
         DatagenDataUtil.modId = modId;
         DatagenDataUtil.writer = finishedRecipeConsumer;
     }
-    
+
     public static void shapeless(RecipeCategory category, Item output, int outCount, Item... inputs) {
         ShapelessRecipeBuilder builder = ShapelessRecipeBuilder.shapeless(category, output, outCount);
         for (Item input : inputs) builder.requires(input);
@@ -106,12 +106,14 @@ public class DatagenDataUtil {
             .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
             .save(writer, CoreLibs.parse(modId, RecipeProvider.getItemName(pressurePlate)));
     }
+
     public static void button(Item material, Item button) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, button)
             .requires(material)
             .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
             .save(writer, CoreLibs.parse(modId, RecipeProvider.getItemName(button)));
     }
+
     public static void smelt(Item input, Item output, float exp, int cookingTime) {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, output, exp, cookingTime)
             .unlockedBy(RecipeProvider.getHasName(input), RecipeProvider.has(input))
@@ -149,7 +151,7 @@ public class DatagenDataUtil {
     }
 
     public static void cut(Item input, Item output) {
-        cut( input, output, 1);
+        cut(input, output, 1);
     }
 
     public static void smithing(Item base, Item addition, Item template, RecipeCategory category, Item result) {

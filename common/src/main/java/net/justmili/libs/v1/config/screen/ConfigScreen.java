@@ -45,13 +45,12 @@ public class ConfigScreen extends Screen {
         updateRuntimeValues(width, height);
 
         List<Tab> tabs = builders.stream().map(builder -> (Tab) new ConfigTab(builder.getConfig(), this::setActiveConfig)).toList();
-
         tabBar = TabNavigationBar.builder(tabManager, entryListWidth).addTabs(tabs.toArray(new Tab[0])).build();
         addRenderableWidget(tabBar);
         tabBar.selectTab(0, false);
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.done"), button -> onClose())
-            .bounds(panelX+PANEL_PADDING, buttonRowY, BACKGROUND_X_OFFSET-PANEL_PADDING*2, PANEL_BUTTON_HEIGHT)
+            .bounds(panelX+PANEL_PADDING, buttonRowY, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
             .build());
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.reset"), button -> {
@@ -60,10 +59,12 @@ public class ConfigScreen extends Screen {
             Object previous = hoveredEntry.get();
             ((ConfigEntry<Object>) hoveredEntry).set(hoveredEntry.defaultValue());
             if (entryList != null) entryList.undoStack.push(() -> ((ConfigEntry<Object>) hoveredEntry).set(previous));
+
         }).bounds(panelX+PANEL_PADDING, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
 
         addRenderableWidget(Button.builder(Component.translatable("gui.config.undo"), button -> {
             if (entryList != null && !entryList.undoStack.isEmpty()) entryList.undoStack.pop().run();
+
         }).bounds(panelX+PANEL_PADDING+PANEL_BUTTON_WIDTH+BUTTON_ROW_GAP, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT).build());
 
         if (!builders.isEmpty()) setActiveConfig(builders.get(0).getConfig());
@@ -74,9 +75,15 @@ public class ConfigScreen extends Screen {
 
         entryList = new ConfigScreenBuilder(minecraft, entryListWidth, listHeight, listY, ITEM_HEIGHT, config,
             entry -> hoveredEntry = entry,
-            category -> { hoveredCategory = category; hoveredEntry = null; },
-            listEntry -> { hoveredList = listEntry; hoveredEntry = null; hoveredCategory = null;
-        });
+            category -> {
+                hoveredCategory = category;
+                hoveredEntry = null;
+            },
+            listEntry -> {
+                hoveredList = listEntry;
+                hoveredEntry = null;
+                hoveredCategory = null;
+            });
 
         addRenderableWidget(entryList);
     }
@@ -104,7 +111,7 @@ public class ConfigScreen extends Screen {
     private void renderPreviewPanel(GuiGraphics graphics) {
         int x = panelX+PANEL_PADDING,
             y = PREVIEW_TEXT_Y_OFFSET,
-            textWidth = BACKGROUND_X_OFFSET-PANEL_PADDING*2;
+            textWidth = BACKGROUND_X_OFFSET-PANEL_PADDING * 2;
 
         if (hoveredEntry != null) {
             String modId = builders.stream()

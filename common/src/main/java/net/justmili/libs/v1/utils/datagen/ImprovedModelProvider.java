@@ -48,7 +48,7 @@ public abstract class ImprovedModelProvider implements DataProvider {
             Block block = generator.getBlock();
             BlockStateGenerator prev = blockStateGenerators.put(block, generator);
             if (prev != null) {
-                throw new IllegalStateException("Duplicate blockstate definition for " + block);
+                throw new IllegalStateException("Duplicate blockstate definition for "+block);
             }
         };
 
@@ -57,7 +57,7 @@ public abstract class ImprovedModelProvider implements DataProvider {
         BiConsumer<ResourceLocation, Supplier<JsonElement>> modelOutput = (resourceLocation, supplier) -> {
             Supplier<JsonElement> prev = models.put(resourceLocation, supplier);
             if (prev != null) {
-                throw new IllegalStateException("Duplicate model definition for " + resourceLocation);
+                throw new IllegalStateException("Duplicate model definition for "+resourceLocation);
             }
         };
         Objects.requireNonNull(simpleModels);
@@ -69,7 +69,7 @@ public abstract class ImprovedModelProvider implements DataProvider {
 
         List<Block> list = BuiltInRegistries.BLOCK.stream().filter((block) -> !blockStateGenerators.containsKey(block)).toList();
         if (/*!list.isEmpty()*/ false) { // We don't need this
-            throw new IllegalStateException("Missing blockstate definitions for: " + list);
+            throw new IllegalStateException("Missing blockstate definitions for: "+list);
         } else {
             BuiltInRegistries.BLOCK.forEach((block) -> {
                 ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);

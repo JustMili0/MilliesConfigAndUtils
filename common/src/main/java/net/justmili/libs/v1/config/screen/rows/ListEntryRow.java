@@ -32,12 +32,13 @@ public class ListEntryRow extends Row {
 
     private EditBox inlineBox;
     private Button inlineRemoveBtn;
-    private boolean inlinePendingDelete = false;
+    public boolean inlinePendingDelete = false;
     private Button inlineConfirmBtn;
     private Button inlineCancelBtn;
     private Button inlineAddBtn;
 
-    public ListEntryRow(ListConfigEntry<?> entry, String modId, int depth, ConfigScreenBuilder list, Consumer<ListConfigEntry<?>> onHover, Deque<Runnable> undoStack) {
+    public ListEntryRow(ListConfigEntry<?> entry, String modId, int depth, ConfigScreenBuilder list,
+                        Consumer<ListConfigEntry<?>> onHover, Deque<Runnable> undoStack) {
         super(depth);
         this.modId = modId;
         this.entry = entry;
@@ -74,8 +75,10 @@ public class ListEntryRow extends Row {
             });
         }
 
-        inlineRemoveBtn = Button.builder(Component.empty(), btn -> inlinePendingDelete = true)
-            .bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
+        inlineRemoveBtn = Button.builder(Component.empty(), btn -> {
+            list.resetAllPendingDeletes();
+            inlinePendingDelete = true;
+        }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         inlineRemoveBtn.setAlpha(0f);
 
         inlineConfirmBtn = Button.builder(Component.empty(), btn -> {
@@ -116,7 +119,8 @@ public class ListEntryRow extends Row {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+    public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
+                       int mouseX, int mouseY, boolean isHovering, float partialTick) {
         if (isHovering) onHover.accept(entry);
 
         Font font = Minecraft.getInstance().font;
@@ -137,7 +141,8 @@ public class ListEntryRow extends Row {
             graphics.drawString(font, label, labelX, labelY, COLOR_WHITE);
         }
 
-        graphics.renderItem(expanded ? Items.COOKED_PORKCHOP.getDefaultInstance() : Items.PORKCHOP.getDefaultInstance(), left+indent()+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
+        graphics.renderItem(expanded ? Items.COOKED_PORKCHOP.getDefaultInstance() : Items.PORKCHOP.getDefaultInstance(),
+            left+indent()+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
 
         if (expanded) {
             int rightEdge = list.rowRight(),
@@ -195,11 +200,18 @@ public class ListEntryRow extends Row {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (expanded) for (GuiEventListener child : children())
-            if (child.isMouseOver(mouseX, mouseY)) {
-                child.mouseClicked(mouseX, mouseY, button);
+        if (expanded) {
+            if (inlineBox.isMouseOver(mouseX, mouseY)) {
+                inlineBox.setFocused(true);
+                inlineBox.mouseClicked(mouseX, mouseY, button);
                 return true;
             }
+            for (GuiEventListener child : children())
+                if (child.isMouseOver(mouseX, mouseY)) {
+                    child.mouseClicked(mouseX, mouseY, button);
+                    return true;
+                }
+        }
         toggle();
         return true;
     }
