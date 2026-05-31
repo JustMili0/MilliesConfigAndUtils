@@ -4,5 +4,7 @@
   "gui.config.bool.false": "False",
   "gui.config.done": "Done",
   "gui.config.undo": "Undo",
-  "gui.config.reset": "Reset"
+  "gui.config.undo.desc": "Undoes last changed key",
+  "gui.config.reset": "Reset",
+  "gui.config.reset.desc": "Resets a key to its default value"
 }

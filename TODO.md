@@ -3,9 +3,10 @@
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
   - Give "Reset" button a proper function
+  - Give "Reset" and "Undo" Hover-over descriptions
   - Make boolean values `true`/`false` use `gui.config.bool.true` and `gui.config.bool.false` for text display
   - Make builder tabs use custom translation keys as well (just like config entries etc)
-- (Config Lib) Add custom textures (on a 256x256 texture atlas(?)) for widgets
+  - Make custom textures to replace the placeholder icons
 - (Cross-Loader API) Add cross-loader events
   - Straight up replicate the entirety of Fabric's event system adding whatever it's missing that Forge itself has for some reason
 - (Config Lib) Add enum selector entry
