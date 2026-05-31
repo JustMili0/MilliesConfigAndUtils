@@ -49,27 +49,25 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
     private void buildRowsPreservingExpansion(List<ConfigItem> items, int depth, List<CategoryRow> expandedCats, List<ListEntryRow> expandedLists) {
         for (ConfigItem item : items) {
             if (item instanceof CategoryItem category) {
-                CategoryRow existing = expandedCats.stream()
-                    .filter(r -> r.category == category)
-                    .findFirst().orElse(null);
+                CategoryRow existing = expandedCats.stream().filter(r -> r.category == category).findFirst().orElse(null);
                 CategoryRow row = existing != null ? existing : new CategoryRow(category, depth, onCatHover, this);
                 addEntry(row);
-                if (row.expanded)
-                    buildRowsPreservingExpansion(category.children(), depth+1, expandedCats, expandedLists);
+
+                if (row.expanded) buildRowsPreservingExpansion(category.children(), depth+1, expandedCats, expandedLists);
+
             } else if (item instanceof ConfigEntry<?> entry) {
                 addEntry(new EntryRow(entry, config.modId, depth, onHover, undoStack, this));
+
             } else if (item instanceof ListConfigEntry<?> listEntry) {
-                ListEntryRow existing = expandedLists.stream()
-                    .filter(r -> r.entry == listEntry)
-                    .findFirst().orElse(null);
+                ListEntryRow existing = expandedLists.stream().filter(r -> r.entry == listEntry).findFirst().orElse(null);
+
                 ListEntryRow row = existing != null ? existing : new ListEntryRow(listEntry, config.modId, depth, this, onListHover, undoStack);
                 if (existing != null) row.rebuildInlineWidgets();
                 addEntry(row);
+
                 if (row.expanded) {
-                    for (int i = 1; i < listEntry.get().size(); i++)
-                        addEntry(new ListElementRow<>(listEntry, i, depth+1, this, undoStack));
-                    if (!listEntry.get().isEmpty())
-                        addEntry(new ListAddRow<>(listEntry, depth+1, this, undoStack));
+                    for (int i = 1; i < listEntry.get().size(); i++) addEntry(new ListElementRow<>(listEntry, i, depth+1, this, undoStack));
+                    if (!listEntry.get().isEmpty()) addEntry(new ListAddRow<>(listEntry, depth+1, this, undoStack));
                 }
             }
             // CommentItems are file-only, skip

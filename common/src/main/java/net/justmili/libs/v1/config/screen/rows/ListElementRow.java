@@ -22,11 +22,11 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 @SuppressWarnings({"NullableProblems"})
 public class ListElementRow<T> extends Row {
     private final EditBox box;
-    public boolean pendingDelete = false;
     private final Button removeBtn;
     private final Button confirmBtn;
     private final Button cancelBtn;
     private final ConfigScreenBuilder list;
+    public boolean pendingDelete = false;
 
     public ListElementRow(ListConfigEntry<T> entry, int elementIndex, int depth, ConfigScreenBuilder list, Deque<Runnable> undoStack) {
         super(depth);
@@ -40,9 +40,11 @@ public class ListElementRow<T> extends Row {
                 List<T> current = new ArrayList<>(entry.get());
                 T previous = current.get(elementIndex);
                 T parsed = parse(entry.defaultValue().get(0), text);
+                
                 if (parsed != null && !parsed.equals(previous)) {
                     current.set(elementIndex, parsed);
                     entry.set(current);
+
                     undoStack.push(() -> {
                         List<T> undo = new ArrayList<>(entry.get());
                         undo.set(elementIndex, previous);
@@ -63,6 +65,7 @@ public class ListElementRow<T> extends Row {
         confirmBtn = Button.builder(Component.empty(), btn -> {
             List<T> current = new ArrayList<>(entry.get());
             T removed = current.remove(elementIndex);
+
             entry.set(current);
             undoStack.push(() -> {
                 List<T> undo = new ArrayList<>(entry.get());
@@ -70,6 +73,7 @@ public class ListElementRow<T> extends Row {
                 entry.set(undo);
             });
             list.rebuildFromRoot();
+
         }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         confirmBtn.setAlpha(0f);
 
