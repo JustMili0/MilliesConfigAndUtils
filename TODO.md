@@ -2,7 +2,6 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
-  - Make text in inputs turn red (`SharedElements.COLOR_RED`) when exceeding the key's max or min value
   - Fix all from "Weird issues found" (#weird-issues-found)
   - Make each entry have its own selectable "section" so "Reset" know what to reset
   - Give "Reset" button a proper function
@@ -20,7 +19,6 @@
 - Write full documentation
 
 # Weird issues found:
-- Integer input in config screen doesn't allow numbers past 100 (e.g. 101 and higher)
 - List inputs that are inline with the list name are clickable, but not editable
 
 ### YAML/YML - Design

@@ -104,6 +104,26 @@ public class EntryRow extends Row {
             graphics.drawString(font, label, labelX, labelY, COLOR_WHITE);
         }
 
+        // Tint label red and italic if the current value is out of the allowed range
+        if (widget instanceof EditBox box) {
+            try {
+                Object defaultValue = entry.defaultValue();
+                boolean outOfRange = false;
+                if (entry.hasRange()) {
+                    String text = box.getValue();
+                    Comparable<Object> parsed = null;
+                    if (defaultValue instanceof Integer) parsed = (Comparable<Object>)(Object) Integer.parseInt(text);
+                    else if (defaultValue instanceof Long) parsed = (Comparable<Object>)(Object) Long.parseLong(text);
+                    else if (defaultValue instanceof Double) parsed = (Comparable<Object>)(Object) Double.parseDouble(text);
+                    else if (defaultValue instanceof Float) parsed = (Comparable<Object>)(Object) Float.parseFloat(text);
+                    if (parsed != null) outOfRange = parsed.compareTo(entry.min()) < 0 || parsed.compareTo(entry.max()) > 0;
+                }
+                box.setTextColor(outOfRange ? COLOR_RED : COLOR_WHITE);
+            } catch (NumberFormatException ignored) {
+                box.setTextColor(COLOR_WHITE);
+            }
+        }
+
         widget.setX(widgetX);
         widget.setY(top+WIDGET_TOP_MARGIN);
         widget.render(graphics, mouseX, mouseY, partialTick);
