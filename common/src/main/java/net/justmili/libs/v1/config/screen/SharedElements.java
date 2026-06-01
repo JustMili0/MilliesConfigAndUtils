@@ -8,24 +8,32 @@ import net.minecraft.resources.ResourceLocation;
 @SuppressWarnings({"unchecked"})
 public class SharedElements {
     public static final ResourceLocation ICONS = CoreLibs.asResource("textures/gui/icons.png");
+    public static final int /// I = Icon, W = Widget, C = Color
+        I_CLOSED_CAT = 1, // Arrow right
+        I_OPEN_CAT = 2, // Arrow down
+        I_LIST_CLOSED = 3, // Vertical dots
+        I_LIST_OPEN = 4, // Dotted list
+        I_ADD = 5, // Plus
+        I_ADD_HOVER = 6, // Plus highlighted
+        I_REMOVE = 7, // Minus
+        I_REMOVE_HOVER = 8, // Minus highlighted
+        I_CANCEL = 9, // X
+        I_CANCEL_HOVER = 10, // X highlighted
+        I_DELETE = 11, // Trash bin
+        I_DELETE_HOVER = 12, // Trash bin highlighted
+
+        // Unused
+        I_REORDER = 13, // Burger
+        W_BOOL_FALSE = 14, // Empty square
+        W_BOOL_TRUE = 15, // Filled square
+        W_INPUT_1 = 17, // Underline start
+        W_INPUT_2 = 18, // Underline middle
+        W_INPUT_3 = 19; // Underline end
     public static final int
-        ICON_CAT_CLOSED = 1, // Arrow right
-        ICON_CAT_OPEN = 2, // Arrow down
-        ICON_LIST_CLOSED = 3, // Vertical dots
-        ICON_LIST_OPEN = 4, // Dotted list
-        ICON_ADD = 5, // Plus
-        ICON_ADD_HOVER = 6, // Plus highlighted
-        ICON_REMOVE_LIST = 7, // Minus
-        ICON_REMOVE_LIST_HOVER = 8, // Minus highlighted
-        ICON_CANCEL = 9, // X
-        ICON_CANCEL_HOVER = 10, // X highlighted
-        ICON_DELETE = 11, // Trash bin
-        ICON_DELETE_HOVER = 12; // Trash bin highlighted
-    public static final int
-        COLOR_WHITE = 0xFFFFFFFF,
-        COLOR_RED = 0xFFFB5454,
-        COLOR_SEMITRANS_GRAY = 0x55B1A89C,
-        COLOR_SEMITRANS_BLACK = 0x80010200;
+        C_WHITE = 0xFFFFFFFF,
+        C_RED = 0xFFFB5454,
+        C_SEMITRANS_GRAY = 0x55B1A89C,
+        C_SEMITRANS_BLACK = 0x80010200;
 
     // Screen layout
     public static int
@@ -154,8 +162,11 @@ public class SharedElements {
         return mouseX >= x && mouseX <= x+size && mouseY >= y && mouseY <= y+size;
     }
 
-    public static void renderIcon(GuiGraphics graphics, int index, int x, int y) {
-        int i = index-1;
+    public static void renderHoveredIcon(GuiGraphics graphics, boolean isHoveredOver, int iconIndex, int hoveredIconIndex, int x, int y) {
+        renderIcon(graphics, isHoveredOver ? hoveredIconIndex : iconIndex, x, y);
+    }
+    public static void renderIcon(GuiGraphics graphics, int iconIndex, int x, int y) {
+        int i = iconIndex-1;
         int iconX = (i % 16) * 16;
         int iconY = (i / 16) * 16;
         graphics.blit(ICONS, x, y, iconX, iconY, 16, 16, 256, 256);

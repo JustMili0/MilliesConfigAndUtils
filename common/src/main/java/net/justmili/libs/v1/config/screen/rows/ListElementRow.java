@@ -10,7 +10,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,11 +20,11 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
 @SuppressWarnings({"NullableProblems"})
 public class ListElementRow<T> extends Row {
+    private final ConfigScreenBuilder list;
     private final EditBox box;
     private final Button removeBtn;
     private final Button confirmBtn;
     private final Button cancelBtn;
-    private final ConfigScreenBuilder list;
     public boolean pendingDelete = false;
 
     public ListElementRow(ListConfigEntry<T> entry, int elementIndex, int depth, ConfigScreenBuilder list, Deque<Runnable> undoStack) {
@@ -96,18 +95,14 @@ public class ListElementRow<T> extends Row {
             cancelBtn.setX(cancelX);
             cancelBtn.setY(btnY);
             cancelBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderIcon(graphics,
-                isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE)
-                    ? ICON_CANCEL_HOVER : ICON_CANCEL,
-                cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderHoveredIcon(graphics, isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE),
+                I_CANCEL, I_CANCEL_HOVER, cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             confirmBtn.setX(confirmX);
             confirmBtn.setY(btnY);
             confirmBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderIcon(graphics,
-                isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE)
-                    ? ICON_DELETE_HOVER : ICON_DELETE,
-                confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderHoveredIcon(graphics, isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE),
+                I_DELETE, I_DELETE_HOVER, confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             box.setX(boxX);
             box.setY(top+WIDGET_TOP_MARGIN);
@@ -120,10 +115,8 @@ public class ListElementRow<T> extends Row {
             removeBtn.setX(removeX);
             removeBtn.setY(btnY);
             removeBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderIcon(graphics,
-                isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE)
-                    ? ICON_REMOVE_LIST_HOVER : ICON_REMOVE_LIST,
-                removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderHoveredIcon(graphics, isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE),
+                I_REMOVE, I_REMOVE_HOVER, removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
             box.setX(boxX);
             box.setY(top+WIDGET_TOP_MARGIN);

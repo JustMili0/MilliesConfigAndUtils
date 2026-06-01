@@ -48,9 +48,8 @@ public class ListAddRow<T> extends Row {
         addBtn.setX(btnX);
         addBtn.setY(btnY);
         addBtn.render(graphics, mouseX, mouseY, partialTick);
-        renderIcon(graphics,
-            isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE) ? ICON_ADD_HOVER : ICON_ADD,
-            btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+        renderHoveredIcon(graphics, isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE),
+            I_ADD, I_ADD_HOVER, btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
     }
 
     @Override

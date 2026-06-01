@@ -99,9 +99,9 @@ public class EntryRow extends Row {
         if (font.width(labelStr) > labelMaxWidth) {
             while (font.width(labelStr+"...") > labelMaxWidth && !labelStr.isEmpty())
                 labelStr = labelStr.substring(0, labelStr.length()-1);
-            graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, COLOR_WHITE);
+            graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, C_WHITE);
         } else {
-            graphics.drawString(font, label, labelX, labelY, COLOR_WHITE);
+            graphics.drawString(font, label, labelX, labelY, C_WHITE);
         }
 
         // Tint label red and italic if the current value is out of the allowed range
@@ -118,9 +118,9 @@ public class EntryRow extends Row {
                     else if (defaultValue instanceof Float) parsed = (Comparable<Object>)(Object) Float.parseFloat(text);
                     if (parsed != null) outOfRange = parsed.compareTo(entry.min()) < 0 || parsed.compareTo(entry.max()) > 0;
                 }
-                box.setTextColor(outOfRange ? COLOR_RED : COLOR_WHITE);
+                box.setTextColor(outOfRange ? C_RED : C_WHITE);
             } catch (NumberFormatException ignored) {
-                box.setTextColor(COLOR_WHITE);
+                box.setTextColor(C_WHITE);
             }
         }
 

@@ -128,8 +128,8 @@ public class ConfigScreen extends Screen {
         if (undoButton != null) undoButton.active = screenBuilder != null && !screenBuilder.undoStack.isEmpty();
 
         // Draw borderlines splitting apart the screen into the Config Panel and the Preview Panel
-        graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT-2, height, COLOR_SEMITRANS_GRAY);
-        graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET+1, TAB_HEIGHT-2, height, COLOR_SEMITRANS_BLACK);
+        graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT-2, height, C_SEMITRANS_GRAY);
+        graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET+1, TAB_HEIGHT-2, height, C_SEMITRANS_BLACK);
 
         // Render preview panel
         renderPreviewPanel(graphics);
@@ -147,10 +147,10 @@ public class ConfigScreen extends Screen {
 
             Component name = resolve(varKey(modId, hoveredEntry.key()))
                 .copy().withStyle(style -> style.withBold(true));
-            graphics.drawWordWrap(font, name, x, y, textWidth, COLOR_WHITE);
+            graphics.drawWordWrap(font, name, x, y, textWidth, C_WHITE);
             y += font.wordWrapHeight(name, textWidth);
 
-            graphics.drawWordWrap(font, resolve(varDescKey(modId, hoveredEntry.key())), x, y, textWidth, COLOR_WHITE);
+            graphics.drawWordWrap(font, resolve(varDescKey(modId, hoveredEntry.key())), x, y, textWidth, C_WHITE);
 
         } else if (hoveredCategory != null) {
             String modId = builders.stream()
@@ -159,10 +159,10 @@ public class ConfigScreen extends Screen {
 
             Component name = resolve(catKey(modId, hoveredCategory.name()))
                 .copy().withStyle(style -> style.withBold(true));
-            graphics.drawWordWrap(font, name, x, y, textWidth, COLOR_WHITE);
+            graphics.drawWordWrap(font, name, x, y, textWidth, C_WHITE);
             y += font.wordWrapHeight(name, textWidth);
 
-            graphics.drawWordWrap(font, resolve(catDescKey(modId, hoveredCategory.name())), x, y, textWidth, COLOR_WHITE);
+            graphics.drawWordWrap(font, resolve(catDescKey(modId, hoveredCategory.name())), x, y, textWidth, C_WHITE);
 
         } else if (hoveredList != null) {
             String modId = builders.stream()
@@ -171,10 +171,10 @@ public class ConfigScreen extends Screen {
 
             Component name = resolve(varKey(modId, hoveredList.key()))
                 .copy().withStyle(style -> style.withBold(true));
-            graphics.drawWordWrap(font, name, x, y, textWidth, COLOR_WHITE);
+            graphics.drawWordWrap(font, name, x, y, textWidth, C_WHITE);
             y += font.wordWrapHeight(name, textWidth);
 
-            graphics.drawWordWrap(font, resolve(varDescKey(modId, hoveredList.key())), x, y, textWidth, COLOR_WHITE);
+            graphics.drawWordWrap(font, resolve(varDescKey(modId, hoveredList.key())), x, y, textWidth, C_WHITE);
         }
     }
 

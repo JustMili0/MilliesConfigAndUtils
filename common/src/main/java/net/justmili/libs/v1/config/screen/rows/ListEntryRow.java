@@ -11,7 +11,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -136,13 +135,13 @@ public class ListEntryRow extends Row {
         if (font.width(labelStr) > labelMaxWidth) {
             while (font.width(labelStr+"...") > labelMaxWidth && !labelStr.isEmpty())
                 labelStr = labelStr.substring(0, labelStr.length()-1);
-            graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, COLOR_WHITE);
+            graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, C_WHITE);
         } else {
-            graphics.drawString(font, label, labelX, labelY, COLOR_WHITE);
+            graphics.drawString(font, label, labelX, labelY, C_WHITE);
         }
 
         renderIcon(graphics,
-            expanded ? ICON_LIST_OPEN : ICON_LIST_CLOSED,
+            expanded ? I_LIST_OPEN : I_LIST_CLOSED,
             left+indent()+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
 
         if (expanded) {
@@ -154,11 +153,8 @@ public class ListEntryRow extends Row {
                 inlineAddBtn.setX(btnX);
                 inlineAddBtn.setY(btnY);
                 inlineAddBtn.render(graphics, mouseX, mouseY, partialTick);
-                
-                renderIcon(graphics,
-                    isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE)
-                        ? ICON_ADD_HOVER : ICON_ADD,
-                    btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderHoveredIcon(graphics, isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE),
+                    I_ADD, I_ADD_HOVER, btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
                 
             } else if (inlinePendingDelete) {
                 int cancelX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE * 2-LIST_BTN_GAP * 3-WIDGET_RIGHT_MARGIN,
@@ -168,18 +164,14 @@ public class ListEntryRow extends Row {
                 inlineCancelBtn.setX(cancelX);
                 inlineCancelBtn.setY(btnY);
                 inlineCancelBtn.render(graphics, mouseX, mouseY, partialTick);
-                renderIcon(graphics,
-                    isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE)
-                        ? ICON_CANCEL_HOVER : ICON_CANCEL,
-                    cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderHoveredIcon(graphics, isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE),
+                    I_CANCEL, I_CANCEL_HOVER, cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
                 inlineConfirmBtn.setX(confirmX);
                 inlineConfirmBtn.setY(btnY);
                 inlineConfirmBtn.render(graphics, mouseX, mouseY, partialTick);
-                renderIcon(graphics,
-                    isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE)
-                        ? ICON_DELETE_HOVER : ICON_DELETE,
-                    confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderHoveredIcon(graphics, isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE),
+                    I_DELETE, I_DELETE_HOVER, confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
                 inlineBox.setX(boxX);
                 inlineBox.setY(top+WIDGET_TOP_MARGIN);
@@ -192,10 +184,8 @@ public class ListEntryRow extends Row {
                 inlineRemoveBtn.setX(removeX);
                 inlineRemoveBtn.setY(btnY);
                 inlineRemoveBtn.render(graphics, mouseX, mouseY, partialTick);
-                renderIcon(graphics,
-                    isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE)
-                        ? ICON_REMOVE_LIST_HOVER : ICON_REMOVE_LIST,
-                    removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderHoveredIcon(graphics, isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE),
+                    I_REMOVE, I_REMOVE_HOVER, removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
 
                 inlineBox.setX(boxX);
                 inlineBox.setY(top+WIDGET_TOP_MARGIN);

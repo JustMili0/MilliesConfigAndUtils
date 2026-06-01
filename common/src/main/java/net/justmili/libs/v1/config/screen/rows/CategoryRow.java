@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class CategoryRow extends Row {
             labelY = top+(height-9) / 2;
 
         // Placeholder icons
-        renderIcon(graphics, expanded ? ICON_CAT_OPEN : ICON_CAT_CLOSED, x+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
+        renderIcon(graphics, expanded ? I_OPEN_CAT : I_CLOSED_CAT, x+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
         Component label = SharedElements.resolve(SharedElements.catKey(list.config.modId, category.name()));
 
         if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));
@@ -63,9 +62,9 @@ public class CategoryRow extends Row {
         if (font.width(labelStr) > labelMaxWidth) {
             while (font.width(labelStr+"...") > labelMaxWidth && !labelStr.isEmpty())
                 labelStr = labelStr.substring(0, labelStr.length()-1);
-            graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, SharedElements.COLOR_WHITE);
+            graphics.drawString(font, Component.literal(labelStr+"...").withStyle(label.getStyle()), labelX, labelY, SharedElements.C_WHITE);
         } else {
-            graphics.drawString(font, label, labelX, labelY, SharedElements.COLOR_WHITE);
+            graphics.drawString(font, label, labelX, labelY, SharedElements.C_WHITE);
         }
     }
 
