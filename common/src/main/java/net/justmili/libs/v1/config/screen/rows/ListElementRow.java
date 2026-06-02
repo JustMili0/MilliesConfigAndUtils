@@ -95,14 +95,14 @@ public class ListElementRow<T> extends Row {
             cancelBtn.setX(cancelX);
             cancelBtn.setY(btnY);
             cancelBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderHoveredIcon(graphics, isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE),
-                I_CANCEL, I_CANCEL_HOVER, cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderHoveredIcon(graphics, cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
+                isHoveredOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE), I_CANCEL, I_CANCEL_HOVER);
 
             confirmBtn.setX(confirmX);
             confirmBtn.setY(btnY);
             confirmBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderHoveredIcon(graphics, isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE),
-                I_DELETE, I_DELETE_HOVER, confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderHoveredIcon(graphics, confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
+                isHoveredOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE), I_DELETE, I_DELETE_HOVER);
 
             box.setX(boxX);
             box.setY(top+WIDGET_TOP_MARGIN);
@@ -115,8 +115,8 @@ public class ListElementRow<T> extends Row {
             removeBtn.setX(removeX);
             removeBtn.setY(btnY);
             removeBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderHoveredIcon(graphics, isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE),
-                I_REMOVE, I_REMOVE_HOVER, removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+            renderHoveredIcon(graphics, removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
+                isHoveredOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE), I_REMOVE, I_REMOVE_HOVER);
 
             box.setX(boxX);
             box.setY(top+WIDGET_TOP_MARGIN);

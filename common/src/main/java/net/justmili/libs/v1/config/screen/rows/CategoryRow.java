@@ -52,7 +52,8 @@ public class CategoryRow extends Row {
             labelY = top+(height-9) / 2;
 
         // Placeholder icons
-        renderIcon(graphics, expanded ? I_OPEN_CAT : I_CLOSED_CAT, x+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
+        renderIcon(graphics, x+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2,
+            expanded ? I_OPEN_CAT : I_CLOSED_CAT);
         Component label = SharedElements.resolve(SharedElements.catKey(list.config.modId, category.name()));
 
         if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));

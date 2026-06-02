@@ -5,9 +5,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Calendar;
+
 @SuppressWarnings({"unchecked"})
 public class SharedElements {
     public static final ResourceLocation ICONS = CoreLibs.asResource("textures/gui/icons.png");
+    public static final ResourceLocation ICONS_PRIDE = CoreLibs.asResource("textures/gui/icons_pride.png");
     public static final int /// I = Icon, W = Widget, C = Color
         I_CLOSED_CAT = 1, // Arrow right
         I_OPEN_CAT = 2, // Arrow down
@@ -139,36 +142,39 @@ public class SharedElements {
         if (objectValue instanceof Float) return text.matches("-?\\d*\\.?\\d*");
         return true;
     }
-    public static <T> T newBlank(Object sample) {
-        if (sample instanceof Integer) return (T) Integer.valueOf(0);
-        if (sample instanceof Long) return (T) Long.valueOf(0L);
-        if (sample instanceof Double) return (T) Double.valueOf(0.0);
-        if (sample instanceof Float) return (T) Float.valueOf(0.0f);
+    public static <T> T newBlank(Object objectValue) {
+        if (objectValue instanceof Integer) return (T) Integer.valueOf(0);
+        if (objectValue instanceof Long) return (T) Long.valueOf(0L);
+        if (objectValue instanceof Double) return (T) Double.valueOf(0.0);
+        if (objectValue instanceof Float) return (T) Float.valueOf(0.0f);
         return (T) "";
     }
-    public static <T> T parse(Object sample, String text) {
+    public static <T> T parse(Object objectValue, String text) {
         try {
-            if (sample instanceof Integer) return (T) Integer.valueOf(text);
-            if (sample instanceof Long) return (T) Long.valueOf(text);
-            if (sample instanceof Double) return (T) Double.valueOf(text);
-            if (sample instanceof Float) return (T) Float.valueOf(text);
+            if (objectValue instanceof Integer) return (T) Integer.valueOf(text);
+            if (objectValue instanceof Long) return (T) Long.valueOf(text);
+            if (objectValue instanceof Double) return (T) Double.valueOf(text);
+            if (objectValue instanceof Float) return (T) Float.valueOf(text);
             return (T) text;
         } catch (NumberFormatException e) {
             return null;
         }
     }
 
-    public static boolean isOver(int mouseX, int mouseY, int x, int y, int size) {
+    public static boolean isHoveredOver(int mouseX, int mouseY, int x, int y, int size) {
         return mouseX >= x && mouseX <= x+size && mouseY >= y && mouseY <= y+size;
     }
 
-    public static void renderHoveredIcon(GuiGraphics graphics, boolean isHoveredOver, int iconIndex, int hoveredIconIndex, int x, int y) {
-        renderIcon(graphics, isHoveredOver ? hoveredIconIndex : iconIndex, x, y);
+    public static void renderHoveredIcon(GuiGraphics graphics, int x, int y, boolean isHoveredOver, int iconIndex, int hoveredIconIndex) {
+        renderIcon(graphics, x, y, isHoveredOver ? hoveredIconIndex : iconIndex);
     }
-    public static void renderIcon(GuiGraphics graphics, int iconIndex, int x, int y) {
-        int i = iconIndex-1;
-        int iconX = (i % 16) * 16;
-        int iconY = (i / 16) * 16;
-        graphics.blit(ICONS, x, y, iconX, iconY, 16, 16, 256, 256);
+    public static void renderIcon(GuiGraphics graphics, int x, int y, int iconIndex) {
+        int placement = iconIndex-1;
+        int iconX = (placement % 16) * 16;
+        int iconY = (placement / 16) * 16;
+
+        boolean isJune = Calendar.getInstance().get(Calendar.MONTH)+1 == 6;
+
+        graphics.blit(isJune ? ICONS_PRIDE : ICONS, x, y, iconX, iconY, 16, 16, 256, 256);
     }
 }

@@ -140,9 +140,8 @@ public class ListEntryRow extends Row {
             graphics.drawString(font, label, labelX, labelY, C_WHITE);
         }
 
-        renderIcon(graphics,
-            expanded ? I_LIST_OPEN : I_LIST_CLOSED,
-            left+indent()+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2);
+        renderIcon(graphics, left+indent()+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2,
+            expanded ? I_LIST_OPEN : I_LIST_CLOSED);
 
         if (expanded) {
             int rightEdge = list.rowRight(),
@@ -153,8 +152,8 @@ public class ListEntryRow extends Row {
                 inlineAddBtn.setX(btnX);
                 inlineAddBtn.setY(btnY);
                 inlineAddBtn.render(graphics, mouseX, mouseY, partialTick);
-                renderHoveredIcon(graphics, isOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE),
-                    I_ADD, I_ADD_HOVER, btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderHoveredIcon(graphics, btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
+                    isHoveredOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE), I_ADD, I_ADD_HOVER);
                 
             } else if (inlinePendingDelete) {
                 int cancelX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE * 2-LIST_BTN_GAP * 3-WIDGET_RIGHT_MARGIN,
@@ -164,14 +163,14 @@ public class ListEntryRow extends Row {
                 inlineCancelBtn.setX(cancelX);
                 inlineCancelBtn.setY(btnY);
                 inlineCancelBtn.render(graphics, mouseX, mouseY, partialTick);
-                renderHoveredIcon(graphics, isOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE),
-                    I_CANCEL, I_CANCEL_HOVER, cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderHoveredIcon(graphics, cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
+                    isHoveredOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE), I_CANCEL, I_CANCEL_HOVER);
 
                 inlineConfirmBtn.setX(confirmX);
                 inlineConfirmBtn.setY(btnY);
                 inlineConfirmBtn.render(graphics, mouseX, mouseY, partialTick);
-                renderHoveredIcon(graphics, isOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE),
-                    I_DELETE, I_DELETE_HOVER, confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderHoveredIcon(graphics, confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
+                    isHoveredOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE), I_DELETE, I_DELETE_HOVER);
 
                 inlineBox.setX(boxX);
                 inlineBox.setY(top+WIDGET_TOP_MARGIN);
@@ -184,8 +183,8 @@ public class ListEntryRow extends Row {
                 inlineRemoveBtn.setX(removeX);
                 inlineRemoveBtn.setY(btnY);
                 inlineRemoveBtn.render(graphics, mouseX, mouseY, partialTick);
-                renderHoveredIcon(graphics, isOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE),
-                    I_REMOVE, I_REMOVE_HOVER, removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET);
+                renderHoveredIcon(graphics, removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
+                    isHoveredOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE), I_REMOVE, I_REMOVE_HOVER);
 
                 inlineBox.setX(boxX);
                 inlineBox.setY(top+WIDGET_TOP_MARGIN);
