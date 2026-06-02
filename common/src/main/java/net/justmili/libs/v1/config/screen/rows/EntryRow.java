@@ -23,17 +23,19 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class EntryRow extends Row {
     private final String modId;
+    private final ConfigScreenBuilder screenBuilder;
+
     private final ConfigEntry<?> entry;
     private final Consumer<ConfigEntry<?>> onHover;
+
     private final AbstractWidget widget;
-    private final ConfigScreenBuilder list;
 
     public EntryRow(ConfigEntry<?> entry, String modId, int depth, Consumer<ConfigEntry<?>> onHover, Deque<Runnable> undoStack, ConfigScreenBuilder list) {
         super(depth);
         this.modId = modId;
         this.entry = entry;
         this.onHover = onHover;
-        this.list = list;
+        this.screenBuilder = list;
 
         if (entry.get() instanceof Boolean) {
             ConfigEntry<Boolean> boolEntry = (ConfigEntry<Boolean>) entry;
@@ -89,10 +91,10 @@ public class EntryRow extends Row {
         if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));
 
         Font font = Minecraft.getInstance().font;
-        int rightEdge = list.rowRight(),
+        int rightEdge = screenBuilder.rowRight(),
             labelX = left+indent()+LABEL_LEFT_PADDING,
-            labelMaxWidth = rightEdge-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN-LABEL_RIGHT_GAP-labelX,
             labelY = top+(height-9) / 2,
+            labelMaxWidth = rightEdge-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN-LABEL_RIGHT_GAP-labelX,
             widgetX = rightEdge-WIDGET_WIDTH-WIDGET_RIGHT_MARGIN;
 
         String labelStr = label.getString();

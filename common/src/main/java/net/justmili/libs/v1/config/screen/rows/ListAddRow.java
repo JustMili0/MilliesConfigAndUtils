@@ -18,11 +18,11 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 @SuppressWarnings({"NullableProblems"})
 public class ListAddRow<T> extends Row {
     private final Button addBtn;
-    private final ConfigScreenBuilder list;
+    private final ConfigScreenBuilder screenBuilder;
 
     public ListAddRow(ListConfigEntry<T> entry, int depth, ConfigScreenBuilder list, Deque<Runnable> undoStack) {
         super(depth);
-        this.list = list;
+        this.screenBuilder = list;
         this.addBtn = Button.builder(Component.empty(), btn -> {
             List<T> current = new ArrayList<>(entry.get());
             T blank = newBlank(entry.defaultValue().isEmpty() ? null : entry.defaultValue().get(0));
@@ -41,15 +41,11 @@ public class ListAddRow<T> extends Row {
     @Override
     public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
                        int mouseX, int mouseY, boolean isHovering, float partialTick) {
-        int rightEdge = list.rowRight(),
-            btnX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN+20,
-            btnY = top+(height-LIST_ICON_BTN_SIZE) / 2+1;
+        int rightEdge = screenBuilder.rowRight(),
+            buttonX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN+20,
+            buttonY = top+(height-LIST_ICON_BTN_SIZE) / 2+1;
 
-        addBtn.setX(btnX);
-        addBtn.setY(btnY);
-        addBtn.render(graphics, mouseX, mouseY, partialTick);
-        renderHoveredIcon(graphics, btnX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
-            isHoveredOver(mouseX, mouseY, btnX, btnY, LIST_ICON_BTN_SIZE), I_ADD, I_ADD_HOVER);
+        addHoveredButton(graphics, addBtn, mouseX, mouseY, partialTick, buttonX, buttonY, I_ADD, I_ADD_HOVER);
     }
 
     @Override

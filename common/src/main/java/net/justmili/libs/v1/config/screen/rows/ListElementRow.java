@@ -21,20 +21,22 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 @SuppressWarnings({"NullableProblems"})
 public class ListElementRow<T> extends Row {
     private final ConfigScreenBuilder list;
-    private final EditBox box;
+
+    private final EditBox inputBox;
     private final Button removeBtn;
-    private final Button confirmBtn;
-    private final Button cancelBtn;
+    private final Button confirmDelBtn;
+    private final Button cancelDelBtn;
+
     public boolean pendingDelete = false;
 
     public ListElementRow(ListConfigEntry<T> entry, int elementIndex, int depth, ConfigScreenBuilder list, Deque<Runnable> undoStack) {
         super(depth);
         this.list = list;
 
-        box = new EditBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.empty());
-        box.setValue(String.valueOf(entry.get().get(elementIndex)));
-        box.setFilter(text -> SharedElements.validateInput(entry.defaultValue().get(0), text));
-        box.setResponder(text -> {
+        inputBox = new EditBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.empty());
+        inputBox.setValue(String.valueOf(entry.get().get(elementIndex)));
+        inputBox.setFilter(text -> SharedElements.validateInput(entry.defaultValue().get(0), text));
+        inputBox.setResponder(text -> {
             try {
                 List<T> current = new ArrayList<>(entry.get());
                 T previous = current.get(elementIndex);
@@ -48,7 +50,7 @@ public class ListElementRow<T> extends Row {
                         List<T> undo = new ArrayList<>(entry.get());
                         undo.set(elementIndex, previous);
                         entry.set(undo);
-                        box.setValue(String.valueOf(previous));
+                        inputBox.setValue(String.valueOf(previous));
                     });
                 }
             } catch (Exception ignored) {
@@ -61,7 +63,7 @@ public class ListElementRow<T> extends Row {
         }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         removeBtn.setAlpha(0f);
 
-        confirmBtn = Button.builder(Component.empty(), btn -> {
+        confirmDelBtn = Button.builder(Component.empty(), btn -> {
             List<T> current = new ArrayList<>(entry.get());
             T removed = current.remove(elementIndex);
 
@@ -74,66 +76,44 @@ public class ListElementRow<T> extends Row {
             list.rebuildFromRoot();
 
         }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
-        confirmBtn.setAlpha(0f);
+        confirmDelBtn.setAlpha(0f);
 
-        cancelBtn = Button.builder(Component.empty(), btn -> pendingDelete = false)
+        cancelDelBtn = Button.builder(Component.empty(), btn -> pendingDelete = false)
             .bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
-        cancelBtn.setAlpha(0f);
+        cancelDelBtn.setAlpha(0f);
     }
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
                        int mouseX, int mouseY, boolean isHovering, float partialTick) {
         int rightEdge = list.rowRight(),
-            btnY = top+(height-LIST_ICON_BTN_SIZE) / 2+2;
+            buttonY = top+(height-LIST_ICON_BTN_SIZE) / 2+2;
 
         if (pendingDelete) {
-            int cancelX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE * 2-LIST_BTN_GAP * 3-WIDGET_RIGHT_MARGIN;
-            int confirmX = cancelX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
-            int boxX = confirmX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
+            int cancelX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE * 2-LIST_BTN_GAP * 3-WIDGET_RIGHT_MARGIN,
+                confirmX = cancelX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
 
-            cancelBtn.setX(cancelX);
-            cancelBtn.setY(btnY);
-            cancelBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderHoveredIcon(graphics, cancelX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
-                isHoveredOver(mouseX, mouseY, cancelX, btnY, LIST_ICON_BTN_SIZE), I_CANCEL, I_CANCEL_HOVER);
+            addHoveredButton(graphics, cancelDelBtn, mouseX, mouseY, partialTick, cancelX, buttonY, I_CANCEL, I_CANCEL_HOVER);
+            addHoveredButton(graphics, confirmDelBtn, mouseX, mouseY, partialTick, confirmX, buttonY, I_DELETE, I_DELETE_HOVER);
+            addEditBox(graphics, inputBox, top, mouseX, mouseY, partialTick, confirmX);
 
-            confirmBtn.setX(confirmX);
-            confirmBtn.setY(btnY);
-            confirmBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderHoveredIcon(graphics, confirmX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
-                isHoveredOver(mouseX, mouseY, confirmX, btnY, LIST_ICON_BTN_SIZE), I_DELETE, I_DELETE_HOVER);
-
-            box.setX(boxX);
-            box.setY(top+WIDGET_TOP_MARGIN);
-            box.setWidth(WIDGET_WIDTH);
-            box.render(graphics, mouseX, mouseY, partialTick);
         } else {
             int removeX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN;
-            int boxX = removeX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
 
-            removeBtn.setX(removeX);
-            removeBtn.setY(btnY);
-            removeBtn.render(graphics, mouseX, mouseY, partialTick);
-            renderHoveredIcon(graphics, removeX+LIST_ICON_OFFSET, btnY+LIST_ICON_OFFSET,
-                isHoveredOver(mouseX, mouseY, removeX, btnY, LIST_ICON_BTN_SIZE), I_REMOVE, I_REMOVE_HOVER);
-
-            box.setX(boxX);
-            box.setY(top+WIDGET_TOP_MARGIN);
-            box.setWidth(WIDGET_WIDTH);
-            box.render(graphics, mouseX, mouseY, partialTick);
+            addHoveredButton(graphics, removeBtn, mouseX, mouseY, partialTick, removeX, buttonY, I_REMOVE, I_REMOVE_HOVER);
+            addEditBox(graphics, inputBox, top, mouseX, mouseY, partialTick, removeX);
         }
     }
 
     @Override
     public List<? extends GuiEventListener> children() {
-        if (pendingDelete) return List.of(cancelBtn, confirmBtn, box);
-        return List.of(removeBtn, box);
+        if (pendingDelete) return List.of(cancelDelBtn, confirmDelBtn, inputBox);
+        return List.of(removeBtn, inputBox);
     }
 
     @Override
     public List<? extends NarratableEntry> narratables() {
-        if (pendingDelete) return List.of(cancelBtn, confirmBtn, box);
-        return List.of(removeBtn, box);
+        if (pendingDelete) return List.of(cancelDelBtn, confirmDelBtn, inputBox);
+        return List.of(removeBtn, inputBox);
     }
 }

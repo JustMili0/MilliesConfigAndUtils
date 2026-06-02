@@ -20,10 +20,12 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
 public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
     public final ConfigLoader config;
+    public final Deque<Runnable> undoStack = new ArrayDeque<>();
+
+    // Selection and Hovers
     private final Consumer<ConfigEntry<?>> onHover;
     private final Consumer<CategoryItem> onCatHover;
     private final Consumer<ListConfigEntry<?>> onListHover;
-    public final Deque<Runnable> undoStack = new ArrayDeque<>();
 
     public ConfigScreenBuilder(Minecraft minecraft, int width, int height, int y, int itemHeight, ConfigLoader config,
                                Consumer<ConfigEntry<?>> onHover, Consumer<CategoryItem> onCatHover, Consumer<ListConfigEntry<?>> onListHover) {
@@ -37,7 +39,9 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
                 "Please ensure your config class is registered during mod init.", config.modId);
             return;
         }
+
         buildRows(config.root.children(), 0);
+
         setRenderBackground(false);
         setRenderTopAndBottom(false);
     }
@@ -77,10 +81,12 @@ public class ConfigScreenBuilder extends ContainerObjectSelectionList<Row> {
     public void rebuildFromRoot() {
         List<CategoryRow> expandedCats = new ArrayList<>();
         List<ListEntryRow> expandedLists = new ArrayList<>();
+
         for (Row row : children()) {
             if (row instanceof CategoryRow catRow && catRow.expanded) expandedCats.add(catRow);
             if (row instanceof ListEntryRow listRow && listRow.expanded) expandedLists.add(listRow);
         }
+
         clearEntries();
         buildRowsPreservingExpansion(config.root.children(), 0, expandedCats, expandedLists);
     }

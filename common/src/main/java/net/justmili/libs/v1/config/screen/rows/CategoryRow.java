@@ -18,21 +18,23 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
 @SuppressWarnings({"NullableProblems"})
 public class CategoryRow extends Row {
+    private final ConfigScreenBuilder screenBuilder;
+
     public final CategoryItem category;
     private final Consumer<CategoryItem> onCatHover;
-    private final ConfigScreenBuilder list;
+
     public boolean expanded = false;
 
     public CategoryRow(CategoryItem category, int depth, Consumer<CategoryItem> onCatHover, ConfigScreenBuilder list) {
         super(depth);
         this.category = category;
         this.onCatHover = onCatHover;
-        this.list = list;
+        this.screenBuilder = list;
     }
 
     private void toggle() {
         expanded = !expanded;
-        list.rebuildFromRoot();
+        screenBuilder.rebuildFromRoot();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class CategoryRow extends Row {
         // Placeholder icons
         renderIcon(graphics, x+CAT_ICON_X_OFFSET, top+(height-CAT_ICON_SIZE) / 2,
             expanded ? I_OPEN_CAT : I_CLOSED_CAT);
-        Component label = SharedElements.resolve(SharedElements.catKey(list.config.modId, category.name()));
+        Component label = SharedElements.resolve(SharedElements.catKey(screenBuilder.config.modId, category.name()));
 
         if (expanded) label = label.copy().withStyle(style -> style.withItalic(true).withUnderlined(true));
         else if (isHovering) label = label.copy().withStyle(style -> style.withUnderlined(true));

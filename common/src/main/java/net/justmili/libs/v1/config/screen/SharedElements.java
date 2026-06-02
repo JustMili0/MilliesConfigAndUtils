@@ -2,6 +2,8 @@ package net.justmili.libs.v1.config.screen;
 
 import net.justmili.libs.CoreLibs;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -176,5 +178,23 @@ public class SharedElements {
         boolean isJune = Calendar.getInstance().get(Calendar.MONTH)+1 == 6;
 
         graphics.blit(isJune ? ICONS_PRIDE : ICONS, x, y, iconX, iconY, 16, 16, 256, 256);
+    }
+
+    public static void addHoveredButton(GuiGraphics graphics, Button button, int mouseX, int mouseY,
+                                         float partialTick, int buttonX, int buttonY, int iconIndex, int hoveredIconIndex) {
+        button.setX(buttonX);
+        button.setY(buttonY);
+        button.render(graphics, mouseX, mouseY, partialTick);
+        renderHoveredIcon(graphics, buttonX+LIST_ICON_OFFSET, buttonY+LIST_ICON_OFFSET,
+            isHoveredOver(mouseX, mouseY, buttonX, buttonY, LIST_ICON_BTN_SIZE), iconIndex, hoveredIconIndex);
+    }
+    public static void addEditBox(GuiGraphics graphics, EditBox box, int top, int mouseX, int mouseY,
+                                   float partialTick, int buttonX) {
+        int boxX = buttonX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
+
+        box.setX(boxX);
+        box.setY(top+WIDGET_TOP_MARGIN);
+        box.setWidth(WIDGET_WIDTH);
+        box.render(graphics, mouseX, mouseY, partialTick);
     }
 }

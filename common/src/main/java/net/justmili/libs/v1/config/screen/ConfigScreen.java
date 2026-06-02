@@ -24,14 +24,14 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ConfigScreen extends Screen {
     public final Screen parent;
-    private final List<MConfigBuilder> builders;
     private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
     private ConfigScreenBuilder screenBuilder;
+    private final List<MConfigBuilder> builders;
 
     // Widgets
-    private Button doneButton;
-    private Button resetButton;
-    private Button undoButton;
+    private Button doneBtn;
+    private Button resetBtn;
+    private Button undoBtn;
 
     // Selection and Hovers
     private ConfigEntry<?> hoveredEntry = null;
@@ -61,18 +61,18 @@ public class ConfigScreen extends Screen {
         tabNavigationBar.arrangeElements();
 
         // Build buttons
-        doneButton = Button.builder(Component.translatable("gui.config.done"), button -> onClose())
+        doneBtn = Button.builder(Component.translatable("gui.config.done"), button -> onClose())
             .bounds(panelX+PANEL_PADDING, buttonRowY, BACKGROUND_X_OFFSET-PANEL_PADDING * 2, PANEL_BUTTON_HEIGHT)
             .build();
 
-        undoButton = Button.builder(Component.translatable("gui.config.undo"), button -> {
+        undoBtn = Button.builder(Component.translatable("gui.config.undo"), button -> {
                 if (screenBuilder != null && !screenBuilder.undoStack.isEmpty()) screenBuilder.undoStack.pop().run();
             }).bounds(panelX+PANEL_PADDING+PANEL_BUTTON_WIDTH+BUTTON_ROW_GAP, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT)
             .tooltip(Tooltip.create(Component.translatable("gui.config.undo.desc")))
             .build();
-        undoButton.active = false;
+        undoBtn.active = false;
 
-        resetButton = Button.builder(Component.translatable("gui.config.reset"), button -> {
+        resetBtn = Button.builder(Component.translatable("gui.config.reset"), button -> {
                 if (selectedEntry == null) return;
                 Object previous = selectedEntry.get();
                 ((ConfigEntry<Object>) selectedEntry).set(selectedEntry.defaultValue());
@@ -80,11 +80,11 @@ public class ConfigScreen extends Screen {
             }).bounds(panelX+PANEL_PADDING, twoButtonY, PANEL_BUTTON_WIDTH, PANEL_BUTTON_HEIGHT)
             .tooltip(Tooltip.create(Component.translatable("gui.config.reset.desc")))
             .build();
-        resetButton.active = false;
+        resetBtn.active = false;
 
-        addRenderableWidget(doneButton);
-        addRenderableWidget(undoButton);
-        addRenderableWidget(resetButton);
+        addRenderableWidget(doneBtn);
+        addRenderableWidget(undoBtn);
+        addRenderableWidget(resetBtn);
 
         // Build config
         if (!builders.isEmpty()) setActiveConfig(builders.get(0).getConfig());
@@ -124,8 +124,8 @@ public class ConfigScreen extends Screen {
         super.render(graphics, mouseX, mouseY, delta);
 
         // Update button states
-        if (resetButton != null) resetButton.active = selectedEntry != null;
-        if (undoButton != null) undoButton.active = screenBuilder != null && !screenBuilder.undoStack.isEmpty();
+        if (resetBtn != null) resetBtn.active = selectedEntry != null;
+        if (undoBtn != null) undoBtn.active = screenBuilder != null && !screenBuilder.undoStack.isEmpty();
 
         // Draw borderlines splitting apart the screen into the Config Panel and the Preview Panel
         graphics.vLine(panelX-PANEL_DIVIDER_X_OFFSET, TAB_HEIGHT-2, height, C_SEMITRANS_GRAY);
@@ -144,38 +144,27 @@ public class ConfigScreen extends Screen {
             String modId = builders.stream()
                 .filter(builder -> builder.getConfig().entries.containsKey(hoveredEntry.key())).findFirst()
                 .map(builder -> builder.getConfig().modId).orElse("unknown");
-
-            Component name = resolve(varKey(modId, hoveredEntry.key()))
-                .copy().withStyle(style -> style.withBold(true));
-            graphics.drawWordWrap(font, name, x, y, textWidth, C_WHITE);
-            y += font.wordWrapHeight(name, textWidth);
-
-            graphics.drawWordWrap(font, resolve(varDescKey(modId, hoveredEntry.key())), x, y, textWidth, C_WHITE);
+            drawPreviewForKey(graphics, varKey(modId, hoveredEntry.key()), varDescKey(modId, hoveredEntry.key()), x, y, textWidth);
 
         } else if (hoveredCategory != null) {
             String modId = builders.stream()
                 .filter(builder -> builder.getConfig().modId != null).findFirst()
                 .map(builder -> builder.getConfig().modId).orElse("unknown");
-
-            Component name = resolve(catKey(modId, hoveredCategory.name()))
-                .copy().withStyle(style -> style.withBold(true));
-            graphics.drawWordWrap(font, name, x, y, textWidth, C_WHITE);
-            y += font.wordWrapHeight(name, textWidth);
-
-            graphics.drawWordWrap(font, resolve(catDescKey(modId, hoveredCategory.name())), x, y, textWidth, C_WHITE);
+            drawPreviewForKey(graphics, catKey(modId, hoveredCategory.name()), catDescKey(modId, hoveredCategory.name()), x, y, textWidth);
 
         } else if (hoveredList != null) {
             String modId = builders.stream()
                 .filter(builder -> builder.getConfig().listEntries.containsKey(hoveredList.key())).findFirst()
                 .map(builder -> builder.getConfig().modId).orElse("unknown");
-
-            Component name = resolve(varKey(modId, hoveredList.key()))
-                .copy().withStyle(style -> style.withBold(true));
-            graphics.drawWordWrap(font, name, x, y, textWidth, C_WHITE);
-            y += font.wordWrapHeight(name, textWidth);
-
-            graphics.drawWordWrap(font, resolve(varDescKey(modId, hoveredList.key())), x, y, textWidth, C_WHITE);
+            drawPreviewForKey(graphics, varKey(modId, hoveredList.key()), varDescKey(modId, hoveredList.key()), x, y, textWidth);
         }
+    }
+
+    private void drawPreviewForKey(GuiGraphics graphics, String nameKey, String descKey, int x, int y, int textWidth) {
+        Component name = resolve(nameKey).copy().withStyle(style -> style.withBold(true));
+        graphics.drawWordWrap(font, name, x, y, textWidth, C_WHITE);
+        y += font.wordWrapHeight(name, textWidth);
+        graphics.drawWordWrap(font, resolve(descKey), x, y, textWidth, C_WHITE);
     }
 
     @Override
