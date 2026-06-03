@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class CoreLibs {
     public static final String MODID = "milliescorelibs";
-    public static final Logger LOGGER = LoggerFactory.getLogger("MilliesCoreLibs");
+    public static final Logger LOGGER = LoggerFactory.getLogger(CoreLibs.class);
 
     public static void init() {
         TickUtil.registerProcessQueue();
