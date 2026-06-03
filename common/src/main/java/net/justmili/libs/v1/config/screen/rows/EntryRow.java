@@ -3,6 +3,7 @@ package net.justmili.libs.v1.config.screen.rows;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.justmili.libs.v1.config.screen.SharedElements;
+import net.justmili.libs.v1.config.widgets.BoolButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -39,18 +40,18 @@ public class EntryRow extends Row {
 
         if (entry.get() instanceof Boolean) {
             ConfigEntry<Boolean> boolEntry = (ConfigEntry<Boolean>) entry;
-            this.widget = Button.builder(
-                Component.literal(Boolean.toString(boolEntry.get())),
-                button -> {
-                    boolean previous = boolEntry.get();
-                    boolEntry.set(!previous);
-                    button.setMessage(Component.literal(Boolean.toString(boolEntry.get())));
-                    undoStack.push(() -> {
-                        boolEntry.set(previous);
-                        button.setMessage(Component.literal(Boolean.toString(previous)));
-                    });
-                }
-            ).bounds(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT).build();
+            BoolButton[] holder = new BoolButton[1];
+            holder[0] = new BoolButton(0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, button -> {
+                boolean previous = boolEntry.get();
+                boolEntry.set(!previous);
+                holder[0].state = !previous;
+                undoStack.push(() -> {
+                    boolEntry.set(previous);
+                    holder[0].state = previous;
+                });
+            });
+            holder[0].state = boolEntry.get();
+            this.widget = holder[0];
 
         } else {
             EditBox box = new EditBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.empty());
@@ -126,7 +127,7 @@ public class EntryRow extends Row {
             }
         }
 
-        widget.setX(widgetX);
+        widget.setX(widget instanceof BoolButton ? rightEdge-WIDGET_HEIGHT-WIDGET_RIGHT_MARGIN : widgetX);
         widget.setY(top+WIDGET_TOP_MARGIN);
         widget.render(graphics, mouseX, mouseY, partialTick);
     }
