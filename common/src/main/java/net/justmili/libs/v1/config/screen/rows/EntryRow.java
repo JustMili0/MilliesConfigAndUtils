@@ -4,12 +4,11 @@ import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.justmili.libs.v1.config.screen.SharedElements;
 import net.justmili.libs.v1.config.widgets.BoolButton;
+import net.justmili.libs.v1.config.widgets.VarcharBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
@@ -54,7 +53,7 @@ public class EntryRow extends Row {
             this.widget = holder[0];
 
         } else {
-            EditBox box = new EditBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.empty());
+            VarcharBox box = new VarcharBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT);
             box.setValue(String.valueOf(entry.get()));
             box.setFilter(text -> SharedElements.validateInput(entry.defaultValue(), text));
             box.setResponder(text -> {
@@ -108,7 +107,7 @@ public class EntryRow extends Row {
         }
 
         // Tint label red and italic if the current value is out of the allowed range
-        if (widget instanceof EditBox box) {
+        if (widget instanceof VarcharBox box) {
             try {
                 Object defaultValue = entry.defaultValue();
                 boolean outOfRange = false;
@@ -128,7 +127,7 @@ public class EntryRow extends Row {
         }
 
         widget.setX(widget instanceof BoolButton ? rightEdge-WIDGET_HEIGHT-WIDGET_RIGHT_MARGIN : widgetX);
-        widget.setY(top+WIDGET_TOP_MARGIN);
+        widget.setY(top+WIDGET_TOP_MARGIN+1);
         widget.render(graphics, mouseX, mouseY, partialTick);
     }
 

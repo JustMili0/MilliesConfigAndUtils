@@ -2,20 +2,24 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
-  - Fix list entry inputs that are inline with the list name are clickable, but not editable
-  - Make each entry have its own selectable "section" so "Reset" know what to reset
-  - Give "Reset" button a proper function
-  - Make boolean values `true`/`false` use `gui.config.bool.true` and `gui.config.bool.false` for text display
-  - Make builder tabs use custom translation keys as well (just like config entries etc.)
-  - Let number entries and enum entries be sliders
+  - (Assigned: Millie) Make builder tabs use custom translation keys as well (just like config entries etc.)
+  - (Assigned: Appels) Fix list entry inputs that are inline with the list name are clickable, but not editable
+  - (Assigned: Millie) Make each entry have its own selectable "section" so "Reset" know what to reset
+  - (Assigned: Millie) Give "Reset" button a proper function
+  - (Assigned: Appels) Let number entries and enum entries be sliders
+
 - (Cross-Loader API) Add cross-loader events
-  - Straight up replicate the entirety of Fabric's event system adding whatever it's missing that Forge itself has for some reason
+  - Replicate all of Fabric's and Forge's event triggers in Fabric's event format
+
 - (Config Lib) Add enum selector entry
 - (Config Lib) Add color picker entry
 - (Config Lib) Add ability to add custom images to entry descriptions (similar to YACL)
 - (Config Lib) Add YAML/YML support
+
 - (Cross-Loader API) Add cross-loader registries, networking and other
+
 - (Config Lib) Add TOML support
+
 - Write full documentation
 
 ### YAML/YML - Design

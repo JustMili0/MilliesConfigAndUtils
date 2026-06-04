@@ -3,11 +3,11 @@ package net.justmili.libs.v1.config.screen.rows;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.justmili.libs.v1.config.screen.SharedElements;
+import net.justmili.libs.v1.config.widgets.VarcharBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
@@ -29,7 +29,7 @@ public class ListEntryRow extends Row {
     private final Deque<Runnable> undoStack;
 
     // Widgets
-    private EditBox inputBox;
+    private VarcharBox inputBox;
     private Button removeBtn;
     private Button confirmDelBtn;
     private Button cancelDelBtn;
@@ -53,7 +53,7 @@ public class ListEntryRow extends Row {
     public void rebuildInlineWidgets() {
         inlinePendingDelete = false;
 
-        inputBox = new EditBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT, Component.empty());
+        inputBox = new VarcharBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT);
         if (!entry.get().isEmpty()) {
             inputBox.setValue(String.valueOf(entry.get().get(0)));
             inputBox.setFilter(text -> SharedElements.validateInput(entry.defaultValue().get(0), text));
@@ -164,13 +164,13 @@ public class ListEntryRow extends Row {
 
                 addHoveredButton(graphics, cancelDelBtn, mouseX, mouseY, partialTick, cancelX, buttonY, I_CANCEL, I_CANCEL_HOVER);
                 addHoveredButton(graphics, confirmDelBtn, mouseX, mouseY, partialTick, confirmX, buttonY, I_DELETE, I_DELETE_HOVER);
-                addEditBox(graphics, inputBox, top, mouseX, mouseY, partialTick, confirmX);
+                addInputBox(graphics, inputBox, top, mouseX, mouseY, partialTick, confirmX);
 
             } else {
                 int removeX = rightEdge-WIDGET_WIDTH-LIST_ICON_BTN_SIZE-LIST_BTN_GAP * 2-WIDGET_RIGHT_MARGIN;
 
                 addHoveredButton(graphics, removeBtn, mouseX, mouseY, partialTick, removeX, buttonY, I_REMOVE, I_REMOVE_HOVER);
-                addEditBox(graphics, inputBox, top, mouseX, mouseY, partialTick, removeX);
+                addInputBox(graphics, inputBox, top, mouseX, mouseY, partialTick, removeX);
             }
         }
     }

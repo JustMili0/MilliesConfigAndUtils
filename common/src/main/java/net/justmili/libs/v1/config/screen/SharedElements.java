@@ -1,9 +1,10 @@
 package net.justmili.libs.v1.config.screen;
 
 import net.justmili.libs.CoreLibs;
+import net.justmili.libs.config.Config;
+import net.justmili.libs.v1.config.widgets.VarcharBox;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -26,8 +27,6 @@ public class SharedElements {
         I_CANCEL_HOVER = 10, // X highlighted
         I_DELETE = 11, // Trash bin
         I_DELETE_HOVER = 12, // Trash bin highlighted
-
-        // Unused
         I_REORDER = 13, // Burger
         W_BOOL_FALSE = 14, // Empty square
         W_BOOL_TRUE = 15, // Filled square
@@ -60,7 +59,7 @@ public class SharedElements {
         ROW_WIDTH_REDUCTION = SCROLLBAR_WIDTH+SCROLLBAR_MARGIN-2,
         ROW_LEFT_MARGIN = 2,
         DEPTH_INDENT = 10,
-        WIDGET_WIDTH = 150,
+        WIDGET_WIDTH = 150, // Changing this to anything doesn't do shit
         WIDGET_HEIGHT = 20,
         LABEL_LEFT_PADDING = 6,
         LABEL_RIGHT_GAP = 8,
@@ -175,9 +174,9 @@ public class SharedElements {
         int iconX = (placement % 16) * 16;
         int iconY = (placement / 16) * 16;
 
-        boolean isJune = Calendar.getInstance().get(Calendar.MONTH)+1 == 6;
+        boolean usePrideIcons = (Calendar.getInstance().get(Calendar.MONTH)+1 == 6 || Config.alwaysPride.get()) && !Config.alwaysDefault.get();
 
-        graphics.blit(isJune ? ICONS_PRIDE : ICONS, x, y, iconX, iconY, 16, 16, 256, 256);
+        graphics.blit(usePrideIcons ? ICONS_PRIDE : ICONS, x, y, iconX, iconY, 16, 16, 256, 256);
     }
 
     public static void addHoveredButton(GuiGraphics graphics, Button button, int mouseX, int mouseY,
@@ -185,10 +184,10 @@ public class SharedElements {
         button.setX(buttonX);
         button.setY(buttonY);
         button.render(graphics, mouseX, mouseY, partialTick);
-        renderHoveredIcon(graphics, buttonX+LIST_ICON_OFFSET, buttonY+LIST_ICON_OFFSET,
+        renderHoveredIcon(graphics, buttonX+LIST_ICON_OFFSET-2, buttonY+LIST_ICON_OFFSET-5,
             isHoveredOver(mouseX, mouseY, buttonX, buttonY, LIST_ICON_BTN_SIZE), iconIndex, hoveredIconIndex);
     }
-    public static void addEditBox(GuiGraphics graphics, EditBox box, int top, int mouseX, int mouseY,
+    public static void addInputBox(GuiGraphics graphics, VarcharBox box, int top, int mouseX, int mouseY,
                                    float partialTick, int buttonX) {
         int boxX = buttonX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
 
