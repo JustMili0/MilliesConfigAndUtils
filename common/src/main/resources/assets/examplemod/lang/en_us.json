@@ -1,5 +1,7 @@
 {
   "config.title.milliescorelibs": "Millie's Core Libraries",
+  "config.builder.examplemod.server.name": "Server",
+  "config.builder.examplemod.client.name": "Client",
   "config.var.examplemod.some_int.name": "Some Integer",
   "config.var.examplemod.some_int.desc": "An integer value",
   "config.var.examplemod.some_float.name": "Some Float",

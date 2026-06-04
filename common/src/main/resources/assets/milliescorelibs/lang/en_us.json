@@ -6,6 +6,7 @@
   "gui.config.reset": "Reset",
   "gui.config.reset.desc": "Resets a key to its default value",
 
+  "config.builder.corelibs.client.name": "CoreLibs Client",
   "config.cat.corelibs.icon_type.name": "Icon Types",
   "config.cat.corelibs.icon_type.desc": "Configuration of Millie's Core Libraries' config screen icons",
   "config.var.corelibs.always_pride_icons.name": "Always Use Pride Icons",

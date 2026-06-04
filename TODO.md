@@ -2,7 +2,6 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
-  - (Assigned: Millie) Make builder tabs use custom translation keys as well (just like config entries etc.)
   - (Assigned: Appels) Fix list entry inputs that are inline with the list name are clickable, but not editable
   - (Assigned: Millie) Make each entry have its own selectable "section" so "Reset" know what to reset
   - (Assigned: Millie) Give "Reset" button a proper function
