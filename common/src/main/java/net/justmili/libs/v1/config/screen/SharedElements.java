@@ -181,8 +181,7 @@ public class SharedElements {
 
     public static void addHoveredButton(GuiGraphics graphics, Button button, int mouseX, int mouseY,
                                          float partialTick, int buttonX, int buttonY, int iconIndex, int hoveredIconIndex) {
-        button.setX(buttonX);
-        button.setY(buttonY);
+        button.setPosition(buttonX, buttonY);
         button.render(graphics, mouseX, mouseY, partialTick);
         renderHoveredIcon(graphics, buttonX+LIST_ICON_OFFSET-2, buttonY+LIST_ICON_OFFSET-5,
             isHoveredOver(mouseX, mouseY, buttonX, buttonY, LIST_ICON_BTN_SIZE), iconIndex, hoveredIconIndex);
@@ -191,8 +190,7 @@ public class SharedElements {
                                    float partialTick, int buttonX) {
         int boxX = buttonX+LIST_ICON_BTN_SIZE+LIST_BTN_GAP;
 
-        box.setX(boxX);
-        box.setY(top+WIDGET_TOP_MARGIN);
+        box.setPosition(boxX, top+WIDGET_TOP_MARGIN);
         box.setWidth(WIDGET_WIDTH);
         box.render(graphics, mouseX, mouseY, partialTick);
     }

@@ -1,6 +1,7 @@
 package net.justmili.libs;
 
 import net.justmili.libs.config.Config;
+import net.justmili.libs.config.ExampleConfig;
 import net.justmili.libs.v1.utils.TickUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;

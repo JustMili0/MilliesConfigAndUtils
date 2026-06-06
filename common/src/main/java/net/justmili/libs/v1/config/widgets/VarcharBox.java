@@ -17,6 +17,6 @@ public class VarcharBox extends EditBox {
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(graphics, mouseX, mouseY, partialTick);
-        graphics.hLine(getX()-4, getX()+getWidth(), getY()+getHeight()-10, C_WHITE);
+        graphics.hLine(getX()-4, getX()+120, getY()+getHeight()-10, C_WHITE);
     }
 }

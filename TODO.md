@@ -2,6 +2,8 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
+  - Fix Inputs' Red Text becoming white again when exceeding 10 characters
+  - Fix Undo not undoing new list key entries nor redoing them
   - Fix list entry inputs that are inline with the list name are clickable, but not editable
   - Make each entry have its own selectable "section" so "Reset" know what to reset
   - Give "Reset" button a proper function

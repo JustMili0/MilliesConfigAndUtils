@@ -177,18 +177,17 @@ public class ListEntryRow extends Row {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (expanded) {
-            if (inputBox.isMouseOver(mouseX, mouseY)) {
-                inputBox.setFocused(true);
-                inputBox.mouseClicked(mouseX, mouseY, button);
+        if (inputBox.isMouseOver(mouseX, mouseY)) {
+            inputBox.setFocused(true);
+            inputBox.mouseClicked(mouseX, mouseY, button);
+            return true;
+        }
+        for (GuiEventListener child : children())
+            if (child.isMouseOver(mouseX, mouseY)) {
+                child.mouseClicked(mouseX, mouseY, button);
                 return true;
             }
-            for (GuiEventListener child : children())
-                if (child.isMouseOver(mouseX, mouseY)) {
-                    child.mouseClicked(mouseX, mouseY, button);
-                    return true;
-                }
-        }
+
         toggle();
         return true;
     }
