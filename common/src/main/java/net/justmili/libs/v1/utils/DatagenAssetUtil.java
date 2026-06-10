@@ -22,21 +22,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class DatagenAssetUtil {
-    private static BlockModelGenerators blockGen;
-    private static ItemModelGenerators itemGen;
-    private static String modId;
+    private BlockModelGenerators blockGen;
+    private ItemModelGenerators itemGen;
+    private final String modId;
 
     public DatagenAssetUtil(String modId, BlockModelGenerators blockGen) {
-        DatagenAssetUtil.modId = modId;
-        DatagenAssetUtil.blockGen = blockGen;
+        this.modId = modId;
+        this.blockGen = blockGen;
     }
     public DatagenAssetUtil(String modId, ItemModelGenerators itemGen) {
-        DatagenAssetUtil.modId = modId;
-        DatagenAssetUtil.itemGen = itemGen;
+        this.modId = modId;
+        this.itemGen = itemGen;
     }
 
 
-    public static void createWoodFamily(Block planks, Block stairs, Block slab, Block fence, Block fenceGate, Block door, Block trapdoor) {
+    public void createWoodFamily(Block planks, Block stairs, Block slab, Block fence, Block fenceGate, Block door, Block trapdoor) {
         TexturedModel texturedModel = TexturedModel.CUBE.get(planks);
         TextureMapping mapping = texturedModel.getMapping();
 
@@ -75,7 +75,7 @@ public class DatagenAssetUtil {
         blockGen.createOrientableTrapdoor(trapdoor);
     }
 
-    public static void createStoneFamily(Block stoneType, Block stairs, Block slab) {
+    public void createStoneFamily(Block stoneType, Block stairs, Block slab) {
         TexturedModel texturedModel = TexturedModel.CUBE.get(stoneType);
         TextureMapping mapping = texturedModel.getMapping();
 
@@ -97,7 +97,7 @@ public class DatagenAssetUtil {
         blockGen.delegateItemModel(slab, slabBottom);
     }
 
-    public static void createStoneFamily(Block block, Block stairs, Block slab, Block wall) {
+    public void createStoneFamily(Block block, Block stairs, Block slab, Block wall) {
         // Call no-wall createStoneFamily
         createStoneFamily(block, stairs, slab);
 
@@ -110,7 +110,7 @@ public class DatagenAssetUtil {
         blockGen.delegateItemModel(wall, ModelTemplates.WALL_INVENTORY.create(wall, mapping, blockGen.modelOutput));
     }
 
-    public static void createRedstoneFamily(Block block, Block pressurePlate, Block button) {
+    public void createRedstoneFamily(Block block, Block pressurePlate, Block button) {
         TextureMapping mapping = TexturedModel.CUBE.get(block).getMapping();
 
         if (pressurePlate != null) {
@@ -127,7 +127,7 @@ public class DatagenAssetUtil {
         }
     }
 
-    public static void createGlassFamily(Block glass, Block pane) {
+    public void createGlassFamily(Block glass, Block pane) {
         blockGen.createGlassBlocks(glass, pane);
     }
 
@@ -135,15 +135,15 @@ public class DatagenAssetUtil {
      * Individual
      * Cubes
      */
-    public static void createCubeAll(Block block) {
+    public void createCubeAll(Block block) {
         blockGen.createTrivialCube(block);
     }
 
-    public static void createCube(Block block, RotationType rotationType) {
+    public void createCube(Block block, RotationType rotationType) {
         createCube(block, rotationType, ModelTemplates.CUBE_ALL, TextureMapping.cube(block));
     }
 
-    public static void createCube(Block block, RotationType rotationType,
+    public void createCube(Block block, RotationType rotationType,
                                   ModelTemplate template, TextureMapping textureMapping) {
         ResourceLocation model = template.create(block, textureMapping, blockGen.modelOutput);
         switch (rotationType) {
@@ -169,7 +169,7 @@ public class DatagenAssetUtil {
     /**
      * Functional block templates
      */
-    public static void createCraftingTable(Block table, Block bottomTexture) {
+    public void createCraftingTable(Block table, Block bottomTexture) {
         TextureMapping mapping = new TextureMapping()
             .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(table, "_front"))
             .put(TextureSlot.DOWN, TextureMapping.getBlockTexture(bottomTexture))
@@ -184,7 +184,7 @@ public class DatagenAssetUtil {
         blockGen.delegateItemModel(table, model);
     }
 
-    public static void createFurnace(Block block) {
+    public void createFurnace(Block block) {
         TextureMapping unlitMapping = new TextureMapping()
             .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
             .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front"))
@@ -209,7 +209,7 @@ public class DatagenAssetUtil {
         blockGen.delegateItemModel(block, unlitModel);
     }
 
-    public static void createChest(Block block) {
+    public void createChest(Block block) {
         TextureMapping singleMapping = new TextureMapping()
             .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
             .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"))
@@ -258,7 +258,7 @@ public class DatagenAssetUtil {
      * Magic or whatever
      * Portals
      */
-    public static void createNetherPortal(Block block) {
+    public void createNetherPortal(Block block) {
         blockGen.blockStateOutput.accept(
             MultiVariantGenerator.multiVariant(block)
                 .with(PropertyDispatch.property(BlockStateProperties.HORIZONTAL_AXIS)
@@ -274,7 +274,7 @@ public class DatagenAssetUtil {
      * Individual
      * Nature
      */
-    public static void createFarmland(Block topTexture, Block wraptexture) {
+    public void createFarmland(Block topTexture, Block wraptexture) {
         TextureMapping dry = new TextureMapping()
             .put(TextureSlot.DIRT, TextureMapping.getBlockTexture(wraptexture))
             .put(TextureSlot.TOP, TextureMapping.getBlockTexture(topTexture));
@@ -289,7 +289,7 @@ public class DatagenAssetUtil {
                 BlockStateProperties.MOISTURE, 7, moistModel, dryModel)));
     }
 
-    public static void createCactus(Block block) {
+    public void createCactus(Block block) {
         ResourceLocation sideTexture = TextureMapping.getBlockTexture(block, "_side");
         ResourceLocation bottomTexture = TextureMapping.getBlockTexture(block, "_bottom");
         ResourceLocation topTexture = TextureMapping.getBlockTexture(block, "_top");
@@ -346,40 +346,40 @@ public class DatagenAssetUtil {
         blockGen.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, modelLocation));
     }
 
-    public static void createPlant(Block block, BlockModelGenerators.TintState tintState) {
+    public void createPlant(Block block, BlockModelGenerators.TintState tintState) {
         blockGen.createCrossBlockWithDefaultItem(block, tintState);
     }
 
-    public static void createTallPlant(Block block, BlockModelGenerators.TintState tintState) {
+    public void createTallPlant(Block block, BlockModelGenerators.TintState tintState) {
         blockGen.createDoublePlant(block, tintState);
     }
 
-    public static void createCrop(Block block,
+    public void createCrop(Block block,
                                   Property<Integer> ageProperty, int... ageToVisualStageMapping) {
         blockGen.createCropBlock(block, ageProperty, ageToVisualStageMapping);
     }
 
-    public static void createY(Block block, ResourceLocation modelLocation) {
+    public void createY(Block block, ResourceLocation modelLocation) {
         blockGen.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block,
                 Variant.variant().with(VariantProperties.MODEL, modelLocation))
             .with(BlockModelGenerators.createHorizontalFacingDispatch()));
     }
 
-    public static void createUPNWSE(Block block, ResourceLocation modelLocation) {
+    public void createUPNWSE(Block block, ResourceLocation modelLocation) {
         blockGen.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block,
                 Variant.variant().with(VariantProperties.MODEL, modelLocation))
             .with(BlockModelGenerators.createFacingDispatch()));
     }
 
-    public static void createXYZ(Block block, ResourceLocation modelLocation) {
+    public void createXYZ(Block block, ResourceLocation modelLocation) {
         blockGen.blockStateOutput.accept(BlockModelGenerators.createAxisAlignedPillarBlock(block, modelLocation));
     }
 
-    public static void createFlatItem(Item item) {
+    public void createFlatItem(Item item) {
         itemGen.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
     }
 
-    public static void createFlatBlockItem(Block block) {
+    public void createFlatBlockItem(Block block) {
         itemGen.generateFlatItem(Item.BY_BLOCK.get(block), ModelTemplates.FLAT_ITEM);
     }
 
@@ -392,7 +392,7 @@ public class DatagenAssetUtil {
         return arr;
     }
 
-    private static JsonObject face(String uv, String texture, @Nullable String cullface) {
+    private JsonObject face(String uv, String texture, @Nullable String cullface) {
         JsonObject face = new JsonObject();
         String[] parts = uv.split(" ");
         JsonArray uvArr = new JsonArray();

@@ -20,7 +20,7 @@ import static net.justmili.libs.v1.config.screen.SharedElements.*;
 
 @SuppressWarnings({"NullableProblems"})
 public class ListElementRow<T> extends Row {
-    private final ConfigScreenBuilder list;
+    private final ConfigScreenBuilder screenBuilder;
 
     private final VarcharBox inputBox;
     private final Button removeBtn;
@@ -31,7 +31,7 @@ public class ListElementRow<T> extends Row {
 
     public ListElementRow(ListConfigEntry<T> entry, int elementIndex, int depth, ConfigScreenBuilder list, Deque<Runnable> undoStack) {
         super(depth);
-        this.list = list;
+        this.screenBuilder = list;
 
         inputBox = new VarcharBox(Minecraft.getInstance().font, 0, 0, WIDGET_WIDTH, WIDGET_HEIGHT);
         inputBox.setValue(String.valueOf(entry.get().get(elementIndex)));
@@ -86,7 +86,7 @@ public class ListElementRow<T> extends Row {
     @Override
     public void render(@NotNull GuiGraphics graphics, int index, int top, int left, int width, int height,
                        int mouseX, int mouseY, boolean isHovering, float partialTick) {
-        int rightEdge = list.rowRight(),
+        int rightEdge = screenBuilder.rowRight(),
             buttonY = top+(height-LIST_ICON_BTN_SIZE) / 2+2;
 
         if (pendingDelete) {
