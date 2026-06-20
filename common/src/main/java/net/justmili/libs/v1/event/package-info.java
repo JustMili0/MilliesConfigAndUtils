@@ -89,6 +89,11 @@ ServerPlayerEvents
 - AFTER_RESPAWN -> RESPAWN_POST
 - COPY_FROM
 
++ ServerAdvancementEvents
++ COMPLETE (When completing an advancement)
++ PROGRESS (When progressing in a advancement with multiple critera, e.g. Hot Tourist Destination)
++ REVOKE (When getting an advancement revoked)
+
 ServerChunkEvents
 - CHUNK_LOAD
 - CHUNK_UNLOAD
