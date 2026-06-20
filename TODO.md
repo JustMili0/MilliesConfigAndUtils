@@ -11,8 +11,7 @@
   - Let number entries and enum entries be sliders
 
 - (Cross-Loader API) Add cross-loader events
-  - Replicate all of Fabric's and Forge's event triggers in Fabric's event format
-  - Note: PortingLib has a lot of Forge's events already ported (but not all), and we were given the permission to just copy it
+  - Replicate only events most used events and events you could use
 
 - (Config Lib) Add enum selector entry
 - (Config Lib) Add color picker entry
