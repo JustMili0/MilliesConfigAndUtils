@@ -1,0 +1,4 @@
+package net.justmili.libs.v1.event.client.lifecycle;
+
+public class ClientEntityEvents {
+}

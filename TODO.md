@@ -10,14 +10,12 @@
   - Give "Reset" button a proper function
   - Let number entries and enum entries be sliders
 
-- (Cross-Loader API) Add cross-loader events
-  - Replicate only events most used events and events you could use
-
 - (Config Lib) Add enum selector entry
 - (Config Lib) Add color picker entry
 - (Config Lib) Add ability to add custom images to entry descriptions (similar to YACL)
 - (Config Lib) Add YAML/YML support
 
+- (Cross-Loader API) Add cross-loader events accordingly to `events/package-info.java`
 - (Cross-Loader API) Add cross-loader registries, networking and other
 
 - (Config Lib) Add TOML support

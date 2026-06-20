@@ -5,6 +5,10 @@ Sources: https://wiki.fabricmc.net/tutorial:event_index
 
 Events to replicate:
 
+ClientLifecycleEvents
+- CLIENT_STARTED
+- CLIENT_STOPPING
+
 ClientTickEvents
 - START_CLIENT_TICK -> CLIENT_PRE
 - END_CLIENT_TICK -> CLIENT_POST
@@ -51,10 +55,6 @@ ServerTickEvents
 - END_SERVER_TICK -> SERVER_POST
 - START_WORLD_TICK -> WORLD_PRE
 - END_WORLD_TICK -> WORLD_POST
-
-EntityTrackingEvents
-- START_TRACKING -> START
-- STOP_TRACKING -> STOP
 
 ServerEntityEvents
 - ENTITY_LOAD
@@ -114,10 +114,10 @@ ModifyItemAttributeModifiersCallback -> ItemAttributeModifiersEvent
 - EVENT -> MODIFY
 
 UseBlockCallback -> UseBlockEvent
-- EVENT -> USE
+- EVENT
 
 UseItemCallback -> UseItemEvent
-- EVENT -> USE
+- EVENT
 
 UseEntityCallback -> EntityInteractEvent
 - EVENT
@@ -128,7 +128,7 @@ AttackBlockCallback -> AttackBlockEvent
 AttackEntityCallback -> AttackEntityEvent
 - EVENT
 
-PlayerBreakBlockEvents -> PlayerBlockEvents
+PlayerBlockBreakEvents -> PlayerBlockEvents
 - BEFORE -> BREAK_PRE
 - AFTER -> BREAK_POST
 - CANCELED -> BREAK_CANCEL
@@ -153,5 +153,9 @@ ServerMessageEvents
 - CHAT_MESSAGE -> MESSAGE_SENT
 - COMMAND_MESSAGE -> COMMAND_EXECUTED
 - GAME_MESSAGE -> SYSTEM_BROADCASTED
+
+EntityTrackingEvents
+- START_TRACKING -> START
+- STOP_TRACKING -> STOP
 
 */
