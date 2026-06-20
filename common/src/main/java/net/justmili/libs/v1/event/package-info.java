@@ -9,6 +9,13 @@ ClientTickEvents
 - START_WORLD_TICK -> WORLD_PRE
 - END_WORLD_TICK -> WORLD_POST
 
+TooltipComponentCallback -> TooltipRenderEvent
+- EVENT -> RENDER
+
+ScreenEvents
+- BEFORE_INIT -> INIT_PRE
+- AFTER_INIT -> INIT_POST
+
 ClientChunkEvents
 - CHUNK_LOAD
 - CHUNK_UNLOAD
@@ -25,13 +32,6 @@ ClientPickBlockGatherCallback -> ClientPickBlockEvents
 - EVENT -> GATHER
 ClientPickBlockApplyCallback -> ClientPickBlockEvents
 - EVENT -> APPLY
-
-ScreenEvents
-- BEFORE_INIT -> INIT_PRE
-- AFTER_INIT -> INIT_POST
-
-TooltipComponentCallback -> TooltipRenderEvent
-- EVENT -> RENDER
 
 ServerLifecycleEvents
 - SERVER_STARTING
@@ -50,16 +50,9 @@ ServerTickEvents
 - START_WORLD_TICK -> WORLD_PRE
 - END_WORLD_TICK -> WORLD_POST
 
-CommonLifecycleEvents
-- TAGS_LOADED
-
 EntityTrackingEvents
 - START_TRACKING -> START
 - STOP_TRACKING -> STOP
-
-ServerChunkEvents
-- CHUNK_LOAD
-- CHUNK_UNLOAD
 
 ServerEntityEvents
 - ENTITY_LOAD
@@ -68,10 +61,6 @@ ServerEntityEvents
 
 ServerEntityCombatEvents -> ServerCombatEvents
 - AFTER_KILLED_OTHER_ENTITY -> KILLED_OTHER_ENTITY_POST
-
-ServerBlockEntityEvents
-- BLOCK_ENTITY_LOAD -> ENTITY_LOAD
-- BLOCK_ENTITY_UNLOAD -> ENTITY_UNLOAD
 
 ServerLivingEntityEvents -> LivingEntityEvents
 - ALLOW_DAMAGE
@@ -90,14 +79,6 @@ EntitySleepEvents
 - SET_BED_OCCUPATION_STATE
 - MODIFY_WAKE_UP_POSITION
 
-ServerEntityWorldChangeEvents -> ServerEntityLevelChangeEvents
-- AFTER_ENTITY_CHANGE_WORLD -> ENTITY_LEVEL_CHANGE_POST
-- AFTER_PLAYER_CHANGE_WORLD -> PLAYER_LEVEL_CHANGE_POST
-
-ServerWorldEvents -> ServerLevelEvents
-- LOAD
-- UNLOAD
-
 ServerPlayerEvents
 + (copy from ServerLivingEntityEvents) ALLOW_DAMAGE
 + (copy from ServerLivingEntityEvents) AFTER_DAMAGE -> DAMAGE_POST
@@ -106,10 +87,21 @@ ServerPlayerEvents
 - AFTER_RESPAWN -> RESPAWN_POST
 - COPY_FROM
 
-ServerPlayConnectionEvents -> ConnectionEvents
-- JOIN -> JOIN_SERVER
-- DISCONNECT -> LEAVE_SERVER
-- INIT
+ServerChunkEvents
+- CHUNK_LOAD
+- CHUNK_UNLOAD
+
+ServerBlockEntityEvents
+- BLOCK_ENTITY_LOAD -> ENTITY_LOAD
+- BLOCK_ENTITY_UNLOAD -> ENTITY_UNLOAD
+
+ServerEntityWorldChangeEvents -> ServerEntityLevelChangeEvents
+- AFTER_ENTITY_CHANGE_WORLD -> ENTITY_LEVEL_CHANGE_POST
+- AFTER_PLAYER_CHANGE_WORLD -> PLAYER_LEVEL_CHANGE_POST
+
+ServerWorldEvents -> ServerLevelEvents
+- LOAD
+- UNLOAD
 
 ModifyItemAttributeModifiersCallback -> ItemAttributeModifiersEvent
 - EVENT -> MODIFY
@@ -133,4 +125,26 @@ PlayerBreakBlockEvents -> PlayerBlockEvents
 - BEFORE -> BREAK_PRE
 - AFTER -> BREAK_POST
 - CANCELED -> BREAK_CANCEL
- */
+
+CommonLifecycleEvents
+- TAGS_LOADED
+
+ClientPlayConnectionEvents -> ClientConnectionEvents
+- JOIN -> JOIN_SERVER
+- DISCONNECT -> LEAVE_SERVER
+- INIT
+
+ServerPlayConnectionEvents -> ServerConnectionEvents
+- JOIN -> JOIN_SERVER
+- DISCONNECT -> LEAVE_SERVER
+- INIT
+
+ServerMessageEvents
+- ALLOW_CHAT_MESSAGE -> ALLOW_CHAT
+- ALLOW_COMMAND_MESSAGE -> ALLOW_COMMAND
+- ALLOW_GAME_MESSAGE -> ALLOW_SYSTEM
+- CHAT_MESSAGE -> MESSAGE_SENT
+- COMMAND_MESSAGE -> COMMAND_EXECUTED
+- GAME_MESSAGE -> SYSTEM_BROADCASTED
+
+*/
