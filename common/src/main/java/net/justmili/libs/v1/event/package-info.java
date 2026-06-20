@@ -1,6 +1,8 @@
 package net.justmili.libs.v1.event;
 
 /*
+Sources: https://wiki.fabricmc.net/tutorial:event_index
+
 Events to replicate:
 
 ClientTickEvents
