@@ -1,5 +1,6 @@
 package net.justmili.libs.v1.config.screen.rows;
 
+import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,12 +28,11 @@ public class ListAddRow<T> extends Row {
             List<T> current = new ArrayList<>(entry.get());
             T blank = newBlank(entry.defaultValue().isEmpty() ? null : entry.defaultValue().get(0));
             current.add(blank);
-            entry.set(current);
-            undoStack.push(() -> {
-                List<T> undo = new ArrayList<>(entry.get());
-                if (!undo.isEmpty()) undo.remove(undo.size()-1);
-                entry.set(undo);
-            });
+            undoStack.push(() ->{
+                entry.get().remove(entry.get().size()-1);
+                list.rebuildFromRoot();
+            }
+            );
             list.rebuildFromRoot();
         }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         addBtn.setAlpha(0f);
