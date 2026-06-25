@@ -1,5 +1,6 @@
 package net.justmili.libs.v1.config.screen.rows;
 
+import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.justmili.libs.v1.config.screen.SharedElements;
@@ -114,10 +115,20 @@ public class EntryRow extends Row {
                 if (entry.hasRange()) {
                     String text = box.getValue();
                     Comparable<Object> parsed = null;
-                    if (defaultValue instanceof Integer) parsed = (Comparable<Object>)(Object) Integer.parseInt(text);
-                    else if (defaultValue instanceof Long) parsed = (Comparable<Object>)(Object) Long.parseLong(text);
-                    else if (defaultValue instanceof Double) parsed = (Comparable<Object>)(Object) Double.parseDouble(text);
-                    else if (defaultValue instanceof Float) parsed = (Comparable<Object>)(Object) Float.parseFloat(text);
+                    if (defaultValue instanceof Number) {
+                        try {
+                            if (defaultValue instanceof Integer)
+                                parsed = (Comparable<Object>) (Object) Integer.parseInt(text);
+                            else if (defaultValue instanceof Long)
+                                parsed = (Comparable<Object>) (Object) Long.parseLong(text);
+                            else if (defaultValue instanceof Double)
+                                parsed = (Comparable<Object>) (Object) Double.parseDouble(text);
+                            else if (defaultValue instanceof Float)
+                                parsed = (Comparable<Object>) (Object) Float.parseFloat(text);
+                        } catch (NumberFormatException e) {
+                            outOfRange = true;
+                        }
+                    }
                     if (parsed != null) outOfRange = parsed.compareTo(entry.min()) < 0 || parsed.compareTo(entry.max()) > 0;
                 }
                 box.setTextColor(outOfRange ? C_RED : C_WHITE);
