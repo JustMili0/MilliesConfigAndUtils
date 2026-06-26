@@ -5,40 +5,6 @@ Sources: https://wiki.fabricmc.net/tutorial:event_index
 
 Events to replicate:
 
-ClientLifecycleEvents
-- CLIENT_STARTED
-- CLIENT_STOPPING
-
-ClientTickEvents
-- START_CLIENT_TICK -> CLIENT_PRE
-- END_CLIENT_TICK -> CLIENT_POST
-- START_WORLD_TICK -> WORLD_PRE
-- END_WORLD_TICK -> WORLD_POST
-
-TooltipComponentCallback -> TooltipRenderEvent
-- EVENT -> RENDER
-
-ScreenEvents
-- BEFORE_INIT -> INIT_PRE
-- AFTER_INIT -> INIT_POST
-
-ClientChunkEvents
-- CHUNK_LOAD
-- CHUNK_UNLOAD
-
-ClientEntityEvents
-- ENTITY_LOAD
-- ENTITY_UNLOAD
-
-ClientBlockEntityEvents
-- BLOCK_ENTITY_LOAD -> ENTITY_LOAD
-- BLOCK_ENTITY_UNLOAD -> ENTITY_UNLOAD
-
-ClientPickBlockGatherCallback -> ClientPickBlockEvents
-- EVENT -> GATHER
-ClientPickBlockApplyCallback -> ClientPickBlockEvents
-- EVENT -> APPLY
-
 ServerLifecycleEvents
 - SERVER_STARTING
 - SERVER_STARTED
