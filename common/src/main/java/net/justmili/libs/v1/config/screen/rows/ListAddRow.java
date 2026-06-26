@@ -1,6 +1,5 @@
 package net.justmili.libs.v1.config.screen.rows;
 
-import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.minecraft.client.gui.GuiGraphics;
@@ -31,8 +30,7 @@ public class ListAddRow<T> extends Row {
             undoStack.push(() ->{
                 entry.get().remove(entry.get().size()-1);
                 list.rebuildFromRoot();
-            }
-            );
+            });
             list.rebuildFromRoot();
         }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         addBtn.setAlpha(0f);

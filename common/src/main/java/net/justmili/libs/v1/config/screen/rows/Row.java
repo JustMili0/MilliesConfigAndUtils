@@ -11,7 +11,7 @@ public abstract class Row extends ContainerObjectSelectionList.Entry<Row> {
         this.depth = depth;
     }
 
-    protected int indent() {
+    public int indent() {
         return depth * DEPTH_INDENT;
     }
 }

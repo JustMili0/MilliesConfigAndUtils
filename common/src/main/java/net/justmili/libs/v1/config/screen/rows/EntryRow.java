@@ -1,6 +1,5 @@
 package net.justmili.libs.v1.config.screen.rows;
 
-import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.justmili.libs.v1.config.screen.SharedElements;
@@ -112,10 +111,12 @@ public class EntryRow extends Row {
             try {
                 Object defaultValue = entry.defaultValue();
                 boolean outOfRange = false;
+
                 if (entry.hasRange()) {
                     String text = box.getValue();
                     Comparable<Object> parsed = null;
-                    if (defaultValue instanceof Number) {
+
+                    if (defaultValue instanceof Number && !text.isEmpty()) {
                         try {
                             if (defaultValue instanceof Integer)
                                 parsed = (Comparable<Object>) (Object) Integer.parseInt(text);
@@ -132,6 +133,7 @@ public class EntryRow extends Row {
                     if (parsed != null) outOfRange = parsed.compareTo(entry.min()) < 0 || parsed.compareTo(entry.max()) > 0;
                 }
                 box.setTextColor(outOfRange ? C_RED : C_WHITE);
+
             } catch (NumberFormatException ignored) {
                 box.setTextColor(C_WHITE);
             }
