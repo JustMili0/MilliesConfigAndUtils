@@ -1,5 +1,5 @@
 {
-  "config.title.milliescorelibs": "Millie's Core Libraries",
+  "config.title.corelibs": "Millie's Core Libraries",
   "config.builder.examplemod.server.name": "Server",
   "config.builder.examplemod.client.name": "Client",
   "config.var.examplemod.some_int.name": "Some Integer",

@@ -25,13 +25,15 @@ public class ListAddRow<T> extends Row {
         this.screenBuilder = list;
         this.addBtn = Button.builder(Component.empty(), btn -> {
             List<T> current = new ArrayList<>(entry.get());
-            T blank = newBlank(entry.defaultValue().isEmpty() ? null : entry.defaultValue().get(0));
-            current.add(blank);
+            current.add(newBlank(entry.defaultValue().isEmpty() ? null : entry.defaultValue().get(0)));
+
+            entry.set(current);
             undoStack.push(() ->{
                 entry.get().remove(entry.get().size()-1);
                 list.rebuildFromRoot();
             });
             list.rebuildFromRoot();
+
         }).bounds(0, 0, LIST_ICON_BTN_SIZE, LIST_ICON_BTN_SIZE).build();
         addBtn.setAlpha(0f);
     }

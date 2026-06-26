@@ -12,7 +12,7 @@ public class ModMenuEntrypoint implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> new ConfigScreen(
-            Component.translatable("config.title.milliescorelibs"),
+            Component.translatable("config.title.corelibs"),
             parent, List.of(ExampleConfig.server, ExampleConfig.client)
             //parent, Config.corelibs_client
         );

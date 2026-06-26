@@ -81,4 +81,9 @@ subprojects {
         archiveBaseName.set(rootProject.property("archives_base_name") as String)
         archiveVersion.set(project.version.toString())
     }
+
+    tasks.withType<Jar>().configureEach {
+        from(rootProject.file("LICENSE"))
+        from(rootProject.file("LICENSE-APACHE-2"))
+    }
 }
