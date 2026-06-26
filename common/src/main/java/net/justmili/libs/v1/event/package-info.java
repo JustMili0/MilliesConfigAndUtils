@@ -5,17 +5,6 @@ Sources: https://wiki.fabricmc.net/tutorial:event_index
 
 Events to replicate:
 
-ServerLifecycleEvents
-- SERVER_STARTING
-- SERVER_STARTED
-- SERVER_STOPPING
-- SERVER_STOPPED
-- BEFORE_SAVE -> SAVE_PRE
-- AFTER_SAVE -> SAVE_POST
-- START_DATA_PACK_RELOAD -> DATAPACK_RELOAD_PRE
-- END_DATA_PACK_RELOAD -> DATAPACK_RELOAD_POST
-- SYNC_DATA_PACK_CONTENTS -> DATAPACK_SYNC_CONTENTS
-
 ServerTickEvents
 - START_SERVER_TICK -> SERVER_PRE
 - END_SERVER_TICK -> SERVER_POST
@@ -99,9 +88,6 @@ PlayerBlockBreakEvents -> PlayerBlockEvents
 - AFTER -> BREAK_POST
 - CANCELED -> BREAK_CANCEL
 
-CommonLifecycleEvents
-- TAGS_LOADED
-
 ClientPlayConnectionEvents -> ClientConnectionEvents
 - JOIN -> JOIN_SERVER
 - DISCONNECT -> LEAVE_SERVER
@@ -123,5 +109,57 @@ ServerMessageEvents
 EntityTrackingEvents
 - START_TRACKING -> START
 - STOP_TRACKING -> STOP
+
+---------------------------------------------------------------------------------------------------------
+
+Events replicated:
+
+ClientLifecycleEvents
+- CLIENT_STARTED
+- CLIENT_STOPPING
+
+ClientTickEvents
+- START_CLIENT_TICK -> CLIENT_PRE
+- END_CLIENT_TICK -> CLIENT_POST
+- START_WORLD_TICK -> WORLD_PRE
+- END_WORLD_TICK -> WORLD_POST
+
+TooltipComponentCallback -> TooltipRenderEvent
+- EVENT -> RENDER
+
+ScreenEvents
+- BEFORE_INIT -> INIT_PRE
+- AFTER_INIT -> INIT_POST
+
+ClientChunkEvents
+- CHUNK_LOAD
+- CHUNK_UNLOAD
+
+ClientEntityEvents
+- ENTITY_LOAD
+- ENTITY_UNLOAD
+
+ClientBlockEntityEvents
+- BLOCK_ENTITY_LOAD -> ENTITY_LOAD
+- BLOCK_ENTITY_UNLOAD -> ENTITY_UNLOAD
+
+ClientPickBlockGatherCallback -> ClientPickBlockEvents
+- EVENT -> GATHER
+ClientPickBlockApplyCallback -> ClientPickBlockEvents
+- EVENT -> APPLY
+
+CommonLifecycleEvents
+- TAGS_LOADED
+
+ServerLifecycleEvents
+- SERVER_STARTING
+- SERVER_STARTED
+- SERVER_STOPPING
+- SERVER_STOPPED
+- [?] BEFORE_SAVE -> SAVE_PRE
+- [?] AFTER_SAVE -> SAVE_POST
+- START_DATA_PACK_RELOAD -> DATAPACK_RELOAD_PRE
+- END_DATA_PACK_RELOAD -> DATAPACK_RELOAD_POST
+- SYNC_DATA_PACK_CONTENTS -> DATAPACK_SYNC_CONTENTS
 
 */
