@@ -4,8 +4,8 @@
  *
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
- * Modified by JustMili for Core Libraries: Renamed constants
- * BLOCK_ENTITY_LOAD -> ENTITY_LOAD, BLOCK_ENTITY_UNLOAD -> ENTITY_ULOAD;
+ * Modified by JustMili for Core Libraries:
+ * Renamed constants BLOCK_ENTITY_LOAD -> ENTITY_LOAD, BLOCK_ENTITY_UNLOAD -> ENTITY_ULOAD;
  * logic remains unchanged.
  */
 

@@ -12,26 +12,26 @@ public class ResourceUtil {
         return new ResourceLocation(path);
     }
     public static ResourceLocation asMinecraft(String path) {
-        return new ResourceLocation("minecraft", path);
+        return parse("minecraft", path);
     }
     public static ResourceLocation asFabric(String path) {
-        return new ResourceLocation("fabric", path);
+        return parse("fabric", path);
     }
     public static ResourceLocation asQuilt(String path) {
-        return new ResourceLocation("quilt", path);
+        return parse("quilt", path);
     }
     public static ResourceLocation asForge(String path) {
-        return new ResourceLocation("forge", path);
+        return parse("forge", path);
     }
     public static ResourceLocation asNeoForge(String path) {
-        return new ResourceLocation("neoforge", path);
+        return parse("neoforge", path);
     }
 
     public static ResourceLocation asBlockPath(String path) {
-        return new ResourceLocation("minecraft:block/"+path);
+        return asPath("minecraft:block/"+path);
     }
     public static ResourceLocation asItemPath(String path) {
-        return new ResourceLocation("minecraft:item/"+path);
+        return asPath("minecraft:item/"+path);
     }
 
     // Generic
