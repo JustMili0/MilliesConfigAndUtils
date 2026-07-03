@@ -1,17 +1,18 @@
 package net.justmili.libs.config;
 
+import net.justmili.libs.v1.config.ConfigType;
 import net.justmili.libs.v1.config.MConfigBuilder;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
-import net.justmili.libs.v1.config.type.FileType;
+import net.justmili.libs.v1.config.FileType;
 
 public class Config {
-    public static MConfigBuilder corelibs_client = new MConfigBuilder("corelibs", "client", FileType.JSON5, false);
+    public static MConfigBuilder client = new MConfigBuilder("corelibs", ConfigType.CLIENT, FileType.JSON5, false);
 
     public static ConfigEntry<Boolean> alwaysPride;
     public static ConfigEntry<Boolean> alwaysDefault;
 
     public static void register() {
-        var cfg = corelibs_client;
+        var cfg = client;
 
         cfg.openCat("Icon Type");
         alwaysPride = cfg.comment("Config Screen icons will always appear as their Pride Month variant")

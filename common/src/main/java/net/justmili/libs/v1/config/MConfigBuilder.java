@@ -5,7 +5,6 @@ import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.CommentItem;
-import net.justmili.libs.v1.config.type.FileType;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -16,8 +15,8 @@ public class MConfigBuilder {
     private final Deque<CategoryItem> stack = new ArrayDeque<>();
     private String comment = null;
 
-    public MConfigBuilder(String modId, String name, FileType fileType, boolean createSubDirectory) {
-        this.config = new ConfigLoader(modId, name, fileType, createSubDirectory);
+    public MConfigBuilder(String modId, ConfigType configType, FileType fileType, boolean createSubDirectory) {
+        this.config = new ConfigLoader(modId, configType, fileType, createSubDirectory);
         stack.push(new CategoryItem("root", null));
     }
 

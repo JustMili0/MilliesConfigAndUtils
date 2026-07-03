@@ -3,7 +3,7 @@ package net.justmili.libs.v1.config.screen.rows;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.screen.ConfigScreenBuilder;
 import net.justmili.libs.v1.config.screen.SharedElements;
-import net.justmili.libs.v1.config.widgets.VarcharBox;
+import net.justmili.libs.v1.config.screen.widgets.VarcharBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

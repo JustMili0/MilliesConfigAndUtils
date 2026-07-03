@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.config.type.properties;
+package net.justmili.libs.v1.config.writers.properties;
 
 import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
@@ -6,7 +6,7 @@ import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
 import net.justmili.libs.v1.config.items.CommentItem;
 import net.justmili.libs.v1.config.items.ConfigItem;
-import net.justmili.libs.v1.config.type.FormatWriter;
+import net.justmili.libs.v1.config.writers.FormatWriter;
 
 import java.io.*;
 import java.nio.file.Path;

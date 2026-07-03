@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.config.type;
+package net.justmili.libs.v1.config.writers;
 
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;

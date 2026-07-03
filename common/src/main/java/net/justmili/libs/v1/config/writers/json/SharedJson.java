@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.config.type.json;
+package net.justmili.libs.v1.config.writers.json;
 
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.items.CommentItem;

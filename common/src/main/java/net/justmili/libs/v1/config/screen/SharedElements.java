@@ -2,7 +2,7 @@ package net.justmili.libs.v1.config.screen;
 
 import net.justmili.libs.CoreLibs;
 import net.justmili.libs.config.Config;
-import net.justmili.libs.v1.config.widgets.VarcharBox;
+import net.justmili.libs.v1.config.screen.widgets.VarcharBox;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -116,16 +116,16 @@ public class SharedElements {
     }
 
     public static String builderKey(String modId, String key) {
-        return "config.builder."+modId+"."+toUniform(key)+".name";
+        return "config.builder."+modId+"."+toUniform(key)+".suffix";
     }
     public static String varKey(String modId, String key) {
-        return "config.var."+modId+"."+toUniform(key)+".name";
+        return "config.var."+modId+"."+toUniform(key)+".suffix";
     }
     public static String varDescKey(String modId, String key) {
         return "config.var."+modId+"."+toUniform(key)+".desc";
     }
     public static String catKey(String modId, String name) {
-        return "config.cat."+modId+"."+toUniform(name)+".name";
+        return "config.cat."+modId+"."+toUniform(name)+".suffix";
     }
     public static String catDescKey(String modId, String name) {
         return "config.cat."+modId+"."+toUniform(name)+".desc";

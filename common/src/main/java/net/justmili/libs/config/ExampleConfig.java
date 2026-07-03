@@ -1,16 +1,17 @@
 package net.justmili.libs.config;
 
+import net.justmili.libs.v1.config.ConfigType;
 import net.justmili.libs.v1.config.MConfigBuilder;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
-import net.justmili.libs.v1.config.type.FileType;
+import net.justmili.libs.v1.config.FileType;
 
 import java.util.List;
 
 public class ExampleConfig {
     // Leave your builders exposed if you want to hook your mod to Mod Menu or (Neo)Forge Config...
-    public static MConfigBuilder server = new MConfigBuilder("examplemod", "server", FileType.JSON5, true);
-    public static MConfigBuilder client = new MConfigBuilder("examplemod", "client", FileType.JSON5, true);
+    public static MConfigBuilder server = new MConfigBuilder("examplemod", ConfigType.SERVER, FileType.JSON5, true);
+    public static MConfigBuilder client = new MConfigBuilder("examplemod", ConfigType.CLIENT, FileType.JSON5, true);
 
     public static ConfigEntry<Integer> someInt;
     public static ConfigEntry<Float> someFloat;
@@ -24,7 +25,7 @@ public class ExampleConfig {
     public static void register() {
         // ...Or keep it in the register method if you'd like
         // (but you won't be able to integrate your mod with Mod Menu/(Neo)Forge Config)
-        // MConfigBuilder server = new MConfigBuilder("examplemod", "suffix-or-name", FileType.JSON5, true);
+        // MConfigBuilder server = new MConfigBuilder("examplemod", "suffix-or-suffix", FileType.JSON5, true);
 
         someInt = server.comment("Integer entry comment")
             .define("someInt", 10, 0, 100);

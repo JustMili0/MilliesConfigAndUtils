@@ -4,11 +4,10 @@ import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
-import net.justmili.libs.v1.config.type.FileType;
-import net.justmili.libs.v1.config.type.FormatWriter;
-import net.justmili.libs.v1.config.type.json.Json5Writer;
-import net.justmili.libs.v1.config.type.json.JsonWriter;
-import net.justmili.libs.v1.config.type.properties.PropertiesWriter;
+import net.justmili.libs.v1.config.writers.FormatWriter;
+import net.justmili.libs.v1.config.writers.json.Json5Writer;
+import net.justmili.libs.v1.config.writers.json.JsonWriter;
+import net.justmili.libs.v1.config.writers.properties.PropertiesWriter;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -17,22 +16,27 @@ import java.util.Map;
 
 public class ConfigLoader {
     public final String modId;
-    public final String name;
+    public final String suffix;
     private final Path path;
     private final FormatWriter writer;
     public final Map<String, ConfigEntry<?>> entries = new HashMap<>();
     public final Map<String, ListConfigEntry> listEntries = new HashMap<>();
     public CategoryItem root;
 
-    public ConfigLoader(String modId, String name, FileType fileType, boolean createSubDirectory) {
+    public ConfigLoader(String modId, ConfigType configType, FileType fileType, boolean createSubDirectory) {
         Path configDirectory = Path.of("config");
         this.modId = modId;
-        this.name = name;
+        this.suffix = switch (configType) {
+            case CLIENT -> "client";
+            case SERVER -> "server";
+            case COMMON -> "common";
+            case MIXINS -> "mixins";
+            case OVERRIDES -> "overrides";
+        };
         this.writer = resolveWriter(fileType);
 
         String extension = extension(fileType);
-        String fileName = (name == null || name.isBlank())
-            ? modId : (createSubDirectory ? name : modId+"-"+name);
+        String fileName = createSubDirectory ? suffix : modId+"-"+ suffix;
 
         path = createSubDirectory
             ? configDirectory.resolve(modId).resolve(fileName+extension)

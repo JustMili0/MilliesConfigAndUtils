@@ -175,7 +175,7 @@ public class ConfigScreen extends Screen {
     private record ConfigTab(ConfigLoader config, Consumer<ConfigLoader> onSelect) implements Tab {
         @Override
         public Component getTabTitle() {
-            return resolve(builderKey(config.modId, config.name != null && !config.name.isBlank() ? config.name : config.modId));
+            return resolve(builderKey(config.modId, config.suffix != null && !config.suffix.isBlank() ? config.suffix : config.modId));
         }
 
         @Override

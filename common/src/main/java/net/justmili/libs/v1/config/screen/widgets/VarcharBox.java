@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.config.widgets;
+package net.justmili.libs.v1.config.screen.widgets;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
