@@ -2,8 +2,8 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
-  - Fix list entry inputs that are inline with the list name are clickable, but not editable
-    - Undo the change of putting first input inline with text, just put it lower like with e.g. categories
+  - Fix large doubles with an exponent ex. "1.1E12" not being edited
+    - Probably a parsing issue
   - Make each entry have its own selectable "section" so "Reset" know what to reset
   - Give "Reset" button a proper function
   - Let number entries and enum entries be sliders
