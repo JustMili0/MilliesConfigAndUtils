@@ -1,6 +1,18 @@
 package net.justmili.libs.v1.event;
 
 /*
+ NEW IDEA:
+
+ Still copy a lot of events from Fabric but group them together into a few classes
+ (similarly to Architectury API), additionally adding some custom events (AdvancementEvents cuz Fabric doesn't have those)
+ as well as some Forge events.
+
+ These events then will redirect to Fabric (API)/Forge/NeoForge events instead of having to mixin into everything
+ */
+
+///-------------------------------------------------------------------------------------------
+
+/*
 Sources: https://wiki.fabricmc.net/tutorial:event_index
 
 [?] - Method, interface or constant missing from code compared to what's listed in source website
