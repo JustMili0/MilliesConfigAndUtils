@@ -177,6 +177,7 @@ public class ListEntryRow extends Row {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
         if (inputBox.isMouseOver(mouseX, mouseY)) {
             inputBox.setFocused(true);
             inputBox.mouseClicked(mouseX, mouseY, button);
