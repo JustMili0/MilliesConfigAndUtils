@@ -116,16 +116,16 @@ public class SharedElements {
     }
 
     public static String builderKey(String modId, String key) {
-        return "config.builder."+modId+"."+toUniform(key)+".suffix";
+        return "config.builder."+modId+"."+toUniform(key)+".name";
     }
     public static String varKey(String modId, String key) {
-        return "config.var."+modId+"."+toUniform(key)+".suffix";
+        return "config.var."+modId+"."+toUniform(key)+".name";
     }
     public static String varDescKey(String modId, String key) {
         return "config.var."+modId+"."+toUniform(key)+".desc";
     }
     public static String catKey(String modId, String name) {
-        return "config.cat."+modId+"."+toUniform(name)+".suffix";
+        return "config.cat."+modId+"."+toUniform(name)+".name";
     }
     public static String catDescKey(String modId, String name) {
         return "config.cat."+modId+"."+toUniform(name)+".desc";
