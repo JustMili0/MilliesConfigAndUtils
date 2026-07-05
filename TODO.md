@@ -14,7 +14,6 @@
 - (Config Lib) Add YAML/YML support
 
 - (Cross-Loader API) Add cross-loader events accordingly to `events/package-info.java`
-  - Create mixins for event invokers (additionally provide links to Fabric API's github repository linked to mixin source)
 - (Cross-Loader API) Add cross-loader registries, networking and other
 
 - (Config Lib) Add TOML support

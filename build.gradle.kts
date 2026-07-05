@@ -84,6 +84,5 @@ subprojects {
 
     tasks.withType<Jar>().configureEach {
         from(rootProject.file("LICENSE"))
-        from(rootProject.file("LICENSE-APACHE-2"))
     }
 }
