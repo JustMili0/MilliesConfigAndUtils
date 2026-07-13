@@ -2,6 +2,7 @@
 
 # TODO - 1.0
 - Backport the whole config screen builder to 1.20.1
+  - Make COMMON_SERVER_PRIORITY actually make client sync with server
   - Fix large doubles with an exponent ex. "1.1E12" not being edited
     - Probably a parsing issue
   - Make each entry have its own selectable "section" so "Reset" know what to reset

@@ -30,8 +30,8 @@ public class ConfigLoader {
             case CLIENT -> "client";
             case SERVER -> "server";
             case COMMON -> "common";
+            case COMMON_SERVER_PRIORITY -> "common-sp";
             case MIXINS -> "mixins";
-            case OVERRIDES -> "overrides";
         };
         this.writer = resolveWriter(fileType);
 
