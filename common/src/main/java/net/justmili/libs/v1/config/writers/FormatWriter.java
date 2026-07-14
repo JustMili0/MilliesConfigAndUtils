@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public interface FormatWriter {
-    enum CommentStyle {TAG, SLASH, NONE}
+    enum CommentStyle { TAG, SLASH, NONE }
 
     void write(Path path, CategoryItem root);
     void load(Path path, Map<String, ConfigEntry<?>> entries, Map<String, ListConfigEntry> listEntries);

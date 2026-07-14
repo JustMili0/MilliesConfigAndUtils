@@ -34,7 +34,7 @@ public class MConfigBuilder {
 
     public void closeCat() {
         if (stack.size() <= 1) {
-            CoreLibs.LOGGER.warn("closeCat() called without a matching openCat(), ignoring.");
+            CoreLibs.LOGGER.warn("Ignoring \"closeCat()\" without \"openCat()\".");
             return;
         }
         stack.pop();

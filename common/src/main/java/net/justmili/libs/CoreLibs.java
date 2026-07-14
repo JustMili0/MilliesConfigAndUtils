@@ -1,6 +1,5 @@
 package net.justmili.libs;
 
-import net.justmili.libs.config.Config;
 import net.justmili.libs.config.ExampleConfig;
 import net.justmili.libs.v1.utils.ResourceUtil;
 import net.justmili.libs.v1.utils.TickUtil;
@@ -13,8 +12,6 @@ public class CoreLibs {
     public static final Logger LOGGER = LoggerFactory.getLogger(CoreLibs.class);
 
     public static void init() {
-        Config.register();
-
         TickUtil.registerProcessQueue();
         ExampleConfig.register();
     }

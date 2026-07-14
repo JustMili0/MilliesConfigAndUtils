@@ -4,6 +4,7 @@ import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
 import net.justmili.libs.v1.config.items.CategoryItem;
+import net.justmili.libs.v1.config.sync.SyncConfigCSP;
 import net.justmili.libs.v1.config.writers.FormatWriter;
 import net.justmili.libs.v1.config.writers.json.Json5Writer;
 import net.justmili.libs.v1.config.writers.json.JsonWriter;
@@ -33,6 +34,9 @@ public class ConfigLoader {
             case COMMON_SERVER_PRIORITY -> "common-sp";
             case MIXINS -> "mixins";
         };
+        if (configType == ConfigType.COMMON_SERVER_PRIORITY) {
+            SyncConfigCSP.register(this);
+        }
         this.writer = resolveWriter(fileType);
 
         String extension = extension(fileType);

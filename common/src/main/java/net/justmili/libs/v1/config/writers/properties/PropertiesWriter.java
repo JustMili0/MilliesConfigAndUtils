@@ -33,7 +33,7 @@ public class PropertiesWriter implements FormatWriter {
         for (ConfigItem item : items) {
             if (item instanceof CategoryItem categoryItem) {
                 if (!warnedAboutCategories) {
-                    CoreLibs.LOGGER.warn("Categories are not supported in .properties format, flattening.");
+                    CoreLibs.LOGGER.warn("Categories not supported in .properties format - flattening.");
                     warnedAboutCategories = true;
                 }
                 writeItems(writer, categoryItem.children(), warnedAboutCategories);

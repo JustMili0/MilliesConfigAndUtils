@@ -9,17 +9,11 @@
 
 package net.justmili.libs.v1.base;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-
 import com.google.common.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Contains a topological sort implementation, with tie breaking using a {@link Comparator}.

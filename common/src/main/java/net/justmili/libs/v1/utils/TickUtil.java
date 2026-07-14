@@ -1,6 +1,6 @@
 package net.justmili.libs.v1.utils;
 
-import net.justmili.libs.v1.event.server.lifecycle.ServerTickEvents;
+import net.justmili.libs.v1.event.server.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.concurrent.ConcurrentLinkedQueue;

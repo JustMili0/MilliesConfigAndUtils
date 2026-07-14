@@ -2,7 +2,6 @@ package net.justmili.libs.v1.config.writers.toml.ttomle.fields;
 
 import net.justmili.libs.v1.config.writers.toml.ttomle.TomlDottedElementName;
 import net.justmili.libs.v1.config.writers.toml.ttomle.TomlStringType;
-import net.justmili.libs.v1.config.writers.toml.ttomle.TomlStringUtils;
 import net.justmili.libs.v1.config.writers.toml.ttomle.data.TomlString;
 
 public class TomlStringField extends TomlField {

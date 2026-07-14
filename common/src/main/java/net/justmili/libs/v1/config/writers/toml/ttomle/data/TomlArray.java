@@ -2,7 +2,6 @@ package net.justmili.libs.v1.config.writers.toml.ttomle.data;
 
 import net.justmili.libs.v1.config.writers.toml.ttomle.TomlBuildingException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TomlArray extends TomlVariable{

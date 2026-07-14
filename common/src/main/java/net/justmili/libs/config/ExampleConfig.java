@@ -1,10 +1,10 @@
 package net.justmili.libs.config;
 
 import net.justmili.libs.v1.config.ConfigType;
+import net.justmili.libs.v1.config.FileType;
 import net.justmili.libs.v1.config.MConfigBuilder;
 import net.justmili.libs.v1.config.entry.ConfigEntry;
 import net.justmili.libs.v1.config.entry.ListConfigEntry;
-import net.justmili.libs.v1.config.FileType;
 
 import java.util.List;
 

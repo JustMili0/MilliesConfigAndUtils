@@ -1,11 +1,5 @@
 package net.justmili.libs.v1.config;
 
-/**
- * Represents the synchronization and usage behavior of a configuration.
- * <p>
- * Each type determines where the configuration exists and whether its values
- * are synchronized between the client and server.
- */
 public enum ConfigType {
 
     /**
@@ -25,7 +19,7 @@ public enum ConfigType {
     SERVER,
 
     /**
-     * Shared configuration available on both the client and server.
+     * Common configuration available on both the client and server.
      * <p>
      * Client and server each use their own local values,
      * so they may differ without being synchronized.
@@ -33,7 +27,7 @@ public enum ConfigType {
     COMMON,
 
     /**
-     * Shared configuration where the server's values take priority.
+     * Common configuration where the server's values take priority.
      * <p>
      * Both client and server have a local configuration file, but when
      * connected, the server's values override the client's values.

@@ -1,10 +1,7 @@
 package net.justmili.libs.v1.config.writers.toml.ttomle.data;
 
 import net.justmili.libs.v1.config.writers.toml.ttomle.TomlBuildingException;
-import net.justmili.libs.v1.config.writers.toml.ttomle.TomlDottedElementName;
 import net.justmili.libs.v1.config.writers.toml.ttomle.TomlUtils;
-
-import java.lang.annotation.Inherited;
 
 public class TomlDecimal extends TomlVariable{
 

@@ -20,6 +20,9 @@
     "main": [
       "net.justmili.libs.fabric.CoreLibsFabric"
     ],
+    "client": [
+      "net.justmili.libs.client.fabric.FabricClient"
+    ],
     "modmenu": [
       "net.justmili.libs.fabric.ModMenuEntrypoint"
     ]

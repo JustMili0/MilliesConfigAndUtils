@@ -1,8 +1,11 @@
 *Note: keep TODO and README on the latest main branch you're working on
 
-# TODO - 1.0
-- Backport the whole config screen builder to 1.20.1
-  - Make COMMON_SERVER_PRIORITY actually make client sync with server
+# TODO
+- (Cross-Loader API) Add cross-loader networking
+
+- Finish base of the config library
+  - ***Make COMMON_SERVER_PRIORITY only override in-memory rather than on-file***
+  - ***Make syncing COMMON_SERVER_PRIORITY files use the same system between***
   - Fix large doubles with an exponent ex. "1.1E12" not being edited
     - Probably a parsing issue
   - Make each entry have its own selectable "section" so "Reset" know what to reset
@@ -15,7 +18,7 @@
 - (Config Lib) Add YAML/YML support
 
 - (Cross-Loader API) Add cross-loader events accordingly to `events/package-info.java`
-- (Cross-Loader API) Add cross-loader registries, networking and other
+- (Cross-Loader API) Add cross-loader registries
 
 - (Config Lib) Add TOML support
 
