@@ -1,5 +1,6 @@
 plugins {
     id("com.gradleup.shadow")
+    alias(libs.plugins.publish)
 }
 
 def generatedResources = file("src/generated")
@@ -84,4 +85,19 @@ shadowJar {
 
 remapJar {
     inputFile.set shadowJar.archiveFile
+}
+
+publishMods {
+    file = remapJar.archiveFile
+    modLoaders.add("forge")
+    type = ALPHA
+
+    modrinth {
+        projectId = "j6khQEIz"
+        accessToken = property("modrinth_token")
+        minecraftVersions.add("1.20.1")
+        requires("fabric-api")
+
+        changelog = "See full changelog: [github.com/MilliesCoreLibraries/](https://github.com/JustMili0/MilliesCoreLibraries/blob/rep-info/.Changelogs/)" + rootProject.property("mod_version") + "-Changelog.md"
+    }
 }

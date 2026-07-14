@@ -1,5 +1,6 @@
 plugins {
     id('com.gradleup.shadow')
+    alias(libs.plugins.publish)
 }
 
 architectury {
@@ -65,4 +66,20 @@ shadowJar {
 
 remapJar {
     inputFile.set shadowJar.archiveFile
+}
+
+publishMods {
+    file = remapJar.archiveFile
+    modLoaders.add("fabric")
+    type = ALPHA
+
+    modrinth {
+        projectId = "j6khQEIz"
+        accessToken = property("modrinth_token")
+        minecraftVersions.add("1.20.1")
+        requires("fabric-api")
+
+        def changelogFile = rootProject.file(".Changelogs/${rootProject.property("mod_version")}-Changelog.md")
+        changelog = changelogFile.exists() ? changelogFile.getText("UTF-8") : ""
+    }
 }
