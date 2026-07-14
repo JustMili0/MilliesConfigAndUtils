@@ -1,6 +1,7 @@
 package net.justmili.libs.forge;
 
 import net.justmili.libs.CoreLibs;
+import net.justmili.libs.v1.event.bridge.forge.ServerEventsBridge;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -15,5 +16,7 @@ public final class CoreLibsForge {
         EVENT_BUS = modContext.getModEventBus();
 
         CoreLibs.init();
+
+        ServerEventsBridge.init();
     }
 }

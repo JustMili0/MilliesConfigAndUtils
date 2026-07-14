@@ -5,7 +5,7 @@ package net.justmili.libs.v1.event;
 Selected events inspired by Fabric, Forge/NeoForge and Architectury API.
 No code will be copied directly from those sources, but made and maintained from scratch.
 
----------------------------------------------------------------------------------
+--------------------------------------------------------------------------------- IMPLEMENTED
 
 ServerLifeCycleEvents
 - STARTING
@@ -17,10 +17,6 @@ ServerLifeCycleEvents
 - DATAPACK_RELOAD_POST
 - DATAPACK_SYNC_CONTENTS
 
-ServerConnectionEvents
-- JOIN_SERVER
-- LEAVE_SERVER
-
 ServerTickEvents
 - SERVER_PRE
 - SERVER_POST
@@ -30,6 +26,14 @@ ServerTickEvents
 - PLAYER_POST
 - ENTITY_PRE
 - ENTITY_POST
+- LIVING_ENTITY_PRE
+- LIVING_ENTITY_POST
+
+--------------------------------------------------------------------------------- TO IMPLEMENT
+
+ServerConnectionEvents
+- JOIN_SERVER
+- LEAVE_SERVER
 
 ServerLevelEvents
 - LEVEL_LOAD
@@ -80,7 +84,8 @@ PlayerEvents
 + EQUIPMENT_CHANGE
 
 PlayerAdvancementEvents
-- ALLOW_PROGRESS_OR_COMPLETION
+- ALLOW_COMPLETION
+- ALLOW_PROGRESS
 - GRANT
 - PROGRESS
 - REVOKE
