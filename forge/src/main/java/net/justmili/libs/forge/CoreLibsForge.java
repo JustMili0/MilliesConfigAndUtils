@@ -14,9 +14,9 @@ public final class CoreLibsForge {
     public CoreLibsForge(FMLJavaModLoadingContext modContext) {
         MinecraftForge.EVENT_BUS.register(this);
         EVENT_BUS = modContext.getModEventBus();
+        ServerEventsBridge.init();
+        // TODO: Add SyncConfigCSPNetworking for Forge (Server)
 
         CoreLibs.init();
-
-        ServerEventsBridge.init();
     }
 }

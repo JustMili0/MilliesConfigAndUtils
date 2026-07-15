@@ -29,6 +29,16 @@ ServerTickEvents
 - LIVING_ENTITY_PRE
 - LIVING_ENTITY_POST
 
+ClientLifecycleEvents
+- STARTED
+- STOPPED
+
+ClientTickEvents
+- CLIENT_PRE
+- CLIENT_POST
+- LEVEL_PRE
+- LEVEL_POST
+
 --------------------------------------------------------------------------------- TO IMPLEMENT
 
 ServerConnectionEvents
@@ -41,19 +51,9 @@ ServerLevelEvents
 - CHUNK_LOAD
 - CHUNK_UNLOAD
 
-ClientLifecycleEvents
-- STARTED
-- STOPPED
-
 ClientConnectionEvents
 - JOIN_SERVER
 - LEAVE_SERVER
-
-ClientTickEvents
-- CLIENT_PRE
-- CLIENT_POST
-- LEVEL_PRE
-- LEVEL_POST
 
 TooltipRenderEvent
 - EVENT
@@ -83,7 +83,7 @@ PlayerEvents
 + ENTER_CHUNK
 + EQUIPMENT_CHANGE
 
-PlayerAdvancementEvents
+PlayerAdvancementEvents (custom, do mixins)
 - ALLOW_COMPLETION
 - ALLOW_PROGRESS
 - GRANT

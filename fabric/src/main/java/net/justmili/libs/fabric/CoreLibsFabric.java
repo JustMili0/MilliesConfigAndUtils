@@ -8,10 +8,9 @@ import net.justmili.libs.v1.event.bridge.fabric.ServerEventsBridge;
 public final class CoreLibsFabric implements ModInitializer {
     @Override
     public void onInitialize() {
+        ServerEventsBridge.init();
         SyncConfigCSPNetworking.registerServer();
 
         CoreLibs.init();
-
-        ServerEventsBridge.init();
     }
 }

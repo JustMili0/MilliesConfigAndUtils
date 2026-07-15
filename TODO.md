@@ -1,11 +1,11 @@
 *Note: keep TODO and README on the latest main branch you're working on
 
 # TODO
-- (Cross-Loader API) Add cross-loader networking
+- [WIP] (Cross-Loader API) Add cross-loader networking
 
 - Finish base of the config library
   - ***Make COMMON_SERVER_PRIORITY only override in-memory rather than on-file***
-  - ***Make syncing COMMON_SERVER_PRIORITY files use the same system between***
+  - ***Make syncing COMMON_SERVER_PRIORITY files use the same system between Fabric and Forge***
   - Fix large doubles with an exponent ex. "1.1E12" not being edited
     - Probably a parsing issue
   - Make each entry have its own selectable "section" so "Reset" know what to reset

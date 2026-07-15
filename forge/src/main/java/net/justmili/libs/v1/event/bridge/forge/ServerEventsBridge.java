@@ -1,6 +1,7 @@
 package net.justmili.libs.v1.event.bridge.forge;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.TickEvent;
@@ -43,14 +44,14 @@ public final class ServerEventsBridge {
         });
 
         MinecraftForge.EVENT_BUS.addListener((TickEvent.LevelTickEvent event) -> {
-            if (!isPre(event)) return;
+            if (!isPre(event) || isClientSide(event)) return;
             if (!(event.level instanceof ServerLevel level)) return;
 
             LEVEL_PRE.invoker().onStartTick(level); // Tick level
             for (var entity : level.getAllEntities()) ENTITY_PRE.invoker().onStartTick(entity); // Tick entities
         });
         MinecraftForge.EVENT_BUS.addListener((TickEvent.LevelTickEvent event) -> {
-            if (!isPost(event)) return;
+            if (!isPost(event) || isClientSide(event)) return;
             if (!(event.level instanceof ServerLevel level)) return;
 
             LEVEL_POST.invoker().onEndTick(level); // Tick level
@@ -58,10 +59,10 @@ public final class ServerEventsBridge {
         });
 
         MinecraftForge.EVENT_BUS.addListener((TickEvent.PlayerTickEvent event) -> {
-            if (isPre(event)) PLAYER_PRE.invoker().onStartTick(event.player);
+            if (isPre(event) && event.player instanceof ServerPlayer player) PLAYER_PRE.invoker().onStartTick(player);
         });
         MinecraftForge.EVENT_BUS.addListener((TickEvent.PlayerTickEvent event) -> {
-            if (isPost(event)) PLAYER_POST.invoker().onEndTick(event.player);
+            if (isPost(event) && event.player instanceof ServerPlayer player) PLAYER_POST.invoker().onEndTick(player);
         });
     }
 
@@ -70,5 +71,8 @@ public final class ServerEventsBridge {
     }
     private static boolean isPost(TickEvent event) {
         return event.phase == TickEvent.Phase.END;
+    }
+    private static boolean isClientSide(TickEvent.LevelTickEvent event) {
+        return event.level.isClientSide;
     }
 }

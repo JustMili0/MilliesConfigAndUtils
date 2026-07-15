@@ -1,13 +1,13 @@
-# [ALPHA] Millie's Core Libraries
+# Millie's Core Libraries
 The all-in-one for you.
 
 <hr>
 
-## Important - For Developers
+# Important - For Developers
 This library/API is still heavily WIP and many aspects of it are unfinished. Only the fundamentals of the config library and util classes are semi-finished.<br>
 Please do not yet use this mod for your own projects as it was only published for use by JustMili.<br>
 <br>
-There is no proper documentation nor Javadocs included.
+There is no proper documentation nor Javadocs included YET.
 
 <br>
 
@@ -19,7 +19,7 @@ Well there's a couple reasons
 - I hate having more than 2-3 dependencies
 
 ### Dev Notes
-After all projects by [Lumynity Studios](https://modrinth.com/organization/lumynity-studios) will be updated to latest versions and loaders 
+After all projects by [Lumynity Studios](https://modrinth.com/organization/lumynity-studios) will be updated to latest versions and loaders
 as well as my mod [Left Forgotten](https://modrinth.com/mod/left-forgotten), this library will no longer support Minecraft 1.20.1!
 
 <hr>
