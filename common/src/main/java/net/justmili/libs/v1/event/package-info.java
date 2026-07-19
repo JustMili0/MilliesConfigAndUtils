@@ -45,7 +45,7 @@ ServerConnectionEvents
 - JOIN_SERVER
 - LEAVE_SERVER
 
-ServerLevelEvents
+ServerLevelEvents # WIP
 - LEVEL_LOAD
 - LEVEL_UNLOAD
 - CHUNK_LOAD
