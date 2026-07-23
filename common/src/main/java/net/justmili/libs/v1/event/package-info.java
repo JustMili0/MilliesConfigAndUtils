@@ -41,26 +41,19 @@ ClientTickEvents
 
 --------------------------------------------------------------------------------- TO IMPLEMENT
 
-ServerConnectionEvents
+ServerConnectionEvents # WAITING FOR NETWORKING
 - JOIN_SERVER
 - LEAVE_SERVER
 
-ServerLevelEvents # WIP
+ServerLevelEvents # TO HOOK UP
 - LEVEL_LOAD
 - LEVEL_UNLOAD
 - CHUNK_LOAD
 - CHUNK_UNLOAD
 
-ClientConnectionEvents
+ClientConnectionEvents # WAITING FOR NETWORKING
 - JOIN_SERVER
 - LEAVE_SERVER
-
-TooltipRenderEvent
-- EVENT
-
-PickBlockEvents
-- GATHER
-- APPLY
 
 PlayerEvents
 - RESPAWN

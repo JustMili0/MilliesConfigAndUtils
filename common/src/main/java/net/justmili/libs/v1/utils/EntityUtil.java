@@ -1,6 +1,5 @@
 package net.justmili.libs.v1.utils;
 
-import net.justmili.libs.v1.data.MobData;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.core.BlockPos;
@@ -30,24 +29,21 @@ public class EntityUtil {
     public static void moveToValidRespawnPos(ServerPlayer player) {
         BlockPos respawnPos = player.getRespawnPosition();
         ResourceKey<Level> respawnDim = player.getRespawnDimension();
+        if (respawnPos == null) return;
 
-        if (respawnPos != null) {
-            ServerLevel targetLevel = player.server.getLevel(respawnDim);
-            if (targetLevel != null) {
-                Optional<Vec3> maybeSpot = Player.findRespawnPositionAndUseSpawnBlock(targetLevel, respawnPos, 0, player.isRespawnForced(), false);
+        ServerLevel targetLevel = player.server.getLevel(respawnDim);
+        if (targetLevel == null) return;
 
-                if (maybeSpot.isPresent()) {
-                    Vec3 spot = maybeSpot.get();
-                    player.teleportTo(targetLevel, spot.x, spot.y+0.05, spot.z, 180, 0);
-                    return;
-                }
-
-                double fallbackX = respawnPos.getX()+0.5,
-                    fallbackY = respawnPos.getY()+0.05,
-                    fallbackZ = respawnPos.getZ()+0.5;
-                player.teleportTo(targetLevel, fallbackX, fallbackY, fallbackZ, 180, 0);
-            }
+        Optional<Vec3> maybeSpot = Player.findRespawnPositionAndUseSpawnBlock(targetLevel, respawnPos, 0, player.isRespawnForced(), false);
+        if (maybeSpot.isPresent()) {
+            Vec3 spot = maybeSpot.get();
+            player.teleportTo(targetLevel, spot.x, spot.y + 0.05, spot.z, 180, 0);
+            return;
         }
+        double fallbackX = respawnPos.getX() + 0.5,
+            fallbackY = respawnPos.getY() + 0.05,
+            fallbackZ = respawnPos.getZ() + 0.5;
+        player.teleportTo(targetLevel, fallbackX, fallbackY, fallbackZ, 180, 0);
     }
 
     public static boolean hasAdvancement(ServerPlayer player, ResourceLocation namespacedAdvancementID) {
@@ -79,6 +75,7 @@ public class EntityUtil {
     }
 
     // Generic
+    public record MobData(Class<?> entityClass, double range, double runSpeed) { }
     public static <T extends Mob> List<T> getNearby(ServerPlayer player, Class<T> mob, double radius) {
         return player.level().getEntitiesOfClass(mob, player.getBoundingBox().inflate(radius));
     }

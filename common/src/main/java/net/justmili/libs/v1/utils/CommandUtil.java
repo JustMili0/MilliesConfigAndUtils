@@ -4,7 +4,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.LevelAccessor;
 
 public class CommandUtil {
     // Replace "new" permission system with the good ol' numbers
@@ -13,36 +12,38 @@ public class CommandUtil {
 //    }
 
     // Command success/fail response
-    public static void sendOk(CommandSourceStack source, String message) {
-        source.sendSuccess(() -> Component.literal(message), false);
+    public static void sendOk(CommandSourceStack source, Component message, boolean allowLogging) {
+        source.sendSuccess(() -> message, allowLogging);
+    }
+    public static void sendOk(CommandSourceStack source, String message, boolean allowLogging) {
+        sendOk(source, Component.literal(message), allowLogging);
+    }
+
+    public static void sendFail(CommandSourceStack source, Component message) {
+        source.sendFailure(message);
     }
     public static void sendFail(CommandSourceStack source, String message) {
-        source.sendFailure(Component.literal(message));
+        sendFail(source, Component.literal(message));
     }
-    // Send chat message to player/server
-    public static void sendFailTo(ServerPlayer player, String message) {
-        player.sendSystemMessage(Component.literal("§c"+message));
+
+    // Broadcast
+    public static void broadcastPlayer(ServerPlayer player, Component message, boolean bypassHiddenChat) {
+        player.sendSystemMessage(message, bypassHiddenChat);
     }
-    public static void sendOkTo(ServerPlayer player, String message) {
-        player.sendSystemMessage(Component.literal(message));
+    public static void broadcastPlayer(ServerPlayer player, String message, boolean bypassHiddenChat) {
+        broadcastPlayer(player, Component.literal(message), bypassHiddenChat);
     }
-    public static void broadcastTo(LevelAccessor world, String message, boolean bypassHiddenChat) {
-        world.getServer().getPlayerList().broadcastSystemMessage(Component.literal(message), bypassHiddenChat);
+
+    public static void broadcastServer(MinecraftServer server, Component message, boolean bypassHiddenChat) {
+        server.getPlayerList().broadcastSystemMessage(message, bypassHiddenChat);
     }
-    public static void broadcastTo(LevelAccessor world, String message) {
-        broadcastTo(world, message, false);
-    }
-    public static void broadcastFailTo(LevelAccessor world, String message, boolean bypassHiddenChat) {
-        world.getServer().getPlayerList().broadcastSystemMessage(Component.literal("§c"+message), bypassHiddenChat);
-    }
-    public static void broadcastFailTo(LevelAccessor world, String message) {
-        broadcastTo(world, message, false);
+    public static void broadcastServer(MinecraftServer server, String message, boolean bypassHiddenChat) {
+        broadcastServer(server, Component.literal(message), bypassHiddenChat);
     }
 
     // Other
-    public static void executeAsPlayer(ServerPlayer player, String command) {
-        if (player != null) player.level().getServer().getCommands()
-            .performPrefixedCommand(player.createCommandSourceStack().withSuppressedOutput(), command);
+    public static void executeAsPlayer(MinecraftServer server, ServerPlayer player, String command) {
+        if (player != null && server != null) server.getCommands().performPrefixedCommand(player.createCommandSourceStack().withSuppressedOutput(), command);
     }
     public static void executeAsServer(MinecraftServer server, String command) {
         if (server != null) server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);

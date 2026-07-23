@@ -27,6 +27,7 @@ public class ResourceUtil {
         return parse("neoforge", path);
     }
 
+    // Generic blocks and items
     public static ResourceLocation asBlockPath(String path) {
         return asPath("minecraft:block/"+path);
     }
@@ -34,46 +35,50 @@ public class ResourceUtil {
         return asPath("minecraft:item/"+path);
     }
 
-    // Generic
     public static ResourceLocation mapTextureTop(Block block) {
-        return TextureMapping.getBlockTexture(block, "_top");
+        return getBlockTexture(block, "_top");
     }
     public static ResourceLocation mapTextureBottom(Block block) {
-        return TextureMapping.getBlockTexture(block, "_bottom");
+        return getBlockTexture(block, "_bottom");
     }
     public static ResourceLocation mapTextureFront(Block block) {
-        return TextureMapping.getBlockTexture(block, "_front");
+        return getBlockTexture(block, "_front");
     }
     public static ResourceLocation mapTextureLeft(Block block) {
-        return TextureMapping.getBlockTexture(block, "_left");
+        return getBlockTexture(block, "_left");
     }
     public static ResourceLocation mapTextureRight(Block block) {
-        return TextureMapping.getBlockTexture(block, "_right");
+        return getBlockTexture(block, "_right");
     }
     public static ResourceLocation mapTextureSide(Block block) {
-        return TextureMapping.getBlockTexture(block, "_side");
+        return getBlockTexture(block, "_side");
     }
+
     // Chest texture suffixes
     public static ResourceLocation mapTextureFrontRight(Block block) {
-        return TextureMapping.getBlockTexture(block, "_front_right");
+        return getBlockTexture(block, "_front_right");
     }
     public static ResourceLocation mapTextureFrontLeft(Block block) {
-        return TextureMapping.getBlockTexture(block, "_front_left");
+        return getBlockTexture(block, "_front_left");
     }
     public static ResourceLocation mapTextureBackRight(Block block) {
-        return TextureMapping.getBlockTexture(block, "_back_right");
+        return getBlockTexture(block, "_back_right");
     }
     public static ResourceLocation mapTextureBackLeft(Block block) {
-        return TextureMapping.getBlockTexture(block, "_back_left");
+        return getBlockTexture(block, "_back_left");
     }
 
     public static ResourceLocation mapTextureFrontOn(Block block) {
-        return TextureMapping.getBlockTexture(block, "_front_on");
+        return getBlockTexture(block, "_front_on");
     }
     public static ResourceLocation mapTextureOn(Block block) {
-        return TextureMapping.getBlockTexture(block, "_on");
+        return getBlockTexture(block, "_on");
     }
     public static ResourceLocation mapTextureMoist(Block block) {
-        return TextureMapping.getBlockTexture(block, "_moist");
+        return getBlockTexture(block, "_moist");
+    }
+
+    private static  ResourceLocation getBlockTexture(Block block, String textureSuffix) {
+        return TextureMapping.getBlockTexture(block, textureSuffix);
     }
 }

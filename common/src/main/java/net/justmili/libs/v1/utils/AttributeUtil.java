@@ -13,6 +13,7 @@ public class AttributeUtil {
     public static AttributeInstance getAttribute(Player player, Attribute attribute) {
         return player.getAttribute(attribute);
     }
+
     public static void addTransient(AttributeInstance instance, AttributeModifier modifier) {
         if (instance == null) return;
         instance.addTransientModifier(modifier);
@@ -21,6 +22,17 @@ public class AttributeUtil {
         if (instance == null) return;
         instance.addPermanentModifier(modifier);
     }
+    public static void addTransient(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
+        if (instance == null) return;
+        AttributeModifier modifier = newModifier(id, value, operation);
+        addTransient(instance, modifier);
+    }
+    public static void addPermanent(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
+        if (instance == null) return;
+        AttributeModifier modifier = newModifier(id, value, operation);
+        addPermanent(instance, modifier);
+    }
+
     public static void addOrUpdate(AttributeInstance instance, AttributeModifier modifier) {
         // Added addOrUpdateTransientModifier in 1.20.5
         if (instance == null) return;
@@ -31,5 +43,18 @@ public class AttributeUtil {
         if (instance == null) return;
         instance.removeModifier(modifier);
         addPermanent(instance, modifier);
+    }
+    public static void addOrUpdate(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
+        // Added addOrUpdateTransientModifier in 1.20.5
+        if (instance == null) return;
+        AttributeModifier modifier = newModifier(id, value, operation);
+        addOrUpdate(instance, modifier);
+    }
+    public static void addOrReplace(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
+        // Added addOrReplacePermanentModifier in 1.20.5
+        if (instance == null) return;
+        AttributeModifier modifier = newModifier(id, value, operation);
+        instance.removeModifier(modifier);
+        addOrReplace(instance, modifier);
     }
 }
