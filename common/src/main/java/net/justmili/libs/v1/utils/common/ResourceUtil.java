@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.utils;
+package net.justmili.libs.v1.utils.common;
 
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;

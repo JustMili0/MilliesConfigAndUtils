@@ -1,5 +1,6 @@
-package net.justmili.libs.v1.utils;
+package net.justmili.libs.v1.utils.common.datagen;
 
+import net.justmili.libs.v1.utils.common.ResourceUtil;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;

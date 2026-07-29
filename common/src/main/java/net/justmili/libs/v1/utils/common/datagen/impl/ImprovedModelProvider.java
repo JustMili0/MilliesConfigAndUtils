@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.utils.datagen.impl;
+package net.justmili.libs.v1.utils.common.datagen.impl;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

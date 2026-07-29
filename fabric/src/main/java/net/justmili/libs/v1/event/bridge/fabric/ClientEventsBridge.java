@@ -3,7 +3,8 @@ package net.justmili.libs.v1.event.bridge.fabric;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
-import static net.justmili.libs.v1.event.client.ClientLifecycleEvents.*;
+import static net.justmili.libs.v1.event.client.ClientLifecycleEvents.STARTED;
+import static net.justmili.libs.v1.event.client.ClientLifecycleEvents.STOPPING;
 import static net.justmili.libs.v1.event.client.ClientTickEvents.*;
 
 public final class ClientEventsBridge {

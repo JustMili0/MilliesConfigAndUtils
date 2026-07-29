@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.utils.datagen.extensions;
+package net.justmili.libs.v1.utils.common.datagen.extensions;
 
 import net.minecraft.world.level.block.Block;
 

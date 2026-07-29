@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.utils;
+package net.justmili.libs.v1.utils.common;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;

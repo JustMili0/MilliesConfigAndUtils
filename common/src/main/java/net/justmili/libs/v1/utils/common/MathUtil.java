@@ -1,4 +1,4 @@
-package net.justmili.libs.v1.utils;
+package net.justmili.libs.v1.utils.common;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -70,5 +70,8 @@ public class MathUtil {
     }
     public static float roundDown(double value, int pastDecimal) {
         return BigDecimal.valueOf(value).setScale(pastDecimal, RoundingMode.DOWN).floatValue();
+    }
+    public static int roundToInt(double value) { // TODO: Change logic
+        return Math.toIntExact(Math.round(value));
     }
 }

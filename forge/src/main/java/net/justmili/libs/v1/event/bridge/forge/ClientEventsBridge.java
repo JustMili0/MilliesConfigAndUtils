@@ -8,7 +8,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 
-import static net.justmili.libs.v1.event.client.ClientLifecycleEvents.*;
+import static net.justmili.libs.v1.event.client.ClientLifecycleEvents.STARTED;
+import static net.justmili.libs.v1.event.client.ClientLifecycleEvents.STOPPING;
 import static net.justmili.libs.v1.event.client.ClientTickEvents.*;
 
 public class ClientEventsBridge {

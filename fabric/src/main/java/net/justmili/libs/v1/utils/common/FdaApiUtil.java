@@ -1,8 +1,14 @@
-package net.justmili.libs.v1.utils;
+package net.justmili.libs.v1.utils.common;
+
+import net.justmili.libs.CoreLibs;
 
 @SuppressWarnings({"UnstableApiUsage", "NullableProblems"})
 public class FdaApiUtil {
-    /// Uncomment with Minecraft 1.20.4+
+
+    public static void printUtilStatus() {
+        CoreLibs.LOGGER.info("{} is not available for this version of Minecraft. It will be available on version for 1.21.1", FdaApiUtil.class.getName());
+    }
+
 //    //True/false and text
 //    public static boolean getBoolValue(ServerPlayer player, AttachmentType<Boolean> variable) {
 //        return getValue(player, variable, false);

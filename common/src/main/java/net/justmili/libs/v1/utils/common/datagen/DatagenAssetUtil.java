@@ -1,7 +1,8 @@
-package net.justmili.libs.v1.utils;
+package net.justmili.libs.v1.utils.common.datagen;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.justmili.libs.v1.utils.common.ResourceUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
