@@ -1,17 +1,20 @@
 package net.justmili.libs.v1.utils.common;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Player;
 
 public class AttributeUtil {
     public static AttributeModifier newModifier(ResourceLocation id, double value, AttributeModifier.Operation operation) {
         return new AttributeModifier(id.toString(), value, operation);
     }
-    public static AttributeInstance getAttribute(Player player, Attribute attribute) {
-        return player.getAttribute(attribute);
+    public static AttributeInstance getAttribute(LivingEntity entity, Attribute attribute) {
+        return entity.getAttribute(attribute);
+    }
+    public static double getAttributeValue(LivingEntity entity, Attribute attribute) {
+        return getAttribute(entity, attribute).getValue();
     }
 
     public static void addTransient(AttributeInstance instance, AttributeModifier modifier) {
