@@ -9,6 +9,7 @@ pluginManagement {
     }
 }
 
+includeBuild("build-logic")
 include("common", "fabric", "forge")
 
 rootProject.name = "Millie's Core Libraries"

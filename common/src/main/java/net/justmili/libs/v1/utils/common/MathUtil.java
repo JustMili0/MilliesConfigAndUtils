@@ -19,16 +19,17 @@ public class MathUtil {
     }
 
     public static boolean isInView(ServerPlayer player, Entity target, int fov) {
-        Vec3 eyePos = player.getEyePosition();
-        Vec3 targetCenter = target.getBoundingBox().getCenter();
-        Vec3 toTarget = targetCenter.subtract(eyePos).normalize();
+        var eyePos = player.getEyePosition();
+        var targetCenter = target.getBoundingBox().getCenter();
+        var toTarget = targetCenter.subtract(eyePos).normalize();
         double angle = Math.toDegrees(Math.acos(toTarget.dot(player.getLookAngle().normalize())));
         return angle < (fov / 2.0);
     }
+
     public static boolean isInView(ServerPlayer player, BlockPos target, int fov) {
-        Vec3 targetCenter = Vec3.atCenterOf(target);
-        Vec3 eyePos = player.getEyePosition();
-        Vec3 toTarget = targetCenter.subtract(eyePos).normalize();
+        var targetCenter = Vec3.atCenterOf(target);
+        var eyePos = player.getEyePosition();
+        var toTarget = targetCenter.subtract(eyePos).normalize();
         double angle = Math.toDegrees(Math.acos(toTarget.dot(player.getLookAngle().normalize())));
         return angle < (fov / 2.0);
     }
@@ -36,6 +37,7 @@ public class MathUtil {
     /**
      * Any integer, long, double or float can be input as-is,
      * and it'll just be turned into a double
+     *
      * @param ticks
      * @return
      */
@@ -43,14 +45,17 @@ public class MathUtil {
         long seconds = ticks / 20;
         return roundHalfUp(seconds, 2);
     }
+
     public static double ticksToMinutes(long ticks) {
         long minutes = ticks / 20 / 60;
         return roundHalfUp(minutes, 2);
     }
+
     public static double ticksToHours(long ticks) {
         long hours = ticks / 20 / 60 / 60;
         return roundHalfUp(hours, 2);
     }
+
     public static double ticksToDays(long ticks) {
         long hours = ticks / 20 / 60 / 60 / 24;
         return roundHalfUp(hours, 2);
@@ -59,18 +64,23 @@ public class MathUtil {
     public static float roundHalfUp(double value, int pastDecimal) {
         return BigDecimal.valueOf(value).setScale(pastDecimal, RoundingMode.HALF_UP).floatValue();
     }
+
     public static float roundHalfDown(double value, int pastDecimal) {
         return BigDecimal.valueOf(value).setScale(pastDecimal, RoundingMode.HALF_DOWN).floatValue();
     }
+
     public static float roundHalfEven(double value, int pastDecimal) {
         return BigDecimal.valueOf(value).setScale(pastDecimal, RoundingMode.HALF_EVEN).floatValue();
     }
+
     public static float roundUp(double value, int pastDecimal) {
         return BigDecimal.valueOf(value).setScale(pastDecimal, RoundingMode.UP).floatValue();
     }
+
     public static float roundDown(double value, int pastDecimal) {
         return BigDecimal.valueOf(value).setScale(pastDecimal, RoundingMode.DOWN).floatValue();
     }
+
     public static int roundToInt(double value) { // TODO: Change logic
         return Math.toIntExact(Math.round(value));
     }

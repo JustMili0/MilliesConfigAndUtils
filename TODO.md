@@ -1,7 +1,8 @@
 *Note: keep TODO and README on the latest main branch you're working on
 
 # TODO
-- [WIP] (Cross-Loader API) Add cross-loader networking
+- [AWAITING] (Cross-Loader API) Add cross-loader networking
+- Finish up datagen utils, fully implementing all blocks with special models
 
 - Finish base of the config library
   - ***Make COMMON_SERVER_PRIORITY only override in-memory rather than on-file***

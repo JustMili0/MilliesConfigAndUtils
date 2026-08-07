@@ -27,12 +27,12 @@ public class AttributeUtil {
     }
     public static void addTransient(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
         if (instance == null) return;
-        AttributeModifier modifier = newModifier(id, value, operation);
+        var modifier = newModifier(id, value, operation);
         addTransient(instance, modifier);
     }
     public static void addPermanent(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
         if (instance == null) return;
-        AttributeModifier modifier = newModifier(id, value, operation);
+        var modifier = newModifier(id, value, operation);
         addPermanent(instance, modifier);
     }
 
@@ -50,13 +50,13 @@ public class AttributeUtil {
     public static void addOrUpdate(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
         // Added addOrUpdateTransientModifier in 1.20.5
         if (instance == null) return;
-        AttributeModifier modifier = newModifier(id, value, operation);
+        var modifier = newModifier(id, value, operation);
         addOrUpdate(instance, modifier);
     }
     public static void addOrReplace(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
         // Added addOrReplacePermanentModifier in 1.20.5
         if (instance == null) return;
-        AttributeModifier modifier = newModifier(id, value, operation);
+        var modifier = newModifier(id, value, operation);
         instance.removeModifier(modifier);
         addOrReplace(instance, modifier);
     }

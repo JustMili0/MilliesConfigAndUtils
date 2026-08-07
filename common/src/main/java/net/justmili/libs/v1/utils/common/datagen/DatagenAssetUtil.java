@@ -15,11 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 public class DatagenAssetUtil {
     private BlockModelGenerators blockGen;
@@ -135,16 +132,20 @@ public class DatagenAssetUtil {
      * Individual
      * Cubes
      */
-    public void createCubeAll(Block block) {
-        blockGen.createTrivialCube(block);
-    }
-
     public void createCube(Block block, RotationType rotationType) {
-        createCube(block, rotationType, ModelTemplates.CUBE_ALL, TextureMapping.cube(block));
+        createBlock(block, rotationType, ModelTemplates.CUBE_ALL, TextureMapping.cube(block));
     }
 
-    public void createCube(Block block, RotationType rotationType,
-                           ModelTemplate template, TextureMapping textureMapping) {
+    public void createCarpet(Block carpetBlock, Block fullBlock) {
+        ResourceLocation model = ModelTemplates.CARPET.create(carpetBlock, TextureMapping.wool(fullBlock), blockGen.modelOutput);
+        blockGen.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(carpetBlock, model));
+    }
+    public void createCubeAndCarpet(Block fullBlock, Block carpetBlock, RotationType rotationType) {
+        createCube(fullBlock, rotationType);
+        createCarpet(carpetBlock, fullBlock);
+    }
+
+    public void createBlock(Block block, RotationType rotationType, ModelTemplate template, TextureMapping textureMapping) {
         ResourceLocation model = template.create(block, textureMapping, blockGen.modelOutput);
         switch (rotationType) {
             case NONE -> blockGen.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, model));
@@ -157,6 +158,40 @@ public class DatagenAssetUtil {
             case LOG_XYZ ->
                 blockGen.blockStateOutput.accept(BlockModelGenerators.createAxisAlignedPillarBlock(block, model));
         }
+    }
+
+    public final void createNonTemplateModelBlock(Block block) {
+        createNonTemplateModelBlock(block, block);
+    }
+    public final void createNonTemplateModelBlock(Block block, Block modelBlock) {
+        blockGen.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(modelBlock))));
+    }
+
+    public void createNonTemplateConnectable(Block block) {
+        var Y_ROT = VariantProperties.Y_ROT;
+        var R90 = VariantProperties.Rotation.R90;
+        var R180 = VariantProperties.Rotation.R180;
+        var R270 = VariantProperties.Rotation.R270;
+
+        blockGen.blockStateOutput.accept(
+            MultiVariantGenerator.multiVariant(block).with(PropertyDispatch.properties(BlockStateProperties.EAST, BlockStateProperties.NORTH, BlockStateProperties.SOUTH, BlockStateProperties.WEST)
+                .select(false, false, false, false, getPlainVariantModelLoc(block, "_ns"))
+                .select(true, false, false, false, getPlainVariantModelLoc(block, "_n").with(Y_ROT, R90))
+                .select(false, true, false, false, getPlainVariantModelLoc(block, "_n"))
+                .select(false, false, true, false, getPlainVariantModelLoc(block, "_n").with(Y_ROT, R180))
+                .select(false, false, false, true, getPlainVariantModelLoc(block, "_n").with(Y_ROT, R270))
+                .select(true, true, false, false, getPlainVariantModelLoc(block, "_ne"))
+                .select(true, false, true, false, getPlainVariantModelLoc(block, "_ne").with(Y_ROT, R90))
+                .select(false, false, true, true, getPlainVariantModelLoc(block, "_ne").with(Y_ROT, R180))
+                .select(false, true, false, true, getPlainVariantModelLoc(block, "_ne").with(Y_ROT, R270))
+                .select(false, true, true, false, getPlainVariantModelLoc(block, "_ns"))
+                .select(true, false, false, true, getPlainVariantModelLoc(block, "_ns").with(Y_ROT, R90))
+                .select(true, true, true, false, getPlainVariantModelLoc(block, "_nse"))
+                .select(true, false, true, true, getPlainVariantModelLoc(block, "_nse").with(Y_ROT, R90))
+                .select(false, true, true, true, getPlainVariantModelLoc(block, "_nse").with(Y_ROT, R180))
+                .select(true, true, false, true, getPlainVariantModelLoc(block, "_nse").with(Y_ROT, R270))
+                .select(true, true, true, true, getPlainVariantModelLoc(block, "_nsew"))
+            ));
     }
 
     public enum RotationType {
@@ -210,48 +245,58 @@ public class DatagenAssetUtil {
     }
 
     public void createChest(Block block) {
-        TextureMapping singleMapping = new TextureMapping()
-            .put(TextureSlot.SIDE, ResourceUtil.mapTextureSide(block))
-            .put(TextureSlot.TOP, ResourceUtil.mapTextureTop(block))
-            .put(TextureSlot.FRONT, ResourceUtil.mapTextureFront(block));
+        // TODO: Do proper chest
+    }
 
-        TextureMapping leftMapping = new TextureMapping()
-            .put(TextureSlot.SIDE, ResourceUtil.mapTextureSide(block))
-            .put(TextureSlot.TOP, ResourceUtil.mapTextureTop(block))
-            .put(TextureSlot.FRONT, ResourceUtil.mapTextureFrontRight(block))
-            .put(TextureSlot.SOUTH, ResourceUtil.mapTextureBackRight(block));
-
-        TextureMapping rightMapping = new TextureMapping()
-            .put(TextureSlot.SIDE, ResourceUtil.mapTextureSide(block))
-            .put(TextureSlot.TOP, ResourceUtil.mapTextureTop(block))
-            .put(TextureSlot.FRONT, ResourceUtil.mapTextureFrontLeft(block))
-            .put(TextureSlot.SOUTH, ResourceUtil.mapTextureBackLeft(block));
-
-        ModelTemplate customBackOrientable = new ModelTemplate(Optional.of(ResourceUtil.asBlockPath("orientable")),
-            Optional.empty(), TextureSlot.TOP, TextureSlot.FRONT, TextureSlot.SIDE, TextureSlot.SOUTH);
-
-        ResourceLocation singleModel = ModelTemplates.CUBE_ORIENTABLE.create(block, singleMapping, blockGen.modelOutput);
-        ResourceLocation leftModel = customBackOrientable.create(ResourceUtil.mapTextureLeft(block),
-            leftMapping, blockGen.modelOutput);
-        ResourceLocation rightModel = customBackOrientable.create(ResourceUtil.mapTextureRight(block),
-            rightMapping, blockGen.modelOutput);
+    public void createTripwire(Block block) {
+        var Y_ROT = VariantProperties.Y_ROT;
+        var R90 = VariantProperties.Rotation.R90;
+        var R180 = VariantProperties.Rotation.R180;
+        var R270 = VariantProperties.Rotation.R270;
 
         blockGen.blockStateOutput.accept(
-            MultiVariantGenerator.multiVariant(block)
-                .with(BlockModelGenerators.createHorizontalFacingDispatch())
-                .with(PropertyDispatch.property(BlockStateProperties.WATERLOGGED)
-                    .select(false, Variant.variant())
-                    .select(true, Variant.variant())
-                )
-                .with(PropertyDispatch.property(BlockStateProperties.CHEST_TYPE)
-                    .select(ChestType.SINGLE, Variant.variant().with(VariantProperties.MODEL, singleModel))
-                    .select(ChestType.LEFT, Variant.variant().with(VariantProperties.MODEL, leftModel))
-                    .select(ChestType.RIGHT, Variant.variant().with(VariantProperties.MODEL, rightModel))
-                )
-        );
-
-        blockGen.delegateItemModel(block, singleModel);
+            MultiVariantGenerator.multiVariant(block).with(PropertyDispatch.properties(BlockStateProperties.ATTACHED, BlockStateProperties.EAST, BlockStateProperties.NORTH, BlockStateProperties.SOUTH, BlockStateProperties.WEST)
+                .select(false, false, false, false, false, getPlainVariantModelLoc(block, "_ns"))
+                .select(false, true, false, false, false, getPlainVariantModelLoc(block, "_n").with(Y_ROT, R90))
+                .select(false, false, true, false, false, getPlainVariantModelLoc(block, "_n"))
+                .select(false, false, false, true, false, getPlainVariantModelLoc(block, "_n").with(Y_ROT, R180))
+                .select(false, false, false, false, true, getPlainVariantModelLoc(block, "_n").with(Y_ROT, R270))
+                .select(false, true, true, false, false, getPlainVariantModelLoc(block, "_ne"))
+                .select(false, true, false, true, false, getPlainVariantModelLoc(block, "_ne").with(Y_ROT, R90))
+                .select(false, false, false, true, true, getPlainVariantModelLoc(block, "_ne").with(Y_ROT, R180))
+                .select(false, false, true, false, true, getPlainVariantModelLoc(block, "_ne").with(Y_ROT, R270))
+                .select(false, false, true, true, false, getPlainVariantModelLoc(block, "_ns"))
+                .select(false, true, false, false, true, getPlainVariantModelLoc(block, "_ns").with(Y_ROT, R90))
+                .select(false, true, true, true, false, getPlainVariantModelLoc(block, "_nse"))
+                .select(false, true, false, true, true, getPlainVariantModelLoc(block, "_nse").with(Y_ROT, R90))
+                .select(false, false, true, true, true, getPlainVariantModelLoc(block, "_nse").with(Y_ROT, R180))
+                .select(false, true, true, false, true, getPlainVariantModelLoc(block, "_nse").with(Y_ROT, R270))
+                .select(false, true, true, true, true, getPlainVariantModelLoc(block, "_nsew"))
+                .select(true, false, false, false, false, getPlainVariantModelLoc(block, "_attached_ns"))
+                .select(true, false, true, false, false, getPlainVariantModelLoc(block, "_attached_n"))
+                .select(true, false, false, true, false, getPlainVariantModelLoc(block, "_attached_n").with(Y_ROT, R180))
+                .select(true, true, false, false, false, getPlainVariantModelLoc(block, "_attached_n").with(Y_ROT, R90))
+                .select(true, false, false, false, true, getPlainVariantModelLoc(block, "_attached_n").with(Y_ROT, R270))
+                .select(true, true, true, false, false, getPlainVariantModelLoc(block, "_attached_ne"))
+                .select(true, true, false, true, false, getPlainVariantModelLoc(block, "_attached_ne").with(Y_ROT, R90))
+                .select(true, false, false, true, true, getPlainVariantModelLoc(block, "_attached_ne").with(Y_ROT, R180))
+                .select(true, false, true, false, true, getPlainVariantModelLoc(block, "_attached_ne").with(Y_ROT, R270))
+                .select(true, false, true, true, false, getPlainVariantModelLoc(block, "_attached_ns"))
+                .select(true, true, false, false, true, getPlainVariantModelLoc(block, "_attached_ns").with(Y_ROT, R90))
+                .select(true, true, true, true, false, getPlainVariantModelLoc(block, "_attached_nse"))
+                .select(true, true, false, true, true, getPlainVariantModelLoc(block, "_attached_nse").with(Y_ROT, R90))
+                .select(true, false, true, true, true, getPlainVariantModelLoc(block, "_attached_nse").with(Y_ROT, R180))
+                .select(true, true, true, false, true, getPlainVariantModelLoc(block, "_attached_nse").with(Y_ROT, R270))
+                .select(true, true, true, true, true, getPlainVariantModelLoc(block, "_attached_nsew"))));
     }
+    private Variant getPlainVariantModelLoc(Block block, String suffix) {
+        return Variant.variant().with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(block, suffix));
+    }
+
+    public void createTripwireHook() {
+        // TODO: Code it
+    }
+    
 
     /**
      * Individual

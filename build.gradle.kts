@@ -1,3 +1,7 @@
+import multiloader.baseName
+import multiloader.mcVersion
+import multiloader.modVersion
+import multiloader.root
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.api.fabricapi.FabricApiExtension
 import org.gradle.accessors.dm.LibrariesForLibs
@@ -7,20 +11,17 @@ plugins {
     alias(libs.plugins.arch.loom) apply false
     alias(libs.plugins.arch.plugin)
     alias(libs.plugins.shadow) apply false
+    id("multiloader-extensions")
 }
-
-val mcVersion = libs.versions.minecraft.get()
 
 architectury {
     minecraft = mcVersion
 }
 
 allprojects {
-    group = rootProject.property("maven_group") as String
-    version = rootProject.property("mod_version") as String
+    apply(plugin = "multiloader-extensions")
 
-    repositories {
-    }
+    repositories {}
 }
 
 subprojects {
@@ -28,16 +29,24 @@ subprojects {
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "architectury-plugin")
 
-    val libs = rootProject.extensions.getByName<LibrariesForLibs>("libs")
-    base { archivesName.set(rootProject.property("archives_base_name") as String) }
+    val libs = root.extensions.getByName<LibrariesForLibs>("libs")
+    base.archivesName.set(baseName)
 
+    // All repositories used should be listed here
     repositories {
-        maven("https://maven.parchmentmc.org")
-        maven("https://maven.minecraftforge.net/")
+        mavenCentral()
+        maven("https://maven.parchmentmc.org") // Mappings
+        maven("https://maven.fabricmc.net") // Fabric
+        maven("https://maven.neoforged.net/releases") // NeoForge
+        maven("https://maven.minecraftforge.net/") // Forge
+
         maven("https://repo.spongepowered.org/repository/maven-public/")
         maven("https://maven.bawnorton.com/releases") // MixinSqured
         maven("https://maven.enjarai.dev/mirrors") // MixinSqured
+
         maven("https://maven.terraformersmc.com/") // Mod Menu
+        maven("https://api.modrinth.com/maven") // Modrinth
+        maven("https://maven.lumynitystudios.net/") // Lumynity Studios' mods
     }
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
@@ -69,20 +78,16 @@ subprojects {
     val detectedPlatform = when {
         project.name.contains("fabric", true) -> "Fabric"
         project.name.contains("forge", true) -> "Forge"
-        else -> null
+        else -> "Common"
     }
-    project.version = if (detectedPlatform != null) {
-        "${rootProject.property("mod_version")}+mc${mcVersion}-${detectedPlatform}"
-    } else {
-        rootProject.property("mod_version") as String
-    }
+    project.version = "${modVersion}+mc${mcVersion}-${detectedPlatform}"
 
     tasks.withType<Jar>().configureEach {
-        archiveBaseName.set(rootProject.property("archives_base_name") as String)
+        archiveBaseName.set(baseName)
         archiveVersion.set(project.version.toString())
     }
 
     tasks.withType<Jar>().configureEach {
-        from(rootProject.file("LICENSE"))
+        from(root.file("LICENSE"))
     }
 }
