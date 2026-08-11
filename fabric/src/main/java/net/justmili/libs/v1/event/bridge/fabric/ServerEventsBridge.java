@@ -2,6 +2,12 @@ package net.justmili.libs.v1.event.bridge.fabric;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.justmili.libs.v1.event.server.UseEvents;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 
 import static net.justmili.libs.v1.event.server.ServerLifecycleEvents.*;
 import static net.justmili.libs.v1.event.server.ServerTickEvents.*;
@@ -22,7 +28,7 @@ public final class ServerEventsBridge {
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) ->
             DATAPACK_SYNC_CONTENTS.invoker().onDatapackSyncContents(player, joined));
 
-        // Connection
+        // ServerConnectionEvents
         // TODO: add
 
         // Server Ticks
@@ -41,6 +47,47 @@ public final class ServerEventsBridge {
         ServerTickEvents.END_WORLD_TICK.register(level -> {
             LEVEL_POST.invoker().onEndTick(level); // Tick level
             for (var entity : level.getAllEntities()) ENTITY_POST.invoker().onEndTick(entity); // Tick entities
+        });
+
+        // ServerLevelEvents
+        // TODO: add
+
+        // BlockEntityEvents
+        // TODO: add
+
+        // EntityEvents
+        // TODO: add
+
+        // LivingEntityEvents
+        // TODO: add
+
+        // PlayerEvents
+        // TODO: add
+
+        // PlayerAdvancementEvents
+        // TODO: add
+
+        // EntitySleepEvents
+        // TODO: add
+
+        // ChatEvents
+        // TODO: add
+
+        // Use Events
+        UseItemCallback.EVENT.register((player, world, hand) -> {
+            var stack = player.getItemInHand(hand);
+            UseEvents.ITEM_POST.invoker().onUseItemPost(world, player, hand, stack, InteractionResult.PASS);
+            return InteractionResultHolder.pass(stack);
+        });
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            var pos = hitResult.getBlockPos();
+            var state = world.getBlockState(pos);
+            UseEvents.BLOCK_POST.invoker().onUseBlockPost(world, player, hand, pos, state, InteractionResult.PASS);
+            return InteractionResult.PASS;
+        });
+        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            UseEvents.ENTITY_POST.invoker().onUseEntityPost(world, player, hand, entity, InteractionResult.PASS);
+            return InteractionResult.PASS;
         });
     }
 }

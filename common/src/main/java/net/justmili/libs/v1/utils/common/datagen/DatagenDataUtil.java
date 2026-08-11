@@ -7,6 +7,7 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -23,17 +24,25 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
             new ItemPredicate[]{ItemPredicate.Builder.item().of(itemLike).build()}
         );
     }
+
     private static String getItemName(Item item) {
         return RecipeProvider.getItemName(item);
     }
+
+    public static String getHasName(Item item) {
+        return "has_" + getItemName(item);
+    }
+
     private ResourceLocation parseOutput(Item item) {
         return ResourceUtil.parse(modId, getItemName(item));
     }
+
     private ResourceLocation parseOutputFrom(Item input, Item output) {
-        return ResourceUtil.parse(modId, getItemName(output)+"_from_"+getItemName(input));
+        return ResourceUtil.parse(modId, getItemName(output) + "_from_" + getItemName(input));
     }
+
     private ResourceLocation parseOutputTyped(Item input, Item output, String processType) {
-        return ResourceUtil.parse(modId, getItemName(output)+"_from_"+getItemName(input)+processType);
+        return ResourceUtil.parse(modId, getItemName(output) + "_from_" + getItemName(input) + processType);
     }
 
     public void shapeless(RecipeCategory category, Item output, int outCount, Item... inputs) {
@@ -42,8 +51,8 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
         String inputNames = Arrays.stream(inputs)
             .map(RecipeProvider::getItemName)
             .collect(Collectors.joining("_and_"));
-        builder.unlockedBy(RecipeProvider.getHasName(inputs[0]), has(inputs[0]))
-            .save(writer, ResourceUtil.parse(modId, getItemName(output)+"_from_"+inputNames));
+        builder.unlockedBy(getHasName(inputs[0]), has(inputs[0]))
+            .save(writer, ResourceUtil.parse(modId, getItemName(output) + "_from_" + inputNames));
     }
 
     public void shapeless(RecipeCategory category, Item output, Item... inputs) {
@@ -55,7 +64,7 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
             .define('#', material)
             .pattern("##")
             .pattern("##")
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, ResourceUtil.parse(modId, getItemName(output)));
     }
 
@@ -65,68 +74,70 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
             .pattern("###")
             .pattern("###")
             .pattern("###")
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, ResourceUtil.parse(modId, getItemName(output)));
     }
 
     public void planks(Item log, Item planks) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, planks, 4)
             .requires(log)
-            .unlockedBy(RecipeProvider.getHasName(log), has(log))
+            .unlockedBy(getHasName(log), has(log))
             .save(writer, ResourceUtil.parse(modId, getItemName(planks)));
     }
+
     public void planksFromLogs(Item log, Item planks) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, planks, 4)
             .requires(log)
-            .unlockedBy(RecipeProvider.getHasName(log), has(log))
+            .unlockedBy(getHasName(log), has(log))
             .save(writer, parseOutputFrom(log, planks));
     }
+
     public void planksFromWood(Item wood, Item planks) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, planks, 4)
             .requires(wood)
-            .unlockedBy(RecipeProvider.getHasName(wood), has(wood))
+            .unlockedBy(getHasName(wood), has(wood))
             .save(writer, parseOutputFrom(wood, planks));
     }
 
     public void stairs(Item material, Item stairs) {
         RecipeProvider.stairBuilder(stairs, Ingredient.of(material))
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(stairs));
     }
 
     public void slab(Item material, Item slab) {
         RecipeProvider.slabBuilder(RecipeCategory.BUILDING_BLOCKS, slab, Ingredient.of(material))
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(slab));
     }
 
     public void fence(Item material, Item fence) {
         RecipeProvider.fenceBuilder(fence, Ingredient.of(material))
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(fence));
     }
 
     public void fenceGate(Item material, Item fenceGate) {
         RecipeProvider.fenceGateBuilder(fenceGate, Ingredient.of(material))
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(fenceGate));
     }
 
     public void door(Item material, Item door) {
         RecipeProvider.doorBuilder(door, Ingredient.of(material))
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(door));
     }
 
     public void trapdoor(Item material, Item trapdoor) {
         RecipeProvider.trapdoorBuilder(trapdoor, Ingredient.of(material))
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(trapdoor));
     }
 
     public void wall(Item material, Item wall) {
         RecipeProvider.wallBuilder(RecipeCategory.BUILDING_BLOCKS, wall, Ingredient.of(material))
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(wall));
     }
 
@@ -135,26 +146,48 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
             .define('#', material)
             .pattern("###")
             .pattern("###")
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(bars));
     }
 
     public void pressurePlate(Item material, Item pressurePlate) {
         RecipeProvider.pressurePlateBuilder(RecipeCategory.REDSTONE, pressurePlate, Ingredient.of(material))
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(pressurePlate));
     }
 
     public void button(Item material, Item button) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, button)
             .requires(material)
-            .unlockedBy(RecipeProvider.getHasName(material), has(material))
+            .unlockedBy(getHasName(material), has(material))
             .save(writer, parseOutput(button));
+    }
+
+    public void carpet(Item material, Item carpet) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, carpet, 3)
+            .define('#', material)
+            .pattern("##")
+            .unlockedBy(getHasName(material), has(material))
+            .save(writer, parseOutput(carpet));
+    }
+
+    public void dyeItem(Item item, Item dye, Item dyed) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, dyed)
+            .requires(item).requires(dye)
+            .unlockedBy(getHasName(dye), has(dye))
+            .save(writer, ResourceUtil.parse(modId, getItemName(dyed) + "_from_dying"));
+    }
+
+    public void dyeItem(TagKey<Item> items, Item dye, Item dyed) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, dyed)
+            .requires(items).requires(dye)
+            .unlockedBy(getHasName(dye), has(dye))
+            .save(writer, ResourceUtil.parse(modId, getItemName(dyed) + "_from_dying"));
     }
 
     public void smelt(Item input, Item output, float exp, int cookingTime) {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, output, exp, cookingTime)
-            .unlockedBy(RecipeProvider.getHasName(input), has(input))
+            .unlockedBy(getHasName(input), has(input))
             .save(writer, parseOutputTyped(input, output, "_smelting"));
     }
 
@@ -164,7 +197,7 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
 
     public void blast(Item input, Item output, float exp, int cookingTime) {
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), RecipeCategory.MISC, output, exp, cookingTime)
-            .unlockedBy(RecipeProvider.getHasName(input), has(input))
+            .unlockedBy(getHasName(input), has(input))
             .save(writer, parseOutputTyped(input, output, "_blasting"));
     }
 
@@ -174,7 +207,7 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
 
     public void smoke(Item input, Item output, float exp, int cookingTime) {
         SimpleCookingRecipeBuilder.smoking(Ingredient.of(input), RecipeCategory.MISC, output, exp, cookingTime)
-            .unlockedBy(RecipeProvider.getHasName(input), has(input))
+            .unlockedBy(getHasName(input), has(input))
             .save(writer, parseOutputTyped(input, output, "_smoking"));
     }
 
@@ -184,7 +217,7 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
 
     public void cut(Item input, Item output, int resultCount) {
         SingleItemRecipeBuilder.stonecutting(Ingredient.of(input), RecipeCategory.BUILDING_BLOCKS, output, resultCount)
-            .unlockedBy(RecipeProvider.getHasName(input), has(input))
+            .unlockedBy(getHasName(input), has(input))
             .save(writer, parseOutputTyped(input, output, "_stonecutting"));
     }
 
@@ -194,7 +227,7 @@ public record DatagenDataUtil(String modId, Consumer<FinishedRecipe> writer) {
 
     public void smithing(Item base, Item addition, Item template, RecipeCategory category, Item result) {
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(template), Ingredient.of(base), Ingredient.of(addition), category, result)
-            .unlocks(RecipeProvider.getHasName(addition), has(addition))
+            .unlocks(getHasName(addition), has(addition))
             .save(writer, parseOutputTyped(result, base, "_smithing"));
     }
 }

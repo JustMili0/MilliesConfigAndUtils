@@ -1,10 +1,13 @@
 package net.justmili.libs.v1.event.bridge.forge;
 
+import net.justmili.libs.v1.event.server.UseEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
@@ -32,7 +35,7 @@ public final class ServerEventsBridge {
             }
         });
 
-        // Connection
+        // ServerConnectionEvents
         // TODO: add
 
         // Server Ticks
@@ -63,6 +66,44 @@ public final class ServerEventsBridge {
         });
         MinecraftForge.EVENT_BUS.addListener((TickEvent.PlayerTickEvent event) -> {
             if (isPost(event) && event.player instanceof ServerPlayer player) PLAYER_POST.invoker().onEndTick(player);
+        });
+
+        // ServerLevelEvents
+        // TODO: add
+
+        // BlockEntityEvents
+        // TODO: add
+
+        // EntityEvents
+        // TODO: add
+
+        // LivingEntityEvents
+        // TODO: add
+
+        // PlayerEvents
+        // TODO: add
+
+        // PlayerAdvancementEvents
+        // TODO: add
+
+        // EntitySleepEvents
+        // TODO: add
+
+        // ChatEvents
+        // TODO: add
+
+        // UseEvents
+        MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickItem event) -> {
+            var stack = event.getItemStack();
+            UseEvents.ITEM_POST.invoker().onUseItemPost(event.getLevel(), event.getEntity(), event.getHand(), stack, InteractionResult.PASS);
+        });
+        MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock event) -> {
+            var pos = event.getPos();
+            var state = event.getLevel().getBlockState(pos);
+            UseEvents.BLOCK_POST.invoker().onUseBlockPost(event.getLevel(), event.getEntity(), event.getHand(), pos, state, InteractionResult.PASS);
+        });
+        MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.EntityInteract event) -> {
+            UseEvents.ENTITY_POST.invoker().onUseEntityPost(event.getLevel(), event.getEntity(), event.getHand(), event.getTarget(), InteractionResult.PASS);
         });
     }
 

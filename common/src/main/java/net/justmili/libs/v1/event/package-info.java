@@ -29,6 +29,12 @@ ServerTickEvents
 - LIVING_ENTITY_PRE
 - LIVING_ENTITY_POST
 
+UseEvents
+- ITEM_PRE (based on ServerTweak's ItemMixin)
+- ITEM_POST (normal Fabric/Neo item use event)
+- BLOCK_POST
+- ENTITY_POST
+
 ClientLifecycleEvents
 - STARTED
 - STOPPED
@@ -69,12 +75,6 @@ PlayerEvents
 - FILL_BUCKET
 - ATTACK_ENTITY
 - KILL_OTHER_ENTITY_POST
-+ ALLOW_DAMAGE
-+ DAMAGE_POST
-+ ALLOW_DEATH
-+ DEATH_POST
-+ ENTER_CHUNK
-+ EQUIPMENT_CHANGE
 
 PlayerAdvancementEvents (custom, do mixins)
 - ALLOW_COMPLETION

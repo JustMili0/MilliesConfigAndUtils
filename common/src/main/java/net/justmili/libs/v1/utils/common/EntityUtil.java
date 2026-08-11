@@ -18,29 +18,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class EntityUtil {
-    // Player
-    public static void applyEffect(ServerPlayer player, MobEffect effects, int duration, int power) {
-        player.addEffect(new MobEffectInstance(effects, duration, power, false, false, false));
-    }
 
-    public static void moveToValidRespawnPos(ServerPlayer player) {
-        var respawnPos = player.getRespawnPosition();
-        var respawnDim = player.getRespawnDimension();
-        if (respawnPos == null) return;
-
-        var targetLevel = player.server.getLevel(respawnDim);
-        if (targetLevel == null) return;
-
-        var maybeSpot = Player.findRespawnPositionAndUseSpawnBlock(targetLevel, respawnPos, 0, player.isRespawnForced(), false);
-        if (maybeSpot.isPresent()) {
-            var spot = maybeSpot.get();
-            player.teleportTo(targetLevel, spot.x, spot.y + 0.05, spot.z, 180, 0);
-            return;
-        }
-        double fallbackX = respawnPos.getX() + 0.5;
-        double fallbackY = respawnPos.getY() + 0.05;
-        double fallbackZ = respawnPos.getZ() + 0.5;
-        player.teleportTo(targetLevel, fallbackX, fallbackY, fallbackZ, 180, 0);
+    public static void applyEffect(LivingEntity entity, MobEffect effects, int duration, int power) {
+        entity.addEffect(new MobEffectInstance(effects, duration, power, false, false, false));
     }
 
     public static boolean hasAdvancement(ServerPlayer player, ResourceLocation id) {
@@ -76,11 +56,11 @@ public class EntityUtil {
         return player.getAdvancements().getOrStartProgress(getAdvancement(player, id));
     }
 
-    public static void consumeHeldWithResult(Player player, InteractionHand hand, Item result) {
+    public static void consumeHeldWithResult(Player player, InteractionHand hand, Item result, boolean shrinkStack) {
         var stack = player.getItemInHand(hand);
         var item = new ItemStack(result);
 
-        stack.shrink(1);
+        if (shrinkStack) stack.shrink(1);
         if (stack.isEmpty()) {
             player.setItemInHand(hand, item);
         } else if (!player.getInventory().add(item)) {
@@ -88,12 +68,26 @@ public class EntityUtil {
         }
     }
 
-    // Non-player
-    public static void applyEffect(LivingEntity entity, MobEffect effects, int duration, int power) {
-        entity.addEffect(new MobEffectInstance(effects, duration, power, false, false, false));
+    public static void moveToValidRespawnPos(ServerPlayer player) {
+        var respawnPos = player.getRespawnPosition();
+        var respawnDim = player.getRespawnDimension();
+        if (respawnPos == null) return;
+
+        var targetLevel = player.server.getLevel(respawnDim);
+        if (targetLevel == null) return;
+
+        var maybeSpot = Player.findRespawnPositionAndUseSpawnBlock(targetLevel, respawnPos, 0, player.isRespawnForced(), false);
+        if (maybeSpot.isPresent()) {
+            var spot = maybeSpot.get();
+            player.teleportTo(targetLevel, spot.x, spot.y + 0.05, spot.z, 180, 0);
+            return;
+        }
+        double fallbackX = respawnPos.getX() + 0.5;
+        double fallbackY = respawnPos.getY() + 0.05;
+        double fallbackZ = respawnPos.getZ() + 0.5;
+        player.teleportTo(targetLevel, fallbackX, fallbackY, fallbackZ, 180, 0);
     }
 
-    // Generic
     public record MobData(Class<?> entityClass, double range, double runSpeed) { }
 
     public static <T extends Mob> List<T> getNearby(ServerPlayer player, Class<T> mob, double radius) {
