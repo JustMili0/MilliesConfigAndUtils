@@ -1,4 +1,4 @@
-package net.justmili.libs.mixin;
+package net.justmili.libs.mixin.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.justmili.libs.v1.utils.client.ItemRendererUtil;
@@ -18,17 +18,15 @@ public abstract class ItemRendererMixin {
     @ModifyVariable(
         method = "render(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IILnet/minecraft/client/resources/model/BakedModel;)V",
         at = @At("HEAD"), argsOnly = true, ordinal = 0)
-    private BakedModel applyRenderOverride(BakedModel original, ItemStack itemStack, ItemDisplayContext displayContext, boolean leftHanded, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
-        ItemRenderer renderer = (ItemRenderer)(Object)this;
-        Item heldItem = itemStack.getItem();
+    private BakedModel corelibs$applyRenderOverride(BakedModel original, ItemStack itemStack, ItemDisplayContext displayContext, boolean leftHand, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
+        var renderer = (ItemRenderer)(Object)this;
+        var heldItem = itemStack.getItem();
 
         var override = ItemRendererUtil.getOverrideItem(heldItem);
         if (override == null) return original;
 
         var mapped = ItemRendererUtil.toItemDisplay(displayContext);
-        if (mapped != null && override.displayAt().contains(mapped)) {
-            return renderer.getItemModelShaper().getModelManager().getModel(override.otherItemModel());
-        }
+        if (mapped != null && override.displayAt().contains(mapped)) return renderer.getItemModelShaper().getModelManager().getModel(override.otherItemModel());
 
         return original;
     }

@@ -29,20 +29,28 @@ public class CommandUtil {
     }
 
     // Broadcast
-    public static void broadcastPlayer(ServerPlayer player, Component message, boolean showAboveHotbar) {
+    public static void sendOkTo(ServerPlayer player, Component message, boolean showAboveHotbar) {
         player.sendSystemMessage(message, showAboveHotbar);
     }
 
-    public static void broadcastPlayer(ServerPlayer player, String message, boolean showAboveHotbar) {
-        broadcastPlayer(player, Component.literal(message), showAboveHotbar);
+    public static void sendOkTo(ServerPlayer player, String message, boolean showAboveHotbar) {
+        sendOkTo(player, Component.literal(message), showAboveHotbar);
     }
 
-    public static void broadcastPlayer(ServerPlayer player, Component message) {
+    public static void sendOkTo(ServerPlayer player, Component message) {
         player.sendSystemMessage(message, false);
     }
 
-    public static void broadcastPlayer(ServerPlayer player, String message) {
-        broadcastPlayer(player, Component.literal(message), false);
+    public static void sendOkTo(ServerPlayer player, String message) {
+        sendOkTo(player, Component.literal(message), false);
+    }
+
+    public static void sendFailTo(ServerPlayer player, String message, boolean showAboveHotbar) {
+        sendOkTo(player, Component.literal("§c" + message), showAboveHotbar);
+    }
+
+    public static void sendFailTo(ServerPlayer player, String message) {
+        sendOkTo(player, Component.literal("§c" + message), false);
     }
 
     public static void broadcastServer(MinecraftServer server, Component message, boolean showAboveHotbar) {

@@ -1,4 +1,4 @@
-package net.justmili.libs.mixin;
+package net.justmili.libs.mixin.event;
 
 import net.justmili.libs.v1.event.server.UseEvents;
 import net.minecraft.world.InteractionHand;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Item.class)
 public abstract class ItemMixin {
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    private void handleDietItemInteraction(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void corelibs$handleDietItemInteraction(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         // Ironically, out of all the events available in *both* Fabric and NeoForge,
         // none of them handle this specific use case.
         var result = UseEvents.ITEM_PRE.invoker().onUseItemPre(level, player, hand);

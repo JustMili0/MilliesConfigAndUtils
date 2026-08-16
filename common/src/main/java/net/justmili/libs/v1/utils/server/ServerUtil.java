@@ -35,6 +35,7 @@ public class ServerUtil {
     private static IntegratedServer integrated;
     private static DedicatedServer dedicated;
 
+    /// Server is automatically assigned by CoreLibs common class at server startup
     public static void setServer() {
         ServerLifecycleEvents.STARTING.register(instance -> {
             server = instance;
@@ -170,14 +171,6 @@ public class ServerUtil {
     }
 
     // Registries / managers
-    public static RegistryAccess.Frozen registryAccess() {
-        return server.registryAccess();
-    }
-
-    public static LayeredRegistryAccess<RegistryLayer> registries() {
-        return server.registries();
-    }
-
     public static Commands commands() {
         return server.getCommands();
     }
