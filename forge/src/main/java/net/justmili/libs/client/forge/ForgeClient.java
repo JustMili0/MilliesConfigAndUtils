@@ -1,7 +1,7 @@
 package net.justmili.libs.client.forge;
 
 import net.justmili.libs.client.CommonClient;
-import net.justmili.libs.v1.event.bridge.forge.ClientEventsBridge;
+import net.justmili.libs.v1.events.bridge.forge.ClientEventsBridge;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

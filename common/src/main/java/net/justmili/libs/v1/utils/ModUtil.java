@@ -1,8 +1,8 @@
 package net.justmili.libs.v1.utils;
 
 import net.justmili.libs.CoreLibs;
-import net.justmili.libs.v1.event.server.ServerLevelEvents;
-import net.justmili.libs.v1.event.server.ServerLifecycleEvents;
+import net.justmili.libs.v1.events.server.ServerLevelEvents;
+import net.justmili.libs.v1.events.server.ServerLifecycleEvents;
 
 public class ModUtil {
     // TODO: Add Javadoc

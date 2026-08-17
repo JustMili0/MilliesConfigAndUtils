@@ -7,8 +7,8 @@
     "util.ItemRendererMixin"
   ],
   "mixins": [
-    "event.ItemMixin",
-    "SharedSuggestionProviderMixin"
+    "SharedSuggestionProviderMixin",
+    "event.ItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

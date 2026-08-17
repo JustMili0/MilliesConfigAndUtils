@@ -20,11 +20,11 @@ public class BlockBehaviorUtil {
         return (blockState) -> (Boolean) blockState.getValue(BlockStateProperties.LIT)? lightValue : 0;
     }
 
-    public static Boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
+    public static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
         return false;
     }
 
-    public static Boolean always(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
+    public static boolean always(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
         return true;
     }
 
@@ -80,7 +80,7 @@ public class BlockBehaviorUtil {
         return BlockBehaviour.Properties.of().noCollission().strength(0.5F).pushReaction(PushReaction.DESTROY);
     }
 
-    private static Boolean ocelotOrParrot(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
+    private static boolean ocelotOrParrot(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
         return entity == EntityType.OCELOT || entity == EntityType.PARROT;
     }
 }

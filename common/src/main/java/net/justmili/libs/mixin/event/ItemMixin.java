@@ -1,6 +1,6 @@
 package net.justmili.libs.mixin.event;
 
-import net.justmili.libs.v1.event.server.UseEvents;
+import net.justmili.libs.v1.events.server.UseEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;

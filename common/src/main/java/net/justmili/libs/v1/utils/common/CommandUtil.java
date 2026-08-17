@@ -20,6 +20,14 @@ public class CommandUtil {
         sendOk(source, Component.literal(message), allowLogging);
     }
 
+    public static void sendOk(CommandSourceStack source, Component message) {
+        sendOk(source, message, true);
+    }
+
+    public static void sendOk(CommandSourceStack source, String message) {
+        sendOk(source, message, true);
+    }
+
     public static void sendFail(CommandSourceStack source, Component message) {
         source.sendFailure(message);
     }
@@ -70,8 +78,9 @@ public class CommandUtil {
     }
 
     // Other
-    public static void executeAsPlayer(MinecraftServer server, ServerPlayer player, String command) {
-        if (player != null && server != null) server.getCommands().performPrefixedCommand(player.createCommandSourceStack().withSuppressedOutput(), command);
+    public static void executeAsPlayer(ServerPlayer player, String command) {
+        var server = player.level().getServer();
+        if (server != null) server.getCommands().performPrefixedCommand(player.createCommandSourceStack(), command);
     }
 
     public static void executeAsServer(MinecraftServer server, String command) {

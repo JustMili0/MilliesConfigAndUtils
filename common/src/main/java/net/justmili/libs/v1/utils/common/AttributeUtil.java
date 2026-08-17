@@ -7,14 +7,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class AttributeUtil {
-    public static AttributeModifier newModifier(ResourceLocation id, double value, AttributeModifier.Operation operation) {
+    public static AttributeModifier create(ResourceLocation id, double value, AttributeModifier.Operation operation) {
         return new AttributeModifier(id.toString(), value, operation);
     }
-    public static AttributeInstance getAttribute(LivingEntity entity, Attribute attribute) {
+    public static AttributeInstance get(LivingEntity entity, Attribute attribute) {
         return entity.getAttribute(attribute);
     }
-    public static double getAttributeValue(LivingEntity entity, Attribute attribute) {
-        return getAttribute(entity, attribute).getValue();
+    public static double getValue(LivingEntity entity, Attribute attribute) {
+        return get(entity, attribute).getValue();
     }
 
     public static void addTransient(AttributeInstance instance, AttributeModifier modifier) {
@@ -27,13 +27,11 @@ public class AttributeUtil {
     }
     public static void addTransient(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
         if (instance == null) return;
-        var modifier = newModifier(id, value, operation);
-        addTransient(instance, modifier);
+        addTransient(instance, create(id, value, operation));
     }
     public static void addPermanent(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
         if (instance == null) return;
-        var modifier = newModifier(id, value, operation);
-        addPermanent(instance, modifier);
+        addPermanent(instance, create(id, value, operation));
     }
 
     public static void addOrUpdate(AttributeInstance instance, AttributeModifier modifier) {
@@ -50,13 +48,12 @@ public class AttributeUtil {
     public static void addOrUpdate(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
         // Added addOrUpdateTransientModifier in 1.20.5
         if (instance == null) return;
-        var modifier = newModifier(id, value, operation);
-        addOrUpdate(instance, modifier);
+        addOrUpdate(instance, create(id, value, operation));
     }
     public static void addOrReplace(AttributeInstance instance, ResourceLocation id, double value, AttributeModifier.Operation operation) {
         // Added addOrReplacePermanentModifier in 1.20.5
         if (instance == null) return;
-        var modifier = newModifier(id, value, operation);
+        var modifier = create(id, value, operation);
         instance.removeModifier(modifier);
         addOrReplace(instance, modifier);
     }

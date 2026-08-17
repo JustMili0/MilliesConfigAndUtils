@@ -1,13 +1,14 @@
 package net.justmili.libs.v1.utils.server;
 
 import com.mojang.authlib.GameProfile;
-import net.justmili.libs.v1.event.server.ServerLifecycleEvents;
+import net.justmili.libs.v1.events.server.ServerLifecycleEvents;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.LayeredRegistryAccess;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.*;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.ServerFunctionManager;
+import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.bossevents.CustomBossEvents;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.DedicatedServerProperties;

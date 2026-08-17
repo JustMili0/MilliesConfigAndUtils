@@ -21,7 +21,7 @@ public class BottleBlockItem extends BlockItem {
         var player = context.getPlayer();
         if (player == null || player.getAbilities().instabuild) return result;
 
-        EntityUtil.consumeHeldWithResult(player, context.getHand(), Items.GLASS_BOTTLE, false);
+        EntityUtil.useHeldWithResult(player, context.getHand(), Items.GLASS_BOTTLE, false, 0);
 
         return result;
     }

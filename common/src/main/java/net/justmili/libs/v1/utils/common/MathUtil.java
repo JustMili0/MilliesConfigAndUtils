@@ -41,6 +41,18 @@ public class MathUtil {
      * @param ticks
      * @return
      */
+    public static String ticksToTime(long ticks) {
+        int s = ticksToSeconds(ticks) % 60;
+        int min = roundIntDown(ticksToMinutes(ticks)) % 60;
+        int h = roundIntDown(ticksToHours(ticks)) % 24;
+        int d = roundIntDown(ticksToDays(ticks));
+
+        if (d > 0) return String.format("%sd %sh %smin %ss", d, h, min, s);
+        if (h > 0) return String.format("%sh %smin %ss", h, min, s);
+        if (min > 0) return String.format("%smin %ss", min, s);
+        return String.format("%ss", s);
+    }
+
     public static int ticksToSeconds(long ticks) {
         long seconds = ticks / 20;
         return (int) roundHalfUp(seconds, 0);
@@ -81,7 +93,11 @@ public class MathUtil {
         return BigDecimal.valueOf(value).setScale(pastDecimal, RoundingMode.DOWN).floatValue();
     }
 
-    public static int roundToInt(double value) { // TODO: Change logic
-        return Math.toIntExact(Math.round(value));
+    public static int roundIntUp(double value) {
+        return Math.toIntExact((long) Math.ceil(value));
+    }
+
+    public static int roundIntDown(double value) {
+        return Math.toIntExact((long) Math.floor(value));
     }
 }

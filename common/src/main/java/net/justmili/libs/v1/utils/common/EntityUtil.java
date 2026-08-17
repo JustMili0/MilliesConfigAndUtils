@@ -10,8 +10,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -49,23 +49,45 @@ public class EntityUtil {
     }
 
     private static Advancement getAdvancement(ServerPlayer player, ResourceLocation id) {
-        return player.server.getAdvancements().getAdvancement(id);
+        var server = player.getServer();
+        if (server == null) return null;
+        return server.getAdvancements().getAdvancement(id);
     }
 
     private static AdvancementProgress getOrStartProgress(ServerPlayer player, ResourceLocation id) {
         return player.getAdvancements().getOrStartProgress(getAdvancement(player, id));
     }
 
-    public static void consumeHeldWithResult(Player player, InteractionHand hand, Item result, boolean shrinkStack) {
+    public static void useHeld(Player player, InteractionHand hand, int shrinkAmount) {
+        if (!player.isCreative()) player.getItemInHand(hand).shrink(shrinkAmount);
+    }
+
+    public static void useHeld(Player player, InteractionHand hand) {
+        useHeld(player, hand, 1);
+    }
+
+    public static void useHeldWithResult(Player player, InteractionHand hand, ItemLike result, boolean shrinkStack, int shrinkAmount) {
         var stack = player.getItemInHand(hand);
         var item = new ItemStack(result);
 
-        if (shrinkStack) stack.shrink(1);
+        if (shrinkStack) useHeld(player, hand, shrinkAmount);
         if (stack.isEmpty()) {
             player.setItemInHand(hand, item);
         } else if (!player.getInventory().add(item)) {
             player.drop(item, false);
         }
+    }
+
+    public static void useHeldWithResult(Player player, InteractionHand hand, ItemLike result, int shrinkAmount) {
+        useHeldWithResult(player, hand, result, true, shrinkAmount);
+    }
+
+    public static void useHeldWithResult(Player player, InteractionHand hand, ItemLike result, boolean shrinkStack) {
+        useHeldWithResult(player, hand, result, shrinkStack, 1);
+    }
+
+    public static void useHeldWithResult(Player player, InteractionHand hand, ItemLike result) {
+        useHeldWithResult(player, hand, result, true, 1);
     }
 
     public static void moveToValidRespawnPos(ServerPlayer player) {
@@ -85,6 +107,7 @@ public class EntityUtil {
         double fallbackX = respawnPos.getX() + 0.5;
         double fallbackY = respawnPos.getY() + 0.05;
         double fallbackZ = respawnPos.getZ() + 0.5;
+        
         player.teleportTo(targetLevel, fallbackX, fallbackY, fallbackZ, 180, 0);
     }
 
@@ -96,6 +119,7 @@ public class EntityUtil {
 
     // For a list of entities within an area of a player
     public static <T extends Mob> void executeForNearby(ServerPlayer player, List<MobData> dataList, BiConsumer<T, MobData> action) {
+        //noinspection unchecked
         dataList.forEach(data ->
             getNearby(player, data.entityClass().asSubclass(Mob.class), data.range())
                 .forEach(mob -> action.accept((T) mob, data))
@@ -104,11 +128,13 @@ public class EntityUtil {
 
     // For a single entity
     public static <T extends Mob> void executeForNearby(ServerPlayer player, Class<?> entityClass, double range, Consumer<T> action) {
+        //noinspection unchecked
         getNearby(player, entityClass.asSubclass(Mob.class), range)
             .forEach(mob -> action.accept((T) mob));
     }
 
     public static <T extends Mob> void executeForNearby(ServerPlayer player, Class<?> entityClass, double range, double speed, BiConsumer<T, Double> action) {
+        //noinspection unchecked
         getNearby(player, entityClass.asSubclass(Mob.class), range)
             .forEach(mob -> action.accept((T) mob, speed));
     }
