@@ -4,7 +4,7 @@
 - Start using the Stonecutter template for multi-version, split the mod into:
   - `net.justmili.corelibs` (Main), 
   - `net.justmili.utils` (utils and other unspecified stuff), 
-  - `net.justmili.config` and `net.justmili.config.screen`, 
+  - `net.justmili.config` and `net.justmili.configscreen`, 
   - `net.justmili.api`
   - (Similarly to how Fabric API is split into multiple jars in jar)
 - [AWAITING] (Cross-Loader API) Add cross-loader networking
@@ -23,7 +23,6 @@
 - (Config Lib) Add enum selector entry
 - (Config Lib) Add color picker entry
 - (Config Lib) Add ability to add custom images to entry descriptions (similar to YACL)
-- (Config Lib) Add YAML/YML support
 
 - (Cross-Loader API) Add cross-loader events accordingly to `events/package-info.java`
 - (Cross-Loader API) Add cross-loader registries
@@ -31,33 +30,3 @@
 - (Config Lib) Add TOML support
 
 - Write full documentation
-
-### YAML/YML - Design
-```yaml
-# a comment 1
-# Allowed range: 0-10 - Default: 5
-someInt: 5
-
-# a comment 2
-# a comment continuation (because of a second .comment() or \n )
-# Allowed values: true, false - Default: true
-someBool: true
-  
-# A category comment
-someCategory:
-  aCategoryWithNoCommentHenceNoSpacingFromParentCategory:
-    # Default: Wawawa
-    someOtherString: "Wawawa"
-
-  # A category comment 
-  aCategoryInCategory:
-    # a comment 3
-    # Default: Hello world
-    someString: "Hello world"
-    
-  # a comment 4
-  # Allowed range: 0-16 - Default: 8.0
-  someDouble: 8.0
-    
-  # a lonely comment (from just a builder.comment() )
-```
