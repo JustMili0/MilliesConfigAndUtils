@@ -7,7 +7,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 public class ServerTickEvents {
-    private ServerTickEvents() {}
+    private ServerTickEvents() {
+    }
 
     public static final Event<ServerPre> SERVER_PRE = Event.create(ServerPre.class, callbacks -> server -> {
         for (ServerPre event : callbacks) event.onStartTick(server);
@@ -40,30 +41,37 @@ public class ServerTickEvents {
     public interface ServerPre {
         void onStartTick(MinecraftServer server);
     }
+
     @FunctionalInterface
     public interface ServerPost {
         void onEndTick(MinecraftServer server);
     }
+
     @FunctionalInterface
     public interface LevelPre {
         void onStartTick(ServerLevel level);
     }
+
     @FunctionalInterface
     public interface LevelPost {
         void onEndTick(ServerLevel level);
     }
+
     @FunctionalInterface
     public interface PlayerPre {
         void onStartTick(Player player);
     }
+
     @FunctionalInterface
     public interface PlayerPost {
         void onEndTick(Player player);
     }
+
     @FunctionalInterface
     public interface EntityPre {
         void onStartTick(Entity entity);
     }
+
     @FunctionalInterface
     public interface EntityPost {
         void onEndTick(Entity entity);

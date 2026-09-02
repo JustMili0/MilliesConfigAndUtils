@@ -6,7 +6,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.CloseableResourceManager;
 
 public final class ServerLifecycleEvents {
-    private ServerLifecycleEvents() {}
+    private ServerLifecycleEvents() {
+    }
 
     public static final Event<Starting> STARTING = Event.create(Starting.class, callbacks -> server -> {
         for (Starting event : callbacks) event.onServerStarting(server);
@@ -39,30 +40,37 @@ public final class ServerLifecycleEvents {
     public interface Starting {
         void onServerStarting(MinecraftServer server);
     }
+
     @FunctionalInterface
     public interface Stopping {
         void onServerStopping(MinecraftServer server);
     }
+
     @FunctionalInterface
     public interface Stopped {
         void onServerStopped(MinecraftServer server);
     }
+
     @FunctionalInterface
     public interface SavePre {
         void onSavePre(MinecraftServer server);
     }
+
     @FunctionalInterface
     public interface SavePost {
         void onSavePost(MinecraftServer server);
     }
+
     @FunctionalInterface
     public interface DatapackReloadPre {
         void onDatapackReloadPre(MinecraftServer server, CloseableResourceManager resourceManager);
     }
+
     @FunctionalInterface
     public interface DatapackReloadPost {
         void onDatapackReloadPost(MinecraftServer server, CloseableResourceManager resourceManager, boolean success);
     }
+
     @FunctionalInterface
     public interface DatapackSyncContents {
         void onDatapackSyncContents(ServerPlayer player, boolean joined);

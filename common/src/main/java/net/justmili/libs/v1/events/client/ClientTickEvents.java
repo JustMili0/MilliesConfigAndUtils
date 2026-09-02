@@ -5,7 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 
 public class ClientTickEvents {
-    private  ClientTickEvents() {}
+    private ClientTickEvents() {
+    }
 
     public static final Event<ClientPre> CLIENT_PRE = Event.create(ClientPre.class, callbacks -> minecraft -> {
         for (ClientPre event : callbacks) event.onStartTick(minecraft);
@@ -25,14 +26,17 @@ public class ClientTickEvents {
     public interface ClientPre {
         void onStartTick(Minecraft minecraft);
     }
+
     @FunctionalInterface
     public interface ClientPost {
         void onEndTick(Minecraft minecraft);
     }
+
     @FunctionalInterface
     public interface LevelPre {
         void onStartTick(ClientLevel level);
     }
+
     @FunctionalInterface
     public interface LevelPost {
         void onEndTick(ClientLevel level);

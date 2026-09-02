@@ -48,8 +48,8 @@ ClientTickEvents
 --------------------------------------------------------------------------------- TO IMPLEMENT
 
 ServerConnectionEvents # WAITING FOR NETWORKING
-- JOIN_SERVER
-- LEAVE_SERVER
+- JOIN_SERVER_OR_WORLD
+- LEAVE_SERVER_OR_WORLD
 
 ServerLevelEvents # TO HOOK UP
 - LEVEL_LOAD
@@ -58,10 +58,10 @@ ServerLevelEvents # TO HOOK UP
 - CHUNK_UNLOAD
 
 ClientConnectionEvents # WAITING FOR NETWORKING
-- JOIN_SERVER
-- LEAVE_SERVER
+- JOIN_SERVER_OR_WORLD
+- LEAVE_SERVER_OR_WORLD
 
-PlayerEvents
+PlayerEvents # TO FIX/FINISH AND HOOK UP
 - RESPAWN
 - CLONE
 - CRAFT_ITEM

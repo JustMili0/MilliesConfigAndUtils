@@ -3,7 +3,9 @@ package net.justmili.libs.v1.utils.server;
 import com.mojang.authlib.GameProfile;
 import net.justmili.libs.v1.events.server.ServerLifecycleEvents;
 import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerAdvancementManager;
@@ -16,8 +18,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerConnectionListener;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.util.FrameTimer;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.GameRules;
@@ -25,7 +25,6 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.level.storage.WorldData;
-import net.minecraft.world.level.storage.loot.LootDataManager;
 
 import java.util.List;
 import java.util.Optional;
@@ -66,52 +65,72 @@ public class ServerUtil {
     }
 
     // Players
-    public static PlayerList playerList() {
+    public static PlayerList getPlayerList() {
         return server.getPlayerList();
     }
 
-    public static int maxPlayers() {
-        return playerList().getMaxPlayers();
+    public static int getMaxPlayers() {
+        return getPlayerList().getMaxPlayers();
     }
 
-    public static int playerCount() {
-        return playerList().getPlayerCount();
+    public static int getPlayerCount() {
+        return getPlayerList().getPlayerCount();
     }
 
-    public static List<ServerPlayer> players() {
-        return playerList().getPlayers();
+    public static List<ServerPlayer> getPlayers() {
+        return getPlayerList().getPlayers();
     }
 
-    public static ServerPlayer player(UUID uuid) {
-        return playerList().getPlayer(uuid);
+    public static ServerPlayer getPlayer(UUID uuid) {
+        return getPlayerList().getPlayer(uuid);
     }
 
-    public static ServerPlayer player(String username) {
-        return playerList().getPlayerByName(username);
+    public static ServerPlayer getPlayer(String username) {
+        return getPlayerList().getPlayerByName(username);
+    }
+
+    public static String getPlayerName(UUID uuid, boolean tryGetOfflinePlayer) {
+        var player = getPlayerList().getPlayer(uuid);
+        if (player != null) return player.getName().getString();
+        // 1.21.9+
+        //if (tryGetOfflinePlayer) return server.services().profileResolver().fetchById(uuid).map(GameProfile::name).orElse("");
+        return "";
+    }
+
+    public static String getPlayerName(String username, boolean tryGetOfflinePlayer) {
+        var player = getPlayerList().getPlayerByName(username);
+        if (player != null) return player.getName().getString();
+        // 1.21.9+
+        //if (tryGetOfflinePlayer) return server.services().profileResolver().fetchByName(username).map(GameProfile::name).orElse("");
+        return "";
     }
 
     public static void opPlayer(ServerPlayer player) {
-        playerList().op(player.getGameProfile());
+        getPlayerList().op(player.getGameProfile());
     }
 
     public static void opPlayer(GameProfile profile) {
-        playerList().op(profile);
+        getPlayerList().op(profile);
     }
 
     public static void deopPlayer(ServerPlayer player) {
-        playerList().deop(player.getGameProfile());
+        getPlayerList().deop(player.getGameProfile());
     }
 
     public static void deopPlayer(GameProfile profile) {
-        playerList().deop(profile);
+        getPlayerList().deop(profile);
     }
 
     public static boolean isOp(ServerPlayer player) {
-        return playerList().isOp(player.getGameProfile());
+        return getPlayerList().isOp(player.getGameProfile());
     }
 
     public static boolean isOp(GameProfile profile) {
-        return playerList().isOp(profile);
+        return getPlayerList().isOp(profile);
+    }
+
+    public static void broadcast(Component message, boolean showAboveHotbar) {
+        getPlayerList().broadcastSystemMessage(message, showAboveHotbar);
     }
 
     public static void kickUnwhitelisted() {
@@ -123,11 +142,11 @@ public class ServerUtil {
         return server.overworld();
     }
 
-    public static ServerLevel level(ResourceKey<Level> dimension) {
+    public static ServerLevel getLevel(ResourceKey<Level> dimension) {
         return server.getLevel(dimension);
     }
 
-    public static Iterable<ServerLevel> levels() {
+    public static Iterable<ServerLevel> getLevels() {
         return server.getAllLevels();
     }
 
@@ -139,7 +158,7 @@ public class ServerUtil {
         return server.getWorldData();
     }
 
-    public static Difficulty difficulty() {
+    public static Difficulty getDifficulty() {
         return worldData().getDifficulty();
     }
 
@@ -147,7 +166,7 @@ public class ServerUtil {
         server.setDifficulty(difficulty, force);
     }
 
-    public static GameType defaultGameType() {
+    public static GameType getDefaultGameType() {
         return server.getDefaultGameType();
     }
 
@@ -159,21 +178,17 @@ public class ServerUtil {
         return server.isHardcore();
     }
 
-    public static boolean spawningMonsters() {
-        return server.isSpawningMonsters();
-    }
-
-    public static boolean spawningAnimals() {
-        return server.isSpawningAnimals();
-    }
-
-    public static boolean npcsEnabled() {
-        return server.areNpcsEnabled();
-    }
-
     // Registries / managers
     public static Commands commands() {
         return server.getCommands();
+    }
+
+    public static void runCommandAs(CommandSourceStack source, String command) {
+        commands().performPrefixedCommand(source, command);
+    }
+
+    public static void runCommandAsServer(String command) {
+        commands().performPrefixedCommand(server.createCommandSourceStack(), command);
     }
 
     public static ServerFunctionManager functions() {
@@ -186,10 +201,6 @@ public class ServerUtil {
 
     public static RecipeManager recipeManager() {
         return server.getRecipeManager();
-    }
-
-    public static LootDataManager lootData() {
-        return server.getLootData();
     }
 
     public static StructureTemplateManager structureManager() {
@@ -205,20 +216,24 @@ public class ServerUtil {
     }
 
     // Networking / identity
-    public static ServerConnectionListener connection() {
+    public static ServerConnectionListener getConnection() {
         return server.getConnection();
     }
 
-    public static int permissionLevel(ServerPlayer player) {
-        return server.getProfilePermissions(player.getGameProfile());
+    public static int getPermissionLevel(ServerPlayer player) {
+        return getPermissionLevel(player.getGameProfile());
     }
 
-    public static int permissionLevel(GameProfile profile) {
+    public static int getPermissionLevel(GameProfile profile) {
         return server.getProfilePermissions(profile);
     }
 
-    public static boolean usesAuthentication() {
+    public static boolean isOnlineMode() {
         return server.usesAuthentication();
+    }
+
+    public static boolean isOfflineMode() {
+        return !isOnlineMode();
     }
 
     // General state
@@ -238,15 +253,15 @@ public class ServerUtil {
         return server.isCurrentlySaving();
     }
 
-    public static int tickCount() {
+    public static int getTickCount() {
         return server.getTickCount();
     }
 
-    public static float averageTickTime() {
+    public static float getAvgTickTime() {
         return server.getAverageTickTime();
     }
 
-    public static String motd() {
+    public static String getMotd() {
         return server.getMotd();
     }
 
@@ -254,7 +269,7 @@ public class ServerUtil {
         server.setMotd(motd);
     }
 
-    public static int port() {
+    public static int getPort() {
         return server.getPort();
     }
 
@@ -262,15 +277,15 @@ public class ServerUtil {
         server.setPort(port);
     }
 
-    public static boolean pvpAllowed() {
+    public static boolean isPvpOn() {
         return server.isPvpAllowed();
     }
 
-    public static void setPvpAllowed(boolean allowed) {
-        server.setPvpAllowed(allowed);
+    public static void setPvp(boolean status) {
+        server.setPvpAllowed(status);
     }
 
-    public static boolean flightAllowed() {
+    public static boolean isFlightAllowed() {
         return server.isFlightAllowed();
     }
 
@@ -282,7 +297,7 @@ public class ServerUtil {
         return server.isSingleplayer();
     }
 
-    public static int playerIdleTimeout() {
+    public static int getPlayerIdleTimeout() {
         return server.getPlayerIdleTimeout();
     }
 
@@ -290,12 +305,12 @@ public class ServerUtil {
         server.setPlayerIdleTimeout(timeout);
     }
 
-    public static boolean whitelistEnforced() {
+    public static boolean isWhitelistOn() {
         return server.isEnforceWhitelist();
     }
 
-    public static void setEnforceWhitelist(boolean enforce) {
-        server.setEnforceWhitelist(enforce);
+    public static void setWhitelist(boolean status) {
+        server.setEnforceWhitelist(status);
     }
 
     public static int spawnProtectionRadius() {
@@ -304,10 +319,6 @@ public class ServerUtil {
 
     public static int absoluteMaxWorldSize() {
         return server.getAbsoluteMaxWorldSize();
-    }
-
-    public static boolean enforcesSecureProfile() {
-        return server.enforceSecureProfile();
     }
 
     public static Optional<MinecraftServer.ServerResourcePackInfo> resourcePack() {
@@ -320,14 +331,6 @@ public class ServerUtil {
 
     public static String serverVersion() {
         return server.getServerVersion();
-    }
-
-    public static FrameTimer frameTimer() {
-        return server.getFrameTimer();
-    }
-
-    public static ProfilerFiller profiler() {
-        return server.getProfiler();
     }
 
     public static void saveEverything(boolean suppressLog, boolean flush, boolean forced) {
@@ -346,10 +349,6 @@ public class ServerUtil {
         server.halt(false);
     }
 
-    public static void stop() {
-        server.stopServer();
-    }
-
     // Integrated only
     public static boolean isOpenToLAN() {
         return integrated.isPublished();
@@ -359,12 +358,8 @@ public class ServerUtil {
         return integrated.publishServer(gameMode, cheats, port);
     }
 
-    public static void setUUID(UUID uuid) {
-        integrated.setUUID(uuid);
-    }
-
     // Dedicated only
-    public static DedicatedServerProperties properties() {
+    public static DedicatedServerProperties getProperties() {
         return dedicated.getProperties();
     }
 
@@ -378,13 +373,5 @@ public class ServerUtil {
 
     public static String runCommand(String command) {
         return dedicated.runCommand(command);
-    }
-
-    public static long maxTickLength() {
-        return dedicated.getMaxTickLength();
-    }
-
-    public static String levelIdName() {
-        return dedicated.getLevelIdName();
     }
 }

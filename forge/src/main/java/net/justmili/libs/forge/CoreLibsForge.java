@@ -3,7 +3,9 @@ package net.justmili.libs.forge;
 import net.justmili.libs.CoreLibs;
 import net.justmili.libs.v1.events.bridge.forge.ServerEventsBridge;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -18,5 +20,9 @@ public final class CoreLibsForge {
         // TODO: Add SyncConfigCSPNetworking for Forge (Server)
 
         CoreLibs.init();
+    }
+
+    @SubscribeEvent
+    static void test(PlayerEvent event) {
     }
 }

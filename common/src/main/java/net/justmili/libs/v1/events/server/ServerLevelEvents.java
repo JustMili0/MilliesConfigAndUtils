@@ -6,7 +6,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 public class ServerLevelEvents {
-    private ServerLevelEvents() {}
+    private ServerLevelEvents() {
+    }
 
     public static final Event<LevelLoad> LEVEL_LOAD = Event.create(LevelLoad.class, callbacks -> (server, level) -> {
         for (LevelLoad event : callbacks) event.onLevelLoad(server, level);
@@ -26,14 +27,17 @@ public class ServerLevelEvents {
     public interface LevelLoad {
         void onLevelLoad(MinecraftServer server, ServerLevel level);
     }
+
     @FunctionalInterface
     public interface LevelUnload {
         void onLevelUnload(MinecraftServer server, ServerLevel level);
     }
+
     @FunctionalInterface
     public interface ChunkLoad {
         void onChunkLoad(ServerLevel level, LevelChunk chunk);
     }
+
     @FunctionalInterface
     public interface ChunkUnload {
         void onChunkUnload(ServerLevel level, LevelChunk chunk);

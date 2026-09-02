@@ -10,11 +10,18 @@ import java.math.RoundingMode;
 import java.util.Random;
 
 public class MathUtil {
+    public static final double NANOS_IN_A_MICRO = 1.0E-3;
+    public static final double NANOS_IN_A_MILLI = 1.0E-6;
+    public static final double NANOS_IN_A_SECOND = 1.0E-9;
+    public static final double MICROS_IN_A_MILLI = 1.0E-3;
+    public static final double MICROS_IN_A_SECOND = 1.0E-6;
+    public static final double MILLIS_IN_A_SECOND = 1.0E-3;
+
     public static Random random = new Random();
 
     public static boolean chance(float chance) {
         // Ex.: 20% = 0.2f
-        if (chance > 1.0f) chance = 1.0f; // Limit to 100%
+        if (chance > 1f) chance = 1f; // Limit to 100%
         return !(Math.random() <= chance);
     }
 

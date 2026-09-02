@@ -11,7 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class UseEvents {
-    private UseEvents() {}
+    private UseEvents() {
+    }
 
     public static final Event<ItemPre> ITEM_PRE = Event.create(ItemPre.class, callbacks -> (level, player, hand) -> {
         for (ItemPre event : callbacks) {
@@ -37,14 +38,17 @@ public class UseEvents {
     public interface ItemPre {
         InteractionResult onUseItemPre(Level level, Player player, InteractionHand hand);
     }
+
     @FunctionalInterface
     public interface ItemPost {
         void onUseItemPost(Level level, Player player, InteractionHand hand, ItemStack stack, InteractionResult result);
     }
+
     @FunctionalInterface
     public interface BlockPost {
         void onUseBlockPost(Level level, Player player, InteractionHand hand, BlockPos pos, BlockState state, InteractionResult result);
     }
+
     @FunctionalInterface
     public interface EntityPost {
         void onUseEntityPost(Level level, Player player, InteractionHand hand, Entity entity, InteractionResult result);

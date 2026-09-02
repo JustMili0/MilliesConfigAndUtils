@@ -20,19 +20,19 @@ public class BlockBehaviorUtil {
         return (blockState) -> (Boolean) blockState.getValue(BlockStateProperties.LIT)? lightValue : 0;
     }
 
-    public static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
+    public static boolean yes(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
+        return true;
+    }
+
+    public static boolean yes(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+        return true;
+    }
+
+    public static boolean no(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
         return false;
     }
 
-    public static boolean always(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entity) {
-        return true;
-    }
-
-    public static boolean always(BlockState state, BlockGetter blockGetter, BlockPos pos) {
-        return true;
-    }
-
-    public static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+    public static boolean no(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;
     }
 
@@ -65,11 +65,11 @@ public class BlockBehaviorUtil {
             .sound(SoundType.GRASS)
             .noOcclusion()
             .isValidSpawn(BlockBehaviorUtil::ocelotOrParrot)
-            .isSuffocating(BlockBehaviorUtil::never)
-            .isViewBlocking(BlockBehaviorUtil::never)
+            .isSuffocating(BlockBehaviorUtil::no)
+            .isViewBlocking(BlockBehaviorUtil::no)
             .ignitedByLava()
             .pushReaction(PushReaction.DESTROY)
-            .isRedstoneConductor(BlockBehaviorUtil::never);
+            .isRedstoneConductor(BlockBehaviorUtil::no);
     }
 
     public static BlockBehaviour.Properties button() {
