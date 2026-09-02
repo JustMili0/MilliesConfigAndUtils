@@ -19,13 +19,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.justmili.libs.fabric.CoreLibsFabric"
+      "net.justmili.corelibs.fabric.CoreLibsFabric"
     ],
     "client": [
-      "net.justmili.libs.client.fabric.FabricClient"
+      "net.justmili.corelibs.client.fabric.FabricClient"
     ],
     "modmenu": [
-      "net.justmili.libs.fabric.ModMenuEntrypoint"
+      "net.justmili.corelibs.fabric.ModMenuEntrypoint"
     ]
   },
   "mixins": [

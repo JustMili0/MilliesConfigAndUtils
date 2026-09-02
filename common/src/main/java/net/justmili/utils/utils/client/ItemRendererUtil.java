@@ -19,13 +19,12 @@ public class ItemRendererUtil {
 
     public static ItemDisplay toItemDisplay(ItemDisplayContext context) {
         return switch (context) {
-            case ItemDisplayContext.GUI -> ItemDisplay.GUI;
-            case ItemDisplayContext.GROUND -> ItemDisplay.ON_GROUND;
-            case ItemDisplayContext.FIXED -> ItemDisplay.FIXED;
-            case ItemDisplayContext.ON_SHELF -> ItemDisplay.ON_SHELF;
-            case ItemDisplayContext.HEAD -> ItemDisplay.HEAD;
-            case ItemDisplayContext.FIRST_PERSON_LEFT_HAND, ItemDisplayContext.FIRST_PERSON_RIGHT_HAND -> ItemDisplay.FIRST_PERSON;
-            case ItemDisplayContext.THIRD_PERSON_LEFT_HAND, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND -> ItemDisplay.THIRD_PERSON;
+            case GUI -> ItemDisplay.GUI;
+            case GROUND -> ItemDisplay.ON_GROUND;
+            case FIXED -> ItemDisplay.FIXED;
+            case HEAD -> ItemDisplay.HEAD;
+            case FIRST_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND -> ItemDisplay.FIRST_PERSON;
+            case THIRD_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND -> ItemDisplay.THIRD_PERSON;
             default -> null;
         };
     }

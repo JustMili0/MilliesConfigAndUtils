@@ -12,8 +12,8 @@ import java.util.Calendar;
 
 @SuppressWarnings({"unchecked"})
 public class SharedElements {
-    public static final ResourceLocation ICONS = CoreLibs.asResource("textures/gui/icons.png");
-    public static final ResourceLocation ICONS_PRIDE = CoreLibs.asResource("textures/gui/icons_pride.png");
+    public static final ResourceLocation ICONS = CoreLibs.asId("textures/gui/icons.png");
+    public static final ResourceLocation ICONS_PRIDE = CoreLibs.asId("textures/gui/icons_pride.png");
     public static final int /// I = Icon, W = Widget, C = Color
         I_CLOSED_CAT = 1, // Arrow right
         I_OPEN_CAT = 2, // Arrow down

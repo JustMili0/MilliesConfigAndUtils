@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SyncConfigCSPNetworking {
-    public static final ResourceLocation CHANNEL = CoreLibs.asResource("sync_common_sp_config");
+    public static final ResourceLocation CHANNEL = CoreLibs.asId("sync_common_sp_config");
 
     public static void registerServer() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

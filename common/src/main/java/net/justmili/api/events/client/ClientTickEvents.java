@@ -9,17 +9,17 @@ public class ClientTickEvents {
     }
 
     public static final Event<ClientPre> CLIENT_PRE = Event.create(ClientPre.class, callbacks -> minecraft -> {
-        for (ClientPre event : callbacks) event.onStartTick(minecraft);
+        for (var event : callbacks) event.onStartTick(minecraft);
     });
     public static final Event<ClientPost> CLIENT_POST = Event.create(ClientPost.class, callbacks -> minecraft -> {
-        for (ClientPost event : callbacks) event.onEndTick(minecraft);
+        for (var event : callbacks) event.onEndTick(minecraft);
     });
 
     public static final Event<LevelPre> LEVEL_PRE = Event.create(LevelPre.class, callbacks -> level -> {
-        for (LevelPre event : callbacks) event.onStartTick(level);
+        for (var event : callbacks) event.onStartTick(level);
     });
     public static final Event<LevelPost> LEVEL_POST = Event.create(LevelPost.class, callbacks -> level -> {
-        for (LevelPost event : callbacks) event.onEndTick(level);
+        for (var event : callbacks) event.onEndTick(level);
     });
 
     @FunctionalInterface

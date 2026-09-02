@@ -1,10 +1,10 @@
 package net.justmili.utils.utils.common;
 
-import net.justmili.utils.utils.server.ServerUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -146,14 +146,14 @@ public class EntityUtil {
     }
 
     public static boolean hasAdvancement(ServerPlayer player, ResourceLocation id) {
-        var advancement = getAdvancement(id);
+        var advancement = getAdvancement(player.server, id);
         if (advancement == null) return false;
 
         return getOrStartProgress(player, id).isDone();
     }
 
     public static void grantAdvancement(ServerPlayer player, ResourceLocation id) {
-        var advancement = getAdvancement(id);
+        var advancement = getAdvancement(player.server, id);
         if (advancement == null) return;
 
         var progress = getOrStartProgress(player, id);
@@ -162,7 +162,7 @@ public class EntityUtil {
     }
 
     public static void revokeAdvancement(ServerPlayer player, ResourceLocation id) {
-        var advancement = getAdvancement(id);
+        var advancement = getAdvancement(player.server, id);
         if (advancement == null) return;
 
         var progress = getOrStartProgress(player, id);
@@ -170,12 +170,12 @@ public class EntityUtil {
             player.getAdvancements().revoke(advancement, criteria);
     }
 
-    private static Advancement getAdvancement(ResourceLocation id) {
-        return ServerUtil.server().getAdvancements().getAdvancement(id);
+    private static Advancement getAdvancement(MinecraftServer server, ResourceLocation id) {
+        return server.getAdvancements().getAdvancement(id);
     }
 
     private static AdvancementProgress getOrStartProgress(ServerPlayer player, ResourceLocation id) {
-        return player.getAdvancements().getOrStartProgress(getAdvancement(id));
+        return player.getAdvancements().getOrStartProgress(getAdvancement(player.server, id));
     }
 
     public static void useHeld(Player player, InteractionHand hand, int shrinkAmount) {

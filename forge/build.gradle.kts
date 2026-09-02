@@ -78,8 +78,7 @@ tasks.processResources {
             "mod_authors" to modAuthor,
             "mod_license" to modLicense,
             "forge_version" to libs.versions.forge.asProvider().get(),
-            "minecraft_version_constraint" to root.property("minecraft_version_constraint_forge"),
-            "corelibs" to root.property("corelibs")
+            "minecraft_version_constraint" to root.property("minecraft_version_constraint_forge")
         )
     }
 }

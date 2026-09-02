@@ -4,11 +4,15 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
-    "util.ItemRendererMixin"
+    "ItemRendererMixin"
   ],
   "mixins": [
-    "SharedSuggestionProviderMixin",
-    "event.ItemMixin"
+    "FurnaceResultSlotMixin",
+    "ItemEntityMixin",
+    "ItemMixin",
+    "ResultSlotMixin",
+    "ServerPlayerMixin",
+    "SharedSuggestionProviderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

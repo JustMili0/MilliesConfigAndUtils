@@ -1,13 +1,24 @@
 package net.justmili.api.events.bridge.fabric;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.justmili.api.events.server.PlayerEvents;
 import net.justmili.api.events.server.UseEvents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+
+import static net.justmili.api.events.server.ServerLifecycleEvents.*;
+import static net.justmili.api.events.server.ServerTickEvents.*;
 
 public final class ServerEventsBridge {
     private ServerEventsBridge() {}
@@ -59,7 +70,14 @@ public final class ServerEventsBridge {
         // TODO: add
 
         // PlayerEvents
-        // TODO: add
+        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) ->
+            PlayerEvents.RESPAWN.invoker().onRespawn(oldPlayer, newPlayer, alive));
+        ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) ->
+            PlayerEvents.CLONE.invoker().onClone(oldPlayer, newPlayer, alive));
+        AttackEntityCallback.EVENT.register((player, level, hand, entity, hitResult) -> {
+            if (level.isClientSide() || !(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
+            return PlayerEvents.ATTACK_ENTITY.invoker().onAttackedEntity(serverPlayer, level, entity, InteractionHand.MAIN_HAND, hitResult);
+        });
 
         // PlayerAdvancementEvents
         // TODO: add

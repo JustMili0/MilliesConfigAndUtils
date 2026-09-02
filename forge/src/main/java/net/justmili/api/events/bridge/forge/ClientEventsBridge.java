@@ -10,6 +10,7 @@ import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 
 import static net.justmili.api.events.client.ClientLifecycleEvents.STARTED;
 import static net.justmili.api.events.client.ClientLifecycleEvents.STOPPING;
+import static net.justmili.api.events.client.ClientTickEvents.*;
 
 public class ClientEventsBridge {
     private ClientEventsBridge() {}

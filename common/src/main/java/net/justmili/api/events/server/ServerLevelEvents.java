@@ -10,17 +10,17 @@ public class ServerLevelEvents {
     }
 
     public static final Event<LevelLoad> LEVEL_LOAD = Event.create(LevelLoad.class, callbacks -> (server, level) -> {
-        for (LevelLoad event : callbacks) event.onLevelLoad(server, level);
+        for (var event : callbacks) event.onLevelLoad(server, level);
     });
     public static final Event<LevelUnload> LEVEL_UNLOAD = Event.create(LevelUnload.class, callbacks -> (server, level) -> {
-        for (LevelUnload event : callbacks) event.onLevelUnload(server, level);
+        for (var event : callbacks) event.onLevelUnload(server, level);
     });
 
     public static final Event<ChunkLoad> CHUNK_LOAD = Event.create(ChunkLoad.class, callbacks -> (level, chunk) -> {
-        for (ChunkLoad event : callbacks) event.onChunkLoad(level, chunk);
+        for (var event : callbacks) event.onChunkLoad(level, chunk);
     });
     public static final Event<ChunkUnload> CHUNK_UNLOAD = Event.create(ChunkUnload.class, callbacks -> (level, chunk) -> {
-        for (ChunkUnload event : callbacks) event.onChunkUnload(level, chunk);
+        for (var event : callbacks) event.onChunkUnload(level, chunk);
     });
 
     @FunctionalInterface

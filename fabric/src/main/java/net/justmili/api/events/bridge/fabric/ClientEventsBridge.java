@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import static net.justmili.api.events.client.ClientLifecycleEvents.STARTED;
 import static net.justmili.api.events.client.ClientLifecycleEvents.STOPPING;
+import static net.justmili.api.events.client.ClientTickEvents.*;
 
 public final class ClientEventsBridge {
     private ClientEventsBridge() {}

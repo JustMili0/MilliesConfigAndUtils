@@ -3,6 +3,7 @@ package net.justmili.utils.utils.common;
 import net.justmili.utils.utils.server.ServerUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public class CommandUtil {
@@ -61,20 +62,20 @@ public class CommandUtil {
         sendOkTo(player, Component.literal("§c" + message), false);
     }
 
-    public static void broadcastServer(Component message, boolean showAboveHotbar) {
-        ServerUtil.broadcast(message, showAboveHotbar);
+    public static void broadcastServer(MinecraftServer server, Component message, boolean showAboveHotbar) {
+        ServerUtil.broadcast(server, message, showAboveHotbar);
     }
 
-    public static void broadcastServer(String message, boolean showAboveHotbar) {
-        broadcastServer(Component.literal(message), showAboveHotbar);
+    public static void broadcastServer(MinecraftServer server, String message, boolean showAboveHotbar) {
+        broadcastServer(server, Component.literal(message), showAboveHotbar);
     }
 
-    public static void broadcastServer(Component message) {
-        ServerUtil.broadcast(message, false);
+    public static void broadcastServer(MinecraftServer server, Component message) {
+        ServerUtil.broadcast(server, message, false);
     }
 
-    public static void broadcastServer(String message) {
-        broadcastServer(Component.literal(message), false);
+    public static void broadcastServer(MinecraftServer server, String message) {
+        broadcastServer(server, Component.literal(message), false);
     }
 
     // Other
@@ -82,7 +83,7 @@ public class CommandUtil {
         ServerUtil.runCommandAs(player.createCommandSourceStack(), command);
     }
 
-    public static void runCommandAsServer(String command) {
-        ServerUtil.runCommandAsServer(command);
+    public static void runCommandAsServer(MinecraftServer server, String command) {
+        ServerUtil.runCommandAsServer(server, command);
     }
 }

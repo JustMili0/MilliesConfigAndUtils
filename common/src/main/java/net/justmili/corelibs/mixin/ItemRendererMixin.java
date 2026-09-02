@@ -1,4 +1,4 @@
-package net.justmili.corelibs.mixin.util;
+package net.justmili.corelibs.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.justmili.utils.utils.client.ItemRendererUtil;

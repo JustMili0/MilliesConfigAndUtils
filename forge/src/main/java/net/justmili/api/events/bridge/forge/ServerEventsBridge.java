@@ -1,16 +1,23 @@
 package net.justmili.api.events.bridge.forge;
 
+import net.justmili.api.events.server.PlayerEvents;
 import net.justmili.api.events.server.UseEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
+
+import static net.justmili.api.events.server.ServerLifecycleEvents.*;
+import static net.justmili.api.events.server.ServerTickEvents.*;
 
 public final class ServerEventsBridge {
     private ServerEventsBridge() { }
@@ -78,7 +85,12 @@ public final class ServerEventsBridge {
         // TODO: add
 
         // PlayerEvents
-        // TODO: add
+        MinecraftForge.EVENT_BUS.addListener((AttackEntityEvent event) -> {
+            var entity = event.getEntity();
+            if (entity.level().isClientSide() || !(entity instanceof ServerPlayer player)) return;
+            var result = PlayerEvents.ATTACK_ENTITY.invoker().onAttackedEntity(player, player.level(), event.getTarget(), InteractionHand.MAIN_HAND, null);
+            if (result != InteractionResult.PASS) event.setCanceled(true);
+        }); // TODO: change to mixin
 
         // PlayerAdvancementEvents
         // TODO: add

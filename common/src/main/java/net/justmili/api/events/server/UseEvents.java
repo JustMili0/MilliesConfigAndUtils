@@ -15,7 +15,7 @@ public class UseEvents {
     }
 
     public static final Event<ItemPre> ITEM_PRE = Event.create(ItemPre.class, callbacks -> (level, player, hand) -> {
-        for (ItemPre event : callbacks) {
+        for (var event : callbacks) {
             InteractionResult result = event.onUseItemPre(level, player, hand);
             if (result != InteractionResult.PASS) return result;
         }
@@ -23,15 +23,15 @@ public class UseEvents {
     });
 
     public static final Event<ItemPost> ITEM_POST = Event.create(ItemPost.class, callbacks -> (level, player, hand, stack, result) -> {
-        for (ItemPost event : callbacks) event.onUseItemPost(level, player, hand, stack, result);
+        for (var event : callbacks) event.onUseItemPost(level, player, hand, stack, result);
     });
 
     public static final Event<BlockPost> BLOCK_POST = Event.create(BlockPost.class, callbacks -> (level, player, hand, pos, state, result) -> {
-        for (BlockPost event : callbacks) event.onUseBlockPost(level, player, hand, pos, state, result);
+        for (var event : callbacks) event.onUseBlockPost(level, player, hand, pos, state, result);
     });
 
     public static final Event<EntityPost> ENTITY_POST = Event.create(EntityPost.class, callbacks -> (level, player, hand, entity, result) -> {
-        for (EntityPost event : callbacks) event.onUseEntityPost(level, player, hand, entity, result);
+        for (var event : callbacks) event.onUseEntityPost(level, player, hand, entity, result);
     });
 
     @FunctionalInterface

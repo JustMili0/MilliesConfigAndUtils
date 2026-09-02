@@ -4,7 +4,6 @@ import net.justmili.corelibs.config.ExampleConfig;
 import net.justmili.utils.utils.ModUtil;
 import net.justmili.utils.utils.common.ResourceUtil;
 import net.justmili.utils.utils.common.TickUtil;
-import net.justmili.utils.utils.server.ServerUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ public class CoreLibs {
     public static final Logger LOGGER = LoggerFactory.getLogger(CoreLibs.class);
 
     public static void init() {
-        ServerUtil.setServer();
         TickUtil.registerProcessQueue();
 
         ModUtil.markEndOfLife(MODNAME, MODID, false, false);
@@ -23,7 +21,7 @@ public class CoreLibs {
         ExampleConfig.register();
     }
 
-    public static ResourceLocation asResource(String path) {
+    public static ResourceLocation asId(String path) {
         return ResourceUtil.parse(MODID, path);
     }
 }
