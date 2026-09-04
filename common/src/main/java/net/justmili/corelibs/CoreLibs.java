@@ -1,9 +1,9 @@
 package net.justmili.corelibs;
 
 import net.justmili.corelibs.config.ExampleConfig;
-import net.justmili.utils.utils.ModUtil;
-import net.justmili.utils.utils.common.ResourceUtil;
-import net.justmili.utils.utils.common.TickUtil;
+import net.justmili.util.utils.ModUtil;
+import net.justmili.util.utils.common.ResourceUtil;
+import net.justmili.util.utils.common.TickUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
